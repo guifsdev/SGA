@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Discipline;
+use App\Disciplina;
 
 class AjustesController extends Controller
 {
@@ -12,7 +12,7 @@ class AjustesController extends Controller
     	return view('index');
     }
 
-    public function ajustar(Discipline $disciplines) {
+    public function ajustar(Disciplina $disciplines) {
     	$disciplines = $disciplines->all();
 
     	//Mostrar grupo de seleção de disciplinas
@@ -25,7 +25,7 @@ class AjustesController extends Controller
     }
 
     public function buscarDisciplinas(Request $request) {
-    	$disciplinas = Discipline::where('periodo', '=', $request->input('periodo'))->get();
+    	$disciplinas = Disciplina::where('periodo', '=', $request->input('periodo'))->get();
     	
     	return response()->json($disciplinas);
 
