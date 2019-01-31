@@ -10,19 +10,50 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::get('/home', 'HomeController@index')->name('home');
 
-Route::get('/', 'AjustesController@index')->name('home');
+Route::any('/subjects', 'SubjectsController@show');
 
-Route::get('/consulta', 'AjustesController@mostrar');
 
-Route::post('/consulta', 'RequerimentosController@consultar');
+//Login aluno
+Route::get('/login', 'IntentsController@show');
 
-Route::get('/ajuste', 'AjustesController@ajustar');
+//Rotas de ajuste
+Route::post('/ajuste/login', 'IntentsController@loginAdjustments');
+Route::get('/ajuste', 'AdjustmentsController@show');
+Route::post('/ajuste/confirmar', 'AdjustmentsController@confirm');
+Route::post('/ajuste/modificar', 'AdjustmentsController@modify');
+Route::post('/ajuste', 'AdjustmentsController@store');
+Route::get('/ajuste/sucesso', 'AdjustmentsController@success');
 
-Route::any('/disciplinas', 'AjustesController@buscarDisciplinas');
+//Rotas de certificados
+Route::post('/certificados/login', 'IntentsController@loginCertificates');
+Route::get('/certificados', 'CertificatesController@show');
 
-Route::post('/ajuste', 'RequerimentosController@adicionar');
+//Rotas de gerenciamento
+Route::get('/admin', 'AdminController@index');
+Route::get('/admin/login', 'Auth\LoginController@showLoginForm')->name('login');
+Route::post('/admin/login', 'Auth\LoginController@login');
+Route::get('/admin/logout', 'Auth\LoginController@logout')->name('logout');
 
-Auth::routes();
+Route::get('/admin/ajuste', 'AdminAdjustmentsController@show');
 
-Route::get('/home', 'HomeController@index');
+//Filtragem 
+Route::post('/admin/ajuste/filtrar', 'AdminAdjustmentsController@filter');
+
+
+Route::get('/admin/ajuste/configurar', 'AdminAdjustmentsController@configure');
+
+
+Route::get('/admin/certificados', 'AdminCertificatesController@show');
+Route::get('/admin/certificados/configurar', 'AdminCertificatesController@configure');
+
+
+
+
+//Auth::routes();
+
+
+
+
+

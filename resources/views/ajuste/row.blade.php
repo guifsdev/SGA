@@ -28,7 +28,4 @@
 </tr>
 
 <script type="text/javascript">
-$(document).ready(function() {
-	$('.custom-select').val('dummy');
-});
 </script>

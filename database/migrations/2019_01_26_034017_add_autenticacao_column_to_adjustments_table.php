@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateConsultasTable extends Migration
+class AddAutenticacaoColumnToAdjustmentsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,8 @@ class CreateConsultasTable extends Migration
      */
     public function up()
     {
-        Schema::create('consultas', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('matricula');
-            $table->string('token_consulta');
-            $table->date('data_consulta');
-            $table->timestamps();
+        Schema::table('adjustments', function (Blueprint $table) {
+            $table->string('autenticacao')->nullable();
         });
     }
 
@@ -29,6 +25,8 @@ class CreateConsultasTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('consultas');
+        Schema::table('adjustments', function (Blueprint $table) {
+            //
+        });
     }
 }
