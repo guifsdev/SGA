@@ -38,6 +38,11 @@ Route::get('/admin/logout', 'Auth\LoginController@logout')->name('logout');
 
 Route::get('/admin/ajuste', 'AdminAdjustmentsController@show');
 
+//Rotas de acoes
+Route::post('/admin/ajuste/deferir', 'AdminAdjustmentsController@defer');
+Route::post('/admin/ajuste/indeferir', 'AdminAdjustmentsController@deny');
+
+
 //Filtragem 
 Route::post('/admin/ajuste/filtrar', 'AdminAdjustmentsController@filter');
 

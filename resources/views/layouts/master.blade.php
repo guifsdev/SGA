@@ -4,16 +4,18 @@
     <title>@yield('title', 'SGA UFF- Coordenação do Curso de Administração')</title>
     <link rel="stylesheet" type="text/css" href="{{asset('css/custom.css')}}">
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">    
     
     <!-- Icon library -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">    
     
+    <!-- Meus estilos -->
     <link rel="stylesheet" href="{{asset('css/custom.css')}}">
 
+    @yield('custom_styles')
 
     
     
-    <meta name="viewport" content="width=device-width, user-scalable=no">
     <meta name="_token" content="{{csrf_token()}}" />
 
     

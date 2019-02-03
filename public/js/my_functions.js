@@ -37,7 +37,7 @@ function buscarDisciplinas(route = '/ajuste', selected = null)
 		},
 		dataType: 'JSON',
 		success: function(response) {
-			if(route === '/admin/ajuste') colDisciplinas.append('<option>Todas</option>');
+			if(route === '/admin/ajuste') colDisciplinas.append('<option value="Todos">Todas</option>');
 
 			for(var i = 0; i < response.length; ++i) {
 				colDisciplinas.
@@ -49,13 +49,89 @@ function buscarDisciplinas(route = '/ajuste', selected = null)
 		}
 	});
 }
-
-function sendFilterParams(form) {
+function sendFilterParams(form) 
+{
 	//Remover o nome dos inputs desmarcados
 	var checkboxes = form.find('input[type=checkbox]').each(function() {
-		if(! $(this).is(':checked')) {
-			$(this).siblings('.input-filtros').removeAttr('name');
+		var input = $(this);
+		var inputSiblings = $(this).siblings('.input-filtros');
+
+		//Não está marcada ou está marcada 
+		if(! input.is(':checked') || (input.is(':checked') && (inputSiblings.val() === 'Todos'))) {
+			console.log(inputSiblings.val())
+			inputSiblings.removeAttr('name');
 		}
 		//TODO Remover nome de filtros com select em 'Todos'
 	});
+}
+function bulkSelect()
+{
+	console.log('bulkSelect');
+	liberarDeferir();
+	var checkLinhas = $('.checkable').filter(function(){
+		var row = $(this).closest('tr');
+		if(row.css('display') === 'none') return false;
+		else return true;
+	});
+
+	if($(this).is(':checked')) {
+		//excluir os não visiveis
+
+		if(!checkLinhas.is(':checked')) {
+			checkLinhas.prop('checked', true);
+		}
+	}
+	else checkLinhas.prop('checked', false);
+}
+function liberarDeferir()
+{
+	var deferirBtn = $('#deferir');
+	var elements = $('#requerimentos').find('input[type=checkbox]:checked');
+	elements.length >= 1 ? deferirBtn.prop('disabled', false) : deferirBtn.prop('disabled', true);
+}
+function toggleActionButtons()
+{
+	var acoesBtns = $('#acoes-btns button');
+	var elements = $('#requerimentos').find('input[type=checkbox]:checked');
+	if(elements.length == 0) acoesBtns.prop('disabled', true);
+}
+function processarAjuste(acao)
+{	
+	var route = '/admin/ajuste/' + $(acao).attr('id');
+	//Se o botão de ação clicado for deferir, 
+	console.log(route);
+
+
+	var form = $('form');
+	form.find('tbody tr').each(function() {
+		var check = $(this).find('input[type=checkbox]');
+
+		if(!check.is(':checked')) {
+			$(this).find('input[type=hidden]').removeAttr('name');
+		}
+	});
+
+	//Implementar Ajax
+	$.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+        }
+    });
+
+	$.ajax({
+			url: route,
+			type: 'POST',
+			data: form.serialize(),
+			success: function(response) {
+				//console.log('Success: ' + JSON.stringify(response));
+				atualizarTabela();
+			},
+			error: function(data) {
+				console.log("Error: " + JSON.stringify(data));
+			}
+	});
+}
+function atualizarTabela()
+{ 
+    $("#requerimentos table").load(window.location.href + '#requerimentos table');
 }

@@ -1,41 +1,34 @@
 @extends('layouts.master')
 
-@section('title', 'SGA - Login do estudante')
+@section('custom_styles')
+<!-- Custom Signin Template for Bootsrap -->
+<link rel="stylesheet" href="{{asset('css/signin.css')}}">
+@endsection
 
+
+@section('title', 'SGA - Login do estudante')
 @section('content')
-<div class="container">
-    <div class="container-fluid">
-        <main class="col-12 col-md-9 col-xl-8 py-md-3 pl-md-5 bd-content" role="main" 
-        style="
-            margin: 0 auto; 
-            padding-left: 1rem !important;">
+<form method="POST" action="/ajuste/login" class="form-signin">
+    {{csrf_field()}}
+    <h1 class="h3 mb-3 font-weight-normal">Ajuste de disciplinas do aluno</h1>
     
-        <h3>Ajuste de disciplinas do aluno</h3>
-    
-        <form method="POST" action="/ajuste/login">
-            {{csrf_field()}}
-            <div class="form-group">
-                <label for="cpf">CPF:</label>
-                <input type="text" class="form-control" id="CPF" placeholder="CPF" name="cpf" required>
-            </div>
-    
-            <div class="form-group">
-                <label for="matricula">Matrícula:</label>
-                <input type="text" class="form-control" id="matricula" placeholder="Sua matrícula" name="matricula" >
-            </div>
-            <div class="form-group align-center">
-                <button id="ajuste" type="submit" class="btn btn-primary" aria-describedby="aviso">Ajustar do plano de estudos</button>
-            </div>
-            <div class="form-group align-center">
-                <button id="certificados" type="submit" class="btn btn-primary" aria-describedby="aviso">Emissão de certificados</button>
-            </div>
-            <small id="aviso" class="form-text text-muted">Preencha todos os campos do formulário – esta reponsabilidade é do requerente, os documentos incompletos não serão processados.</small>
-    
-            @include('ajuste.errors')
-            </main>
-        </form>
+    <div class="form-group">
+        <label for="cpf">CPF:</label>
+        <input type="text" class="form-control" id="CPF" placeholder="CPF" name="cpf" required>
     </div>
-</div>
+
+    <div class="form-group">
+        <label for="matricula">Matrícula:</label>
+        <input type="text" class="form-control" id="matricula" placeholder="Sua matrícula" name="matricula" >
+    </div>
+    <div class="form-group">
+        <button id="ajuste" type="submit" class="btn btn-lg btn-primary btn-block" aria-describedby="aviso">Ajustar do plano de estudos</button>
+        <button id="certificados" type="submit" class="btn btn-lg btn-primary btn-block" aria-describedby="aviso">Emissão de certificados</button>
+    </div>
+    <small id="aviso" class="form-text text-muted">Preencha todos os campos do formulário – esta reponsabilidade é do requerente, os documentos incompletos não serão processados.</small>
+
+    @include('ajuste.errors')
+</form>
 
 <script type="text/javascript">
     $(document).ready(function() {
