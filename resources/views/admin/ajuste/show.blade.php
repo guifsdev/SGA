@@ -1,13 +1,20 @@
 @extends('layouts.master')
 
+
+@section('custom_styles')
+<link rel="stylesheet" href="{{asset('css/custom_checkboxes.css')}}">
+<link rel="stylesheet" href="{{asset('css/custom_datepicker.css')}}">
+@endsection
+
 @section('title', 'SGA - Gerenciamento de Ajustes')
 
 @section('content')
 
-<h3 class="align-center">Gerenciamento de Ajustes</h3>
+@section('nav_title', 'Gerenciamento de ajustes')
+
+@include('admin.menu')
 
 <div class="container-fluid">
-	<hr>
 	<div class="admin-ajuste">
 		<div id="filtros" class="container-fluid">
 			<h4>Filtros <a class="btn btn-light toggle-collapse-btn" id="filtros-collapse-btn"><i class="fa fa-minus-square-o"></i></a></h4>
@@ -92,7 +99,6 @@
 				</div>
 		</div>
 		<hr>
-
 		<form method="POST">
 		{{csrf_field()}}
 			<div id="acoes"
@@ -122,9 +128,6 @@
 					</div>
 				</div>
 			</div> <!-- #acoes -->
-
-			<hr>
-
 			<div id="requerimentos" class="container-fluid">
 				<table class="table table-sm">
 					<thead>

@@ -11,7 +11,7 @@ Para testes em ambientes locais são necessários os seguintes requisitos:
 	* [apache](https://httpd.apache.org/download.cgi)
 	* [mysql](https://www.mysql.com/downloads/). Após instalação, criar o seu usuário e definir uma senha. Em seguida criar o seu banco de dados para ser utilizado pela aplicação.
 	* [phpMyAdmin](https://www.phpmyadmin.net/downloads/). Opcional, caso tenha dificuldade em utilizar o terminal.
-* Processamento:
+* Passo a passo:
 	1. Fazer download ou clonar o projeto
 	2. No terminal, navegar até o diretório da aplicação usando `cd`
 	3. `composer install`

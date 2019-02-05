@@ -13,8 +13,6 @@
     <link rel="stylesheet" href="{{asset('css/custom.css')}}">
 
     @yield('custom_styles')
-
-    
     
     <meta name="_token" content="{{csrf_token()}}" />
 

@@ -4,6 +4,8 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
+use App\ConfigAdjustment;
+use Carbon\Carbon;
 
 class Adjustment extends Model
 {
@@ -22,7 +24,6 @@ class Adjustment extends Model
 	];
 	public static function defer(Request $request)
 	{
-		//Adjustment::where('id', $request['id'])->update(['resultado' => 'Deferido']);
 		foreach ($request['id'] as $key => $id) {
 			# code...
 			Adjustment::where('id', $id)->
@@ -30,6 +31,8 @@ class Adjustment extends Model
 					'resultado' => 'Deferido',
 					'motivo_indeferido' => ''
 				]);
+
+			//Enviar email
 		}
 		return response()->json(['success' => 'Dados atualizados com sucesso']);
 	}
@@ -43,8 +46,22 @@ class Adjustment extends Model
 					'resultado' => 'Indeferido',
 					'motivo_indeferido' => $request['motivo-indeferir'] == 'outro' ? $request['motivo-descricao'] : $request['motivo-indeferir']
 				]);
+
+			//Enviar email
 		}
 		return response()->json(['success' => 'Dados atualizados com sucesso']);
+	}
+
+	public static function isOpen()
+	{
+		$datas = (new ConfigAdjustment())->dates();
+
+		$abertura = new Carbon($datas['abertura']);
+		$fechamento = new Carbon($datas['fechamento']);
+		$now = Carbon::now();
+
+		if(($now >= $abertura) && ($now <= $fechamento)) return true;
+		else return false;
 	}
 }
 

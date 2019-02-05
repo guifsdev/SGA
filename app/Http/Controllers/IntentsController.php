@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Adjustment;
+
 
 class IntentsController extends Controller
 {
@@ -13,6 +15,10 @@ class IntentsController extends Controller
 
     public function loginAdjustments()
     {
+        if(!Adjustment::isOpen()){
+            return redirect('/login')->withErrors(['Ajuste indisponível, aguarde abertura.']);
+        }
+
         //botão "ajuste do plano de estudos"
         if(request()->has(['cpf', 'matricula']))
         {
@@ -35,4 +41,5 @@ class IntentsController extends Controller
             ]);
         }
     }
+
 }

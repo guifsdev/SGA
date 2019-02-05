@@ -92,10 +92,8 @@ class AdminAdjustmentsController extends Controller
     {
         Adjustment::deny($request);
     }
-    public function configure()
-    {
-        return 'AdminAdjustmentsController@configure';
-    }
+    
+
 
 
 }

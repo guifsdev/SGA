@@ -14,7 +14,7 @@
 		      			onclick="window.location='{{ url("/admin/ajuste") }}'"><i class="fa fa-list"> Ver </i>
 		      		</button>
 		      		<button class="btn btn-info"
-		      			onclick="window.location='{{ url("/admin/ajuste/configurar") }}'"><i class="fa fa-cog"> Configurar </i>
+		      			onclick="window.location='{{ url("/admin/ajuste/config") }}'"><i class="fa fa-cog"> Configurar </i>
 		      		</button>
 			      </th>
 			    </tr>
