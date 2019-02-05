@@ -1,12 +1,6 @@
 @extends('layouts.master')
-
-@section('custom_styles')
-<!-- Custom Signin Template for Bootsrap -->
-<link rel="stylesheet" href="{{asset('css/signin.css')}}">
-@endsection
-
-
 @section('title', 'SGA - Login do estudante')
+
 @section('content')
 <form method="POST" action="/ajuste/login" class="form-signin">
     {{csrf_field()}}
@@ -14,7 +8,7 @@
     
     <div class="form-group">
         <label for="cpf">CPF:</label>
-        <input type="text" class="form-control" id="CPF" placeholder="CPF" name="cpf" required>
+        <input type="text" class="form-control" id="cpf" placeholder="CPF" name="cpf" required>
     </div>
 
     <div class="form-group">
@@ -30,8 +24,19 @@
     @include('ajuste.errors')
 </form>
 
+@section('custom_styles')
+<!-- Custom Signin Template for Bootsrap -->
+<link rel="stylesheet" href="{{asset('css/signin.css')}}">
+@endsection
+
+@section('custom_scripts')
+<script type="text/javascript" src="{{ asset('/js/jquery.maskedinput-1.1.4.pack.js') }}"></script>
+@endsection
+
 <script type="text/javascript">
     $(document).ready(function() {
+        $("#cpf").mask("999.999.999-99");
+
 
         var submitBtn = $('button:submit');
 
@@ -52,10 +57,7 @@
                 $('form').attr('action', '/certificados/login');
 
             }
-
-
         }
-
 
         function reenableInputs() {
             var disabledInputs = $('input:disabled');

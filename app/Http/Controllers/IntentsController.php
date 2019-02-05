@@ -16,7 +16,7 @@ class IntentsController extends Controller
     public function loginAdjustments()
     {
         if(!Adjustment::isOpen()){
-            return redirect('/login')->withErrors(['Ajuste indisponível, aguarde abertura.']);
+            return redirect('/login')->withErrors(['Aguarde período de ajuste']);
         }
 
         //botão "ajuste do plano de estudos"

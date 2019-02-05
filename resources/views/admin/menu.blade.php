@@ -32,6 +32,9 @@
       </li>
       <li class="nav-item">
         <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Confiurações gerais</a>
+      </li>      
+      <li class="nav-item">
+        <a class="nav-link" href="/admin/logout" tabindex="-1" aria-disabled="false">Sair</a>
       </li>
     </ul>
   </div>

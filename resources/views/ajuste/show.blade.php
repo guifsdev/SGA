@@ -61,81 +61,26 @@
 			<div class="form-group align-center">
 				<button type="submit" class="btn btn-primary" aria-describedby="aviso">Ajustar plano de estudos</button>
 			</div>
-				<small id="aviso" class="form-text text-muted">Preencha todos os campos do formulário – esta reponsabilidade é do requerente, os documentos incompletos não serão processados.</small>
-
+			<small id="aviso" class="form-text text-muted">Preencha todos os campos do formulário – esta reponsabilidade é do requerente, os documentos incompletos não serão processados.</small>
 		</main>
-
 	</form>
 	@include('ajuste.errors')
 </div>
 
-
-
+@section('custom_scrips')
 <script type="text/javascript" src="{{ asset('/js/my_functions.js') }}"></script>
+
+@endsection
 
 <script type="text/javascript">
 $(document).ready(function() {
-
-	//Queries triggers when selecting periodo from dropdown
-/*	$('.periodo').change(function() {
-		getDisciplinas();
-	});*/
 
 	$('.periodo').on('change', function() {
 		buscarDisciplinas('/ajuste', this);
 	});
 
 
-	/*$('form').submit(function()
-	{
-		removeDisabledAttributes();
-	});*/
-
 	$('form').submit(removeDisabledAttributes);
-
-
-/*	function buscarDisciplinas()
-	{
-		var row = $(this).parent().parent();
-
-		var rowId = row.attr('id');
-
-		//console.log("rowId selecionado: " + rowId);
-
-	    $.ajaxSetup({
-	        headers: {
-	            'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
-	        }
-	    });
-
-		//Saber qual periodo foi selecionado
-		//var periodo = $(this).find(':selected').text();
-		var periodo = row.find('.periodo :selected').text();
-		//console.log('Periodo: ' + periodo);
-
-		//Limpar conteudo da coluna de disciplinas
-		var colDisciplinas = row.find('.disciplina');
-		colDisciplinas.html('');
-
-		//Coletar as disciplinas do periodo selecionado
-		$.ajax({
-			url: "{{ url('/subjects') }}",
-			type: 'POST',
-			data: {
-				'periodo' : periodo
-			},
-			dataType: 'JSON',
-			success: function(response) {
-				for(var i = 0; i < response.length; ++i) {
-					colDisciplinas.
-					append('<option>' + response[i]['name'] + '</option>');
-				}
-			},
-			error: function(data) {
-				console.log("Error: " + JSON.stringify(data));
-			}
-		});
-	}*/
 
 	function removeDisabledAttributes() 
 	{

@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\User;
 
+
 class LoginController extends Controller
 {
     /*
@@ -65,7 +66,6 @@ class LoginController extends Controller
 
     public function showLoginForm()
     {
- 
         return view('auth.login');
     }
 }

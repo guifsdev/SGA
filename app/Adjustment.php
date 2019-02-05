@@ -52,6 +52,33 @@ class Adjustment extends Model
 		return response()->json(['success' => 'Dados atualizados com sucesso']);
 	}
 
+
+
+	public static function store(Request $request)
+	{
+        $autenticacao = md5(uniqid(rand(), true));
+        $dataHora = Carbon::now();
+
+        for($i = 1; $i <= count(request('periodo-ajuste')); ++$i)
+        {
+            Adjustment::create([
+                'nome' => $request['nome'],
+                'cpf' => $request['cpf'],
+                'matricula' => $request['matricula'],
+                'email' => $request['email'],
+                'tel' => $request['tel'],
+                'disciplina' => $request['disciplina-ajuste'][$i],
+                'periodo' => $request['periodo-ajuste'][$i],
+                'requerimento' => $request['acao-ajuste'][$i],
+                'resultado' => 'Pendente',
+                'autenticacao' => $autenticacao
+            ]);
+        }
+
+        $result = ['autenticacao' => $autenticacao, 'dataHora' => $dataHora];
+        return $result;
+	}
+
 	public static function isOpen()
 	{
 		$datas = (new ConfigAdjustment())->dates();
@@ -63,6 +90,13 @@ class Adjustment extends Model
 		if(($now >= $abertura) && ($now <= $fechamento)) return true;
 		else return false;
 	}
+
+	public static function recent()
+	{
+		$today = Carbon::today();
+		return Adjustment::where('created_at', '>', $today);
+	}
+
 }
 
 

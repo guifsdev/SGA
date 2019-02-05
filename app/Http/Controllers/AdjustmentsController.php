@@ -48,7 +48,39 @@ class AdjustmentsController extends Controller
 
 
 
-    public function store() {
+    public function store(Request $request) {
+        //
+        $result = Adjustment::store($request);
+
+        //dd($adjust);
+
+        return redirect('/ajuste/sucesso')
+            ->with([
+                'success' => 'Requerimento enviado com sucesso para análise pelo SGA. 
+                              Recomenda-se que o aluno imprima/salve este 
+                              comprovante e acompanhe o resultado pelo idUFF.',
+                'userInput' => 
+                [
+                    'nome' => $request['nome'],
+                    'cpf' => $request['cpf'],
+                    'matricula' => $request['matricula'],
+                    'email' => $request['email'],
+                    'tel' => $request['tel'],
+                    'disciplina' => $request['disciplina-ajuste'],
+                    'periodo' => $request['periodo-ajuste'],
+                    'requerimento' => $request['acao-ajuste'],
+                    'resultado' => 'Pendente',
+                    'autenticacao' => $result['autenticacao'],
+                    'datahora' => $result['dataHora']
+                ]
+            ]);
+
+
+
+        //
+        //return redirect('/ajuste/sucesso');
+
+        /*
         $autenticacao = md5(uniqid(rand(), true));
         $dataHora = Carbon::now();
 
@@ -69,10 +101,10 @@ class AdjustmentsController extends Controller
             ]);
         }
 
-        //return redirect('/login')->with('success', 'Requerimento realizado com sucesso.');
         return redirect('/ajuste/sucesso')->with([
             'success' => 'Requerimento enviado com sucesso para análise pelo SGA. 
-                          Recomenda-se que o aluno imprima/salve este comprovante.',
+                          Recomenda-se que o aluno imprima/salve este comprovante.
+                          Acompanhe o resultado pelo idUFF',
             'userInput' => [
                 'nome' => request('nome'),
                 'cpf' => request('cpf'),
@@ -85,10 +117,8 @@ class AdjustmentsController extends Controller
                 'resultado' => 'Pendente',
                 'autenticacao' => $autenticacao,
                 'datahora' => $dataHora
-
-
             ]
-        ]);
+        ]);*/
     }
 
     public function success()
