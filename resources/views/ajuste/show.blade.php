@@ -67,10 +67,6 @@
 	@include('ajuste.errors')
 </div>
 
-@section('custom_scrips')
-<script type="text/javascript" src="{{ asset('/js/my_functions.js') }}"></script>
-
-@endsection
 
 <script type="text/javascript">
 $(document).ready(function() {
@@ -94,5 +90,9 @@ $(document).ready(function() {
 });
 </script>
 
+@endsection
+
+@section('custom_scripts')
+<script type="text/javascript" src="{{ asset('js/my_functions.js') }}"></script>
 @endsection
 

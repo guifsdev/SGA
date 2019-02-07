@@ -28,4 +28,5 @@ class AdminController extends Controller
 
     	return view('admin.panel', compact('count', 'status', 'datas', 'pendentes', 'deferidos', 'indeferidos', 'novos'));
     }
+    
 }

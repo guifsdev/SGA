@@ -47,7 +47,7 @@ class LoginController extends Controller
         
         if(Auth::attempt($credentials))
         {
-            return view('admin.panel');
+            return redirect('/admin');
         }
         //else redirect('admin/login');
         else return redirect()->route('login')->withErrors(['Matricula ou senha incorretos.']);
