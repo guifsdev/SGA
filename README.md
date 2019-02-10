@@ -1,7 +1,5 @@
-Aplicação web voltada a automatiza o processo de ajuste e emissão de certificados de 
-atividades complementares para o curso de Administração da UFF. 
-
-O Framework de desenvolvimento utilizado é o [Laravel](https://laravel.com). 
+## O Projeto
+Trata-se de uma aplicação em [Laravel](https://laravel.com)/PHP cujo objetivo é facilitar o processo de ajuste e emissão de certificados de participação em eventos de atividades complementares do curso de Administração da Univeridade Federal Fluminense.
 
 ### Requisitos
 Para testes em ambientes locais são necessários os seguintes requisitos:
