@@ -52,8 +52,11 @@
 		</div>
 		<div class="form-group">
 			<label for="template">Template:</label>
-			<input type="text" class="form-control" id="template" name="template" placeholder="Template do evento"
-				value="{{$event['template']}}">
+			<select class="form-control" id="template" name="template">
+			@foreach($templates as $template)
+				<option value="{{$template}}" {{$event['template'] == $template ? 'selected' : ''}}>{{$template}}</option>
+			@endforeach
+			</select>
 		</div>
 
 		<!-- Método de inserção de participantes -->

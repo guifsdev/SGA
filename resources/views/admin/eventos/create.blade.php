@@ -45,7 +45,12 @@
 		</div>
 		<div class="form-group">
 			<label for="template">Template:</label>
-			<input type="text" class="form-control" id="template" name="template" placeholder="Template do evento">
+			<select class="form-control" id="template" name="template">
+				@foreach($templates as $template)
+					<option value="{{$template}}">{{$template}}</option>
+				@endforeach
+			</select>
+
 		</div>
 
 

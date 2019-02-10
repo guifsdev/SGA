@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Event;
 use Illuminate\Http\UploadedFile;
-
+use Illuminate\Support\Facades\Storage;
+use App\Event;
 
 class EventsController extends Controller
 {
@@ -31,7 +31,9 @@ class EventsController extends Controller
     public function edit(Event $event)
     {
     	Event::findOrFail($event->id);
-    	return view('admin.eventos.edit', compact('event'));
+    	$templates = $this->getTemplates();
+
+    	return view('admin.eventos.edit', compact('event', 'templates'));
     }
 
     public function update(Event $event)
@@ -44,10 +46,7 @@ class EventsController extends Controller
 		return redirect('admin/eventos')->with(['success' => 'Evento atualizado com sucesso.']);
     }
 
-    public function create()
-    {
-    	return view('admin.eventos.create');
-    }
+
 
     public function store(Request $request)
     {
@@ -138,6 +137,29 @@ class EventsController extends Controller
     		'cpf' => request('cpf'),
     		'matricula' => request('matricula')
     	];
-    	return view('certificados.show', compact('event', 'template','participant'));
+    	return \PDF::loadView('certificados.show', compact('event', 'template','participant'))
+    		->stream('certificado-sga.pdf');
+    }
+
+    public function create()
+    {
+    	$templates = $this->getTemplates();
+    	//dd($templates);
+
+    	return view('admin.eventos.create', compact('templates'));
+    }
+    public function getTemplates()
+    {
+		$files = Storage::disk('views')->files('certificados/templates');
+		//if(count($files) == 0)
+
+		foreach ($files as $key => $file) {
+			$fullName = explode('/', $file);
+			$name = explode('.', $fullName[count($fullName)-1])[0];
+			$files[$key] = $name;
+		}
+
+		return $files;
+
     }
 }

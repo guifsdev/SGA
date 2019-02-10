@@ -27,7 +27,8 @@
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
           <a class="dropdown-item" href="/admin/eventos">Ver</a>
-          <a class="dropdown-item" href="/admin/eventos/configurar">Configurar</a>
+          <a class="dropdown-item" href="/admin/eventos/criar">Criar</a>
+          <a class="dropdown-item disabled" href="/admin/eventos/criar">Inserir template</a>
         </div>
       </li>
 

@@ -1,6 +1,6 @@
 @extends('layouts.certificado')
 
-@section('title', '')
+@section('title', 'SGA - Emitir Certificado')
 
 @section('content')
 @include($template)
@@ -11,6 +11,7 @@
 	<p>Descrição: {{$event['descricao']}}</p>
 	<p>Particiante: {{$participant['nome']}}</p>
 </div>
+
 
 
 @endsection
