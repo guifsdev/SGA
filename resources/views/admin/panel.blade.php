@@ -51,13 +51,13 @@
 	<table class="table">
 	  <thead>
 	    <tr class="border_bottom">
-	      <th scope="col" class="blue" style="width: 250px">Certificados</th>
+	      <th scope="col" class="blue" style="width: 250px">Eventos</th>
 	      <th scope="col">
 	  		<button class="btn btn-info"
-	  			onclick="window.location='{{ url("/admin/certificados") }}'"><i class="fa fa-list"> Ver </i>
+	  			onclick="window.location='{{ url("/admin/eventos") }}'"><i class="fa fa-list"> Ver </i>
 	  		</button>
 	  		<button class="btn btn-info"
-	  			onclick="window.location='{{ url("/admin/certificados/configurar") }}'"><i class="fa fa-cog"> Configurar </i>
+	  			onclick="window.location='{{ url("/admin/eventos/configurar") }}'"><i class="fa fa-cog"> Configurar </i>
 	  		</button>
 	      </th>
 	    </tr>

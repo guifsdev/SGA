@@ -11,72 +11,83 @@
 |
 */
 Route::get('/home', 'HomeController@index')->name('home');
-
+//Ajax para o dropdown de busca de disciplinas por período
 Route::any('/subjects', 'SubjectsController@show');
-
-
-//Login aluno
+//Rota de distribuição de intent
 Route::get('/login', 'IntentsController@show');
 
 //Rotas de ajuste
-Route::post('/ajuste/login', 'IntentsController@loginAdjustments');
+Route::post('/ajuste', 'IntentsController@loginAdjustments');
 Route::get('/ajuste', 'AdjustmentsController@show');
 Route::post('/ajuste/confirmar', 'AdjustmentsController@confirm');
 Route::post('/ajuste/modificar', 'AdjustmentsController@modify');
-Route::post('/ajuste', 'AdjustmentsController@store');
+Route::post('/ajuste/salvar', 'AdjustmentsController@store');
 Route::get('/ajuste/sucesso', 'AdjustmentsController@success');
 
-//Rotas de certificados
-Route::post('/certificados/login', 'IntentsController@loginCertificates');
-Route::get('/certificados', 'CertificatesController@show');
 
-//Rotas de gerenciamento
+//Rotas de certificados
+Route::post('/certificados', 'IntentsController@loginCertificates');
+Route::get('/certificados', 'CertificatesController@index');
+Route::post('/certificados/evento/{event}', 'EventsController@certificate')->name('certificate');
+
+
+
+
+//Rotas de login no sistema de gerenciamento
 Route::get('/admin', 'AdminController@index');
 Route::get('/admin/login', 'Auth\LoginController@showLoginForm')->name('login');
 Route::post('/admin/login', 'Auth\LoginController@login');
 Route::get('/admin/logout', 'Auth\LoginController@logout')->name('logout');
+//Rotas de criação de gestores/usuários
 Route::get('/admin/usuarios', 'UsersController@show');
 Route::get('/admin/usuarios/criar', 'UsersController@create');
 Route::post('/admin/usuarios/criar', 'UsersController@store');
-
+//Rotas de gerenciamento do ajuste
 Route::get('/admin/ajuste', 'AdminAdjustmentsController@show');
-//Rotas de acoes
 Route::post('/admin/ajuste/deferir', 'AdminAdjustmentsController@defer');
 Route::post('/admin/ajuste/indeferir', 'AdminAdjustmentsController@deny');
-//Filtragem 
 Route::post('/admin/ajuste/filtrar', 'AdminAdjustmentsController@filter');
-
-
-
-
-
-//Configurações
+//Rotas de configurações do ajuste
 Route::get('/admin/ajuste/config', 'ConfigAdjustmentsController@show');
 Route::get('/admin/ajuste/config/editar', 'ConfigAdjustmentsController@edit');
 Route::post('/admin/ajuste/config/editar', 'ConfigAdjustmentsController@save');
+//Rotas de configurações dos certificados
+Route::get('/admin/eventos', 'EventsController@index');
+Route::get('/admin/eventos/criar', 'EventsController@create');
+Route::post('/admin/eventos/criar', 'EventsController@store');
+Route::get('/admin/eventos/{event}', 'EventsController@show');
+Route::get('/admin/eventos/{event}/editar', 'EventsController@edit');
+Route::patch('/admin/eventos/{event}', 'EventsController@update');
 
 
 
 
-
-
-
-
-
-
-Route::get('/admin/certificados', 'AdminCertificatesController@show');
-Route::get('/admin/certificados/configurar', 'AdminCertificatesController@configure');
-
-
-
-
-
-
-
-
+Route::get('/admin/eventos/configurar', 'AdminCertificatesController@configure');
 
 
 //Auth::routes();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -45,7 +45,7 @@ function buscarDisciplinas(route = '/ajuste', selected = null)
 			}
 		},
 		error: function(data) {
-			console.log("Error: " + JSON.stringify(data));
+			//console.log("Error: " + JSON.stringify(data));
 		}
 	});
 }
@@ -58,7 +58,7 @@ function sendFilterParams(form)
 
 		//Não está marcada ou está marcada 
 		if(! input.is(':checked') || (input.is(':checked') && (inputSiblings.val() === 'Todos'))) {
-			console.log(inputSiblings.val())
+			//console.log(inputSiblings.val())
 			inputSiblings.removeAttr('name');
 		}
 		//TODO Remover nome de filtros com select em 'Todos'
@@ -66,7 +66,7 @@ function sendFilterParams(form)
 }
 function bulkSelect()
 {
-	console.log('bulkSelect');
+	//console.log('bulkSelect');
 	liberarDeferir();
 	var checkLinhas = $('.checkable').filter(function(){
 		var row = $(this).closest('tr');
@@ -99,7 +99,6 @@ function processarAjuste(acao)
 {	
 	var route = '/admin/ajuste/' + $(acao).attr('id');
 	//Se o botão de ação clicado for deferir, 
-	console.log(route);
 
 
 	var form = $('form');
@@ -127,11 +126,89 @@ function processarAjuste(acao)
 				atualizarTabela();
 			},
 			error: function(data) {
-				console.log("Error: " + JSON.stringify(data));
+				//console.log("Error: " + JSON.stringify(data));
 			}
 	});
 }
 function atualizarTabela()
 { 
     $("#requerimentos table").load(window.location.href + '#requerimentos table');
+}
+
+function chooseRoute()
+{
+	var intent = $(this).attr('id');
+	var form = $('form');
+
+	if(intent == 'ajuste') {
+		form.attr('action', '/ajuste');
+	}
+	else if(intent == 'certificados') {
+		form.attr('action', '/certificados');
+	}
+}
+//Table add row Dynamically
+//https://bootsnipp.com/snippets/402bQ
+function calculateRow(row) {
+    var price = +row.find('input[name^="price"]').val();
+
+}
+
+function calculateGrandTotal() {
+    var grandTotal = 0;
+    $("table.order-list").find('input[name^="price"]').each(function () {
+        grandTotal += +$(this).val();
+    });
+    $("#grandtotal").text(grandTotal.toFixed(2));
+}
+//
+
+function changeInsertionMethod()
+{
+	var method = $(this).find(':selected').val();
+
+	var manual = $('#manual');
+	var csv = $('#csv');
+
+	if(method == 'csv') {
+		manual.addClass('collapse');
+		csv.removeClass('collapse');
+	}
+	else if(method == 'manual') {
+		manual.removeClass('collapse');
+		csv.addClass('collapse');
+	}
+	return method;
+}
+
+function getInsertionMethod()
+{
+	var method = $('#metodo-inserir').find(':selected').val();
+	return method;
+}
+
+function readFile(input)
+{
+    var fileName = $(input).val();
+
+    fileName = fileName.split('\\');
+    $(input).next('.custom-file-label').html(fileName[fileName.length -1]);
+
+    var file = input.files[0];
+    var reader = new FileReader();
+
+    reader.onload = (function(file) {
+    	return function(e) {
+    		var contents = e.target.result;
+    		csvFileContents = contents;
+    	};
+
+    })(file);
+    reader.readAsText(file);
+}
+
+function viewCertificate(el)
+{
+	$('form').attr('action', $(el).attr('href'));
+	$('form').submit();
 }

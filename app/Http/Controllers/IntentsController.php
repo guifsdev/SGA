@@ -10,7 +10,7 @@ class IntentsController extends Controller
 {
     public function show()
     {
-        return view('ajuste.login');
+        return view('login');
     }
 
     public function loginAdjustments()

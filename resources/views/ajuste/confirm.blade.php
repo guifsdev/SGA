@@ -12,7 +12,7 @@
 
 
 	<h3>Ajuste de disciplinas do aluno</h3>
-	<form method="POST" action="/ajuste">
+	<form method="POST" action="/ajuste/salvar">
 	{{csrf_field()}}
 		<div class="form-group">
 			<label for="nome">Nome completo:</label>
