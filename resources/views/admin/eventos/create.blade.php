@@ -115,7 +115,7 @@
 				  </div>
 				  <div class="custom-file">
 				    <input type="file" accept=".csv" id="csv-file" class="custom-file-input">
-				    <label class="custom-file-label" for="csv-file">Escolher arquivo</label>
+				    <label class="custom-file-label" for="csv-file">Selecione o arquivo</label>
 				    <input type="hidden" id="file-contents" name="file-contents">
 				  </div>
 				</div>

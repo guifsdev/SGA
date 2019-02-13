@@ -191,6 +191,9 @@ function readFile(input)
 {
     var fileName = $(input).val();
 
+    
+
+
     fileName = fileName.split('\\');
     $(input).next('.custom-file-label').html(fileName[fileName.length -1]);
 
@@ -201,10 +204,23 @@ function readFile(input)
     	return function(e) {
     		var contents = e.target.result;
     		csvFileContents = contents;
+
+    		test = 1;
+			//formData = new FormData();
+    		//console.log(contents);
+    		formData.append('file', contents);
+
+    		//console.log(formData['file']);
+
     	};
 
     })(file);
     reader.readAsText(file);
+
+    
+
+
+
 }
 
 function viewCertificate(el)
@@ -212,3 +228,4 @@ function viewCertificate(el)
 	$('form').attr('action', $(el).attr('href'));
 	$('form').submit();
 }
+

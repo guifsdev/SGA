@@ -45,6 +45,13 @@
 
 			</tbody>
 		</table>
+
+		@if(session()->has('no_template'))
+		<div class="alert alert-warning" role="alert">
+			{{session('no_template')}}
+		</div>
+		@endif
+
 	</form>
 </div>
 

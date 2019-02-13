@@ -21,5 +21,5 @@ Para testes em ambientes locais são necessários os seguintes requisitos:
 		* `php artisan migrate`
 		* `php artisan serve`
 
-### Popular a tabela disciplinas
-É necessário popular a tabela com as disciplinas do curso.
+### Popular a tabelas
+É necessário popular as tabelas `subjects` e `config_adjustments`.

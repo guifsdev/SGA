@@ -4,8 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use App\Event;
+use App\Template;
 
 class EventsController extends Controller
 {
@@ -31,7 +32,8 @@ class EventsController extends Controller
     public function edit(Event $event)
     {
     	Event::findOrFail($event->id);
-    	$templates = $this->getTemplates();
+        //$templates = $this->getTemplateList();
+    	$templates = Template::listNames();
 
     	return view('admin.eventos.edit', compact('event', 'templates'));
     }
@@ -130,36 +132,45 @@ class EventsController extends Controller
 
     public function certificate(Event $event)
     {
-    	$template = 'certificados.templates.' . $event['template'];
+        //$template = $this->getTemplateFile($event['template']);
+        //$template = Template::getFile($event['template']);
+        $template = new Template();
+        $template = $template->getFile($event['template']);
+        
+
+        if(!$template) {
+            return back()->with([
+                'no_template' => 'Nenhum template disponível para este evento. Perturbe o seu coordenador!',
+                'cpf' => request('cpf'),
+                'matricula' => request('matricula'),
+            ]);
+        }
+
     	$participant = [
     		'nome' => request('nome'),
     		'email' =>  request('email'),
     		'cpf' => request('cpf'),
     		'matricula' => request('matricula')
     	];
-    	return \PDF::loadView('certificados.show', compact('event', 'template','participant'))
-    		->stream('certificado-sga.pdf');
+        //return view('certificados.show', compact('event', 'participant', 'template'));
+    	return \PDF::loadView('certificados.show', compact('event','participant', 'template'))
+    		->setPaper('a4', 'landscape')
+            ->stream('certificado-sga.pdf');
     }
 
     public function create()
     {
-    	$templates = $this->getTemplates();
+        //$templates = $this->getTemplateList();
+    	$templates = Template::listNames();
+        
     	//dd($templates);
 
     	return view('admin.eventos.create', compact('templates'));
     }
-    public function getTemplates()
-    {
-		$files = Storage::disk('views')->files('certificados/templates');
-		//if(count($files) == 0)
 
-		foreach ($files as $key => $file) {
-			$fullName = explode('/', $file);
-			$name = explode('.', $fullName[count($fullName)-1])[0];
-			$files[$key] = $name;
-		}
 
-		return $files;
 
-    }
+
+
+
 }

@@ -53,6 +53,10 @@ Route::get('/admin/ajuste/config/editar', 'ConfigAdjustmentsController@edit');
 Route::post('/admin/ajuste/config/editar', 'ConfigAdjustmentsController@save');
 //Rotas de configurações dos certificados
 Route::get('/admin/eventos', 'EventsController@index');
+Route::get('/admin/eventos/templates', 'TemplatesController@index');
+Route::post('/admin/eventos/templates', 'TemplatesController@store');
+
+
 Route::get('/admin/eventos/criar', 'EventsController@create');
 Route::post('/admin/eventos/criar', 'EventsController@store');
 Route::get('/admin/eventos/{event}', 'EventsController@show');

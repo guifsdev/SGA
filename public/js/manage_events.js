@@ -3,6 +3,8 @@ $(document).ready(function() {
     counter = 1;
 
 
+
+
 	$('#csv-file').on('change', function() {
 		readFile(this);
 	});

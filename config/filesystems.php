@@ -64,8 +64,12 @@ return [
             'url' => env('AWS_URL'),
         ],
         'views' => [
-                'driver' => 'local',
-                'root' => base_path('resources/views'),
+            'driver' => 'local',
+            'root' => base_path('resources/views'),
+        ],
+        'certificados' => [
+            'driver' => 'local',
+            'root' => base_path('storage/app/public/certificados'),
         ],
 
 
