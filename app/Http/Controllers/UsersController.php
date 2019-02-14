@@ -18,12 +18,12 @@ class UsersController extends Controller
     	$users = User::all();
 
     	//dd($users);
-    	return view('usuarios.show', compact('users'));
+    	return view('admin.usuarios.show', compact('users'));
     }
 
     public function create()
     {
-    	return view('usuarios.create');
+    	return view('admin.usuarios.create');
     }
 
     public function store()

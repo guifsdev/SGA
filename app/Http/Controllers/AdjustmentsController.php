@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Adjustment;
+use App\Subject;
 use Carbon\Carbon;
 
 
@@ -14,7 +15,10 @@ class AdjustmentsController extends Controller
 	{
 
     }
-
+    public function getFromPeriod() {
+        $subjects = (new Subject())->fromPeriod(request('periodo'));
+        return response()->json($subjects);
+    }
     //Mostrar o formulário de ajuste
     public function show()
     {
@@ -74,51 +78,6 @@ class AdjustmentsController extends Controller
                     'datahora' => $result['dataHora']
                 ]
             ]);
-
-
-
-        //
-        //return redirect('/ajuste/sucesso');
-
-        /*
-        $autenticacao = md5(uniqid(rand(), true));
-        $dataHora = Carbon::now();
-
-        //dd($autenticacao);
-        for($i = 1; $i <= count(request('periodo-ajuste')); ++$i)
-        {
-            Adjustment::create([
-                'nome' => request('nome'),
-                'cpf' => request('cpf'),
-                'matricula' => request('matricula'),
-                'email' => request('email'),
-                'tel' => request('tel'),
-                'disciplina' => request('disciplina-ajuste')[$i],
-                'periodo' => request('periodo-ajuste')[$i],
-                'requerimento' => request('acao-ajuste')[$i],
-                'resultado' => 'Pendente',
-                'autenticacao' => $autenticacao
-            ]);
-        }
-
-        return redirect('/ajuste/sucesso')->with([
-            'success' => 'Requerimento enviado com sucesso para análise pelo SGA. 
-                          Recomenda-se que o aluno imprima/salve este comprovante.
-                          Acompanhe o resultado pelo idUFF',
-            'userInput' => [
-                'nome' => request('nome'),
-                'cpf' => request('cpf'),
-                'matricula' => request('matricula'),
-                'email' => request('email'),
-                'tel' => request('tel'),
-                'disciplina' => request('disciplina-ajuste'),
-                'periodo' => request('periodo-ajuste'),
-                'requerimento' => request('acao-ajuste'),
-                'resultado' => 'Pendente',
-                'autenticacao' => $autenticacao,
-                'datahora' => $dataHora
-            ]
-        ]);*/
     }
 
     public function success()

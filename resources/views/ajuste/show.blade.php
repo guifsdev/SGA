@@ -15,11 +15,6 @@
 	<form method="POST" action="/ajuste/confirmar">
 	{{csrf_field()}}
 		<div class="form-group">
-			<label for="nome">Nome completo:</label>
-			<input type="text" class="form-control" id="nome" placeholder="Seu nome" name="nome" value="{{session()->has('userInput') ? $userInput['nome'] : ''}}" >
-		</div>
-
-		<div class="form-group">
 			<label for="cpf">CPF:</label>
 			<input type="text" class="form-control" id="CPF" placeholder="CPF" name="cpf" value="{{session()->has('userInput') ? $userInput['cpf'] : session('cpf')}}" disabled="disabled">
 		</div>
@@ -30,6 +25,11 @@
 				name="matricula" disabled="disabled"
 				value="{{session()->has('userInput') ? $userInput['matricula'] : session('matricula')}}">
 		</div>
+		<div class="form-group">
+			<label for="nome">Nome completo:</label>
+			<input type="text" class="form-control" id="nome" placeholder="Seu nome" name="nome" value="{{session()->has('userInput') ? $userInput['nome'] : ''}}" >
+		</div>
+
 
 		<div class="form-group">
 			<label for="email">Email:</label>

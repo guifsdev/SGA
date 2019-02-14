@@ -41,11 +41,11 @@
 @endsection
 
 <script type="text/javascript">
-    $(document).ready(function() {
-        /*$("#cpf").mask("999.999.999-99");*/
-        $('button[type=submit]').on('click', chooseRoute);
+$(document).ready(function() {
+    /*$("#cpf").mask("999.999.999-99");*/
+    $('button[type=submit]').on('click', chooseRoute);
 
-    });
+});
 </script>
 
 @endsection

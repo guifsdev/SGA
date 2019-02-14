@@ -5,14 +5,14 @@
 @section('nav_title', 'Configurações do ajuste')
 
 @include('admin.menu')
-<div class="container" style="width: 380px">
+<div class="container" style="width: 380px; display: inline-block;">
 <form method="GET" action="/admin/ajuste/config/editar">
   {{csrf_field()}}
   <table class="table">
     <thead>
       <tr>
-        <th scope="col">Nome</th>
-        <th scope="col">Valor</th>
+        <th scope="col" colspan="2" style="text-align: center;">Datas</th>
+        <!-- <th scope="col"></th> -->
       </tr>
     </thead>
     <tbody>
@@ -32,5 +32,4 @@
   <button type="submit" class="btn btn-primary">Editar</button>
 </form>
 </div>
-
 @endsection

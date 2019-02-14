@@ -12,7 +12,17 @@
 */
 Route::get('/home', 'HomeController@index')->name('home');
 //Ajax para o dropdown de busca de disciplinas por período
-Route::any('/subjects', 'SubjectsController@show');
+Route::post('/disciplinas', 'AdjustmentsController@getFromPeriod');
+
+Route::get('/admin/disciplinas', 'SubjectsController@index');
+Route::get('/admin/disciplinas/{subject}/{division}', 'SubjectsController@show');
+Route::get('/admin/disciplinas/{subject}/{division}/editar', 'SubjectsController@edit');
+Route::post('/admin/disciplinas/{subject}/{division}/salvar', 'SubjectsController@store');
+
+
+
+
+
 //Rota de distribuição de intent
 Route::get('/login', 'IntentsController@show');
 

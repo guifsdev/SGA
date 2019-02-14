@@ -2,6 +2,7 @@
 
 
 @section('custom_styles')
+<link rel="stylesheet" type="text/css" href="{{asset('css/custom.css')}}">
 <link rel="stylesheet" href="{{asset('css/custom_checkboxes.css')}}">
 <link rel="stylesheet" href="{{asset('css/custom_datepicker.css')}}">
 @endsection

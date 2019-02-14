@@ -30,7 +30,7 @@ function buscarDisciplinas(route = '/ajuste', selected = null)
 
 	//Coletar as disciplinas do periodo selecionado
 	$.ajax({
-		url: '/subjects',
+		url: '/disciplinas',
 		type: 'POST',
 		data: {
 			'periodo' : periodo
@@ -40,8 +40,7 @@ function buscarDisciplinas(route = '/ajuste', selected = null)
 			if(route === '/admin/ajuste') colDisciplinas.append('<option value="Todos">Todas</option>');
 
 			for(var i = 0; i < response.length; ++i) {
-				colDisciplinas.
-				append('<option>' + response[i]['name'] + '</option>');
+				colDisciplinas.append('<option>' + response[i] + '</option>');
 			}
 		},
 		error: function(data) {

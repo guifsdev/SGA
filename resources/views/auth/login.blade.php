@@ -16,13 +16,14 @@
     <h1 class="h3 mb-3 font-weight-normal">Gerenciamento de Ajustes e Certificados</h1>
 
     <div class="form-group">
-        <label for="matricula">Matricula do servidor:</label>
-        <input type="text" class="form-control" id="matricula" placeholder="Sua matrícula" name="matricula" required>
+        <label for="matricula">Matricula:</label>
+        <input type="text" class="form-control" id="matricula" autocomplete="on" placeholder="Sua matrícula" name="matricula" required>
     </div>
 
     <div class="form-group">
         <label for="senha">Senha:</label>
-        <input type="password" class="form-control" id="senha" placeholder="Senha" name="password" >
+        <input type="password" class="form-control" id="senha" placeholder="Senha" name="password" 
+            autocomplete="current-password">
     </div>
     <div class="form-group align-center">
         <button type="submit" class="btn btn-primary" aria-describedby="aviso">Entrar</button>

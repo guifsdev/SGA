@@ -18,12 +18,12 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
     
 
-    <!-- Custom styles -->
-    <link rel="stylesheet" type="text/css" href="{{asset('css/custom.css')}}">
     <!-- Font Awesome CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">    
-    
+    <!-- Custom styles -->
     @yield('custom_styles')
+    
+    
 
     
 
