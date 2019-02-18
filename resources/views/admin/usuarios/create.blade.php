@@ -18,15 +18,15 @@
 	    <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com">
 	  </div>
 	  <div class="form-group">
-	    <label for="cargo">Cargo</label>
-		<select class="custom-select custom-select-sm" id="cargo" name="role">
-		  <option value="servidor">Servidor</option>
-		  <option value="admin">Administrador</option>
-		</select>
-	  </div>
-	  <div class="form-group">
 	    <label for="matricula">Matricula</label>
 	    <input type="text" class="form-control" id="matricula" name="matricula">
+	  </div>
+	  <div class="form-group">
+	    <label for="cargo">Cargo</label>
+		<select class="custom-select custom-select-sm" id="is_admin" name="role">
+		  <option value="0">Servidor</option>
+		  <option value="1">Administrador</option>
+		</select>
 	  </div>
 	  <div class="form-group">
 	    <label for="password">Senha</label>

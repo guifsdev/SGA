@@ -26,13 +26,15 @@ class UsersController extends Controller
     	return view('admin.usuarios.create');
     }
 
-    public function store()
+    public function store(Request $request)
     {
-        $attributes = request()
+        $request['is_admin'] = (bool) $request['is_admin'];
+
+        $attributes = $request
             ->validate([
                 'name' => ['required', 'min:3'],
                 'email' => 'required',
-                'role' => 'required',
+                'is_admin' => ['required', 'boolean'],
                 'matricula' => 'required',
                 'password' => 'required'
             ]);
