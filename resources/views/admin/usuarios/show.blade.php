@@ -4,7 +4,7 @@
 
 @section('nav_title', 'Usuários')
 
-@include('admin.menu')
+@include('partials.menu')
 
 <div class="container" style="width: 500px">
 	<table class="table">

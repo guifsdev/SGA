@@ -4,7 +4,7 @@
 
 @section('nav_title', 'Evento')
 
-@include('admin.menu')
+@include('partials.menu')
 
 @section('content')
 

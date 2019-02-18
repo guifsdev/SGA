@@ -4,7 +4,10 @@
 
 @section('nav_title', 'Painel de gerenciamento de Ajustes e Certificados')
 
-@include('admin.menu')
+
+@section('content')
+
+@include('partials.menu')
 <div class="container" style="width: 500px">
 	<table class="table">
 	  <thead>
@@ -78,5 +81,5 @@
 	  </tbody>
 	</table>
 </div>
-@section('content')
+
 @endsection

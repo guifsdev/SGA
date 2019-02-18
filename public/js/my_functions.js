@@ -63,6 +63,47 @@ function sendFilterParams(form)
 		//TODO Remover nome de filtros com select em 'Todos'
 	});
 }
+
+function ajusteAction(form, action)
+{
+	removeDisabledAttributes();
+	var formData = $(form).serialize();
+	$.ajaxSetup({
+	    headers: {
+	        'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+	    }
+	});
+
+	$.ajax({
+		url: action,
+		type: 'POST',
+		data: formData,
+		dataType: 'JSON',
+		success: function(response) {
+			//console.log(response);
+			$('#ajuste').html(response.html);
+		},
+		error: function(e) {
+			var response = JSON.parse(e.responseText);
+			var errors = response['errors'];
+
+			form.append('<div class="alert alert-danger form-group" role="alert" id="errors"><ul></ul></div>');
+			$.each(errors, function(key, error) {
+				$('#errors ul').append('<li>' + error + '</li>');
+			});
+		}
+	});
+}
+function removeDisabledAttributes() 
+{
+	var cpf = $('#cpf');
+	var matricula = $('#matricula');
+
+	cpf.prop('disabled', false);
+	matricula.prop('disabled', false);
+}
+
+
 function bulkSelect()
 {
 	//console.log('bulkSelect');
@@ -129,10 +170,7 @@ function processarAjuste(acao)
 			}
 	});
 }
-function atualizarTabela()
-{ 
-    $("#requerimentos table").load(window.location.href + '#requerimentos table');
-}
+
 
 function chooseRoute()
 {
@@ -148,7 +186,8 @@ function chooseRoute()
 }
 //Table add row Dynamically
 //https://bootsnipp.com/snippets/402bQ
-function calculateRow(row) {
+function calculateRow(row) 
+{
     var price = +row.find('input[name^="price"]').val();
 
 }
@@ -215,11 +254,6 @@ function readFile(input)
 
     })(file);
     reader.readAsText(file);
-
-    
-
-
-
 }
 
 function viewCertificate(el)
@@ -228,3 +262,22 @@ function viewCertificate(el)
 	$('form').submit();
 }
 
+
+function changeFormAction(btn)
+{
+    if(btn.attr('id') === 'modificar')
+    {
+        $('form').attr('action', '/ajuste/modificar');
+    }
+
+}
+function reenableInputs() {
+    var disabledInputs = $('input:disabled');
+    disabledInputs.prop('disabled', false);
+}
+
+
+function atualizarTabela()
+{ 
+    $("#requerimentos table").load(window.location.href + '#requerimentos table');
+}

@@ -7,7 +7,7 @@
 
 @section('content')
 
-@include('admin.menu')
+@include('partials.menu')
 
 
 <div class="container">
@@ -30,7 +30,7 @@
 	    </tr>
 	    <tr>
 	      <th scope="row">Turma</th>
-	      <td>{{$division->name}}</td>
+	      <td>{{$division->division_name}}</td>
 	    </tr>    
 	    <tr>
 	      <th scope="row">Ofertada</th>

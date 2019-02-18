@@ -5,7 +5,8 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Support\Facades\Auth;
 
-class Admin
+
+class RedirectIfStudentNotAuthenticated
 {
     /**
      * Handle an incoming request.
@@ -14,14 +15,13 @@ class Admin
      * @param  \Closure  $next
      * @return mixed
      */
-    public function handle($request, Closure $next)
+
+    //checks for authenticated students
+    public function handle($request, Closure $next, $guard = 'student')
     {
-        if(Auth::check()) {
-            if(!Auth::user()->is_admin) {
-                abort(403);
-            }
+        if(!Auth::guard($guard)->check()) {
+            return redirect('/estudante/login');
         }
-        else return redirect('/admin/login');
         return $next($request);
     }
 }

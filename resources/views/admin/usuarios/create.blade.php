@@ -4,7 +4,7 @@
 
 @section('nav_title', 'Usuários - Criar')
 
-@include('admin.menu')
+@include('partials.menu')
 
 <div class="container" style="width: 500px">
 	<form method="POST" action="/admin/usuarios/criar">

@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 use App\Adjustment;
 use App\Subject;
 use Carbon\Carbon;
+use Validator;
+use App\Mail\AdjustmentSent;
 
 
 class AdjustmentsController extends Controller
@@ -15,50 +18,58 @@ class AdjustmentsController extends Controller
 	{
 
     }
-    public function getFromPeriod() {
-        $subjects = (new Subject())->fromPeriod(request('periodo'));
-        return response()->json($subjects);
-    }
+
     //Mostrar o formulário de ajuste
     public function show()
     {
-        if(!session()->has(['cpf', 'matricula']))
-        {
-            //redirectiong to login page with errors
-            if(session()->has('errors'))
-            {
-                return redirect('/login')->with([
-                    'errors' => session('errors')
-                ]);
-            }
-            if(session()->has('modify'))
-            {
-                //dd(session('userInput'));
-                return view('ajuste.show')->with([
-                    'userInput' => session('userInput')
-                ]);
-            }
-            return redirect('/login');
-        }
         return view('ajuste.show');
     }
 
-    public function confirm(Request $request)
+    public function modify(Request $request)
     {
-        //dd(count($request['periodo-ajuste']));
-        $this->isValidAdjustment();
-        return view('ajuste.confirm', compact('request'));
+        /*return response()->json(array(
+                'request' => $request,
+            ));*/
+
+        $html = view('ajuste.index', compact('request'))->render();
+        return array('success' => true, 'html' => $html);
     }
 
 
+    public function confirm(Request $request)
+    {   
+
+        $validator = $this->validateAdjustment();
+
+        if($validator->fails()) 
+        {
+            return response()->json(array(
+                'success' => false,
+                'errors' => $validator->getMessageBag()->toArray()
+            ), 422);
+        }
+
+        $html = view('ajuste.confirm', compact('request'))->render();
+
+        return array('success' => true, 'html' => $html);
+    }
 
     public function store(Request $request) {
-        //
-        $result = Adjustment::store($request);
+        
+        $adjustment = Adjustment::store($request);
+        
+        $attributes = [
+            'periodo-ajuste' => $request['periodo-ajuste'],
+            'disciplina-ajuste' => $request['disciplina-ajuste'],
+            'acao-ajuste' => $request['acao-ajuste']
+        ];
 
-        //dd($adjust);
+        //disparar e-mail!
+        \Mail::to($request['email'])->send(new AdjustmentSent($attributes));
 
-        return redirect('/ajuste/sucesso')
+
+
+        $html = view('ajuste.success')
             ->with([
                 'success' => 'Requerimento enviado com sucesso para análise pelo SGA. 
                               Recomenda-se que o aluno imprima/salve este 
@@ -74,10 +85,13 @@ class AdjustmentsController extends Controller
                     'periodo' => $request['periodo-ajuste'],
                     'requerimento' => $request['acao-ajuste'],
                     'resultado' => 'Pendente',
-                    'autenticacao' => $result['autenticacao'],
-                    'datahora' => $result['dataHora']
+                    'autenticacao' => $adjustment['autenticacao'],
+                    'datahora' => $adjustment['dataHora']
                 ]
-            ]);
+            ])
+            ->render();
+
+        return array('success' => true, 'html' => $html);
     }
 
     public function success()
@@ -93,43 +107,25 @@ class AdjustmentsController extends Controller
         return redirect('/login')->with('erros', 'Requerimento não realizado. Entre em contato com o SGA');
     }
 
-    public function modify(Request $request)
-    {
-        //dd($request);
-        return redirect('/ajuste')->with([
-            'modify' => true,
-            'userInput' => [
-                'nome' => request('nome'),
-                'cpf' => request('cpf'),
-                'matricula' => request('matricula'),
-                'email' => request('email'),
-                'tel' => request('tel'),
-                'disciplina' => request('disciplina-ajuste'),
-                'periodo' => request('periodo-ajuste'),
-                'requerimento' => request('acao-ajuste'),
-                'resultado' => 'Pendente'
-            ]
-        ]);
-    }
 
-    public function isValidAdjustment()
-    {
-        //dd(request());
-        //validate base attributes
-        $baseAttributes = request()->
-            validate([
-                'nome' => ['required', 'min:5'],
-                'cpf' => ['required', 'min:11'],
-                'matricula' => 'required',
-                'email' => 'required',
-                'tel' => 'required'
-            ]);
 
-        request()->validate([
-            'periodo-ajuste' => 'required',
-            'disciplina-ajuste' => 'required',
-            'acao-ajuste' => 'required'
+    public function validateAdjustment()
+    {
+
+        $validator = Validator::make(request()->all(), [
+            'nome' => ['required', 'min:5'],
+            'cpf' => ['required', 'min:11'],
+            'matricula' => 'required',
+            'email' => 'required',
+            'tel' => 'required',
+            'periodo-ajuste' => 'required|array',
+            'periodo-ajuste.*' => 'required',
+            'disciplina-ajuste' => 'required|array',
+            'disciplina-ajuste.*' => 'required',
+            'acao-ajuste' => 'required|array',
+            'acao-ajuste.*' => 'required',
         ]);
+        return $validator;
     }
 
 }

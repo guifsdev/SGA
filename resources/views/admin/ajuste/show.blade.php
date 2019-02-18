@@ -1,5 +1,9 @@
 @extends('layouts.master')
 
+@section('title', 'SGA - Gerenciamento de Ajustes')
+@section('nav_title', 'Gerenciamento de ajustes')
+
+@section('content')
 
 @section('custom_styles')
 <link rel="stylesheet" type="text/css" href="{{asset('css/custom.css')}}">
@@ -7,13 +11,7 @@
 <link rel="stylesheet" href="{{asset('css/custom_datepicker.css')}}">
 @endsection
 
-@section('title', 'SGA - Gerenciamento de Ajustes')
-
-@section('content')
-
-@section('nav_title', 'Gerenciamento de ajustes')
-
-@include('admin.menu')
+@include('partials.menu')
 
 <div class="container-fluid">
 	<div class="admin-ajuste">
@@ -196,8 +194,11 @@
 		</form>
 	</div> <!-- .admin-ajuste -->
 </div>
+@endsection
 
+@section('custom_scripts')
 <script type="text/javascript" src="{{ asset('/js/my_functions.js') }}"></script>
+
 
 <script type="text/javascript">
 $(document).ready(function() {
@@ -205,9 +206,6 @@ $(document).ready(function() {
 	$('#acoes-btns button').on('click', function() {
 		processarAjuste($(this));
 	});
-
-
-
 
 	//$('#bulk').on('change', bulkSelect);
 	$(document).delegate('#bulk', 'change', bulkSelect);
@@ -272,8 +270,6 @@ $(document).ready(function() {
 		filtrarTabela(key);
 	});
 
-
-
 	function toggleCollapse(item) {
 		var id = $(item).attr('id');
 
@@ -310,5 +306,5 @@ $(document).ready(function() {
 	}
 });
 </script>
-
 @endsection
+

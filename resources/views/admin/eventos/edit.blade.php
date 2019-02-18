@@ -4,7 +4,7 @@
 
 @section('nav_title', 'Editar Evento')
 
-@include('admin.menu')
+@include('partials.menu')
 
 @section('content')
 <div class="container" style="width: 900px">

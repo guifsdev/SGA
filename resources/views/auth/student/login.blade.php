@@ -2,7 +2,7 @@
 @section('title', 'SGA - Login do estudante')
 
 @section('content')
-<form method="POST" action="" class="form-signin">
+<form method="POST" action="/estudante/login" class="form-signin">
     {{csrf_field()}}
     <h1 class="h3 mb-3 font-weight-normal">Login do Estudante</h1>
     
@@ -11,13 +11,14 @@
         <input type="text" class="form-control" id="cpf" placeholder="CPF" name="cpf" required>
     </div>
 
-    <div class="form-group">
+    <!-- <div class="form-group">
         <label for="matricula">Matrícula:</label>
         <input type="text" class="form-control" id="matricula" placeholder="Sua matrícula" name="matricula" >
-    </div>
+    </div> -->
     <div class="form-group">
-        <button id="ajuste" type="submit" class="btn btn-lg btn-primary btn-block" aria-describedby="aviso">Ajuste do plano de estudos</button>
-        <button id="certificados" type="submit" class="btn btn-lg btn-primary btn-block" aria-describedby="aviso">Emissão de certificados</button>
+        <button id="ajuste" type="submit" class="btn btn-lg btn-primary btn-block" aria-describedby="aviso">Login</button>
+        <!-- <button id="ajuste" type="submit" class="btn btn-lg btn-primary btn-block" aria-describedby="aviso">Ajuste do plano de estudos</button>
+        <button id="certificados" type="submit" class="btn btn-lg btn-primary btn-block" aria-describedby="aviso">Emissão de certificados</button> -->
     </div>
     <small id="aviso" class="form-text text-muted">Preencha todos os campos do formulário – esta reponsabilidade é do requerente, os documentos incompletos não serão processados.</small>
     @include('ajuste.errors')
@@ -41,11 +42,11 @@
 @endsection
 
 <script type="text/javascript">
-$(document).ready(function() {
-    /*$("#cpf").mask("999.999.999-99");*/
+/*$(document).ready(function() {
+    $("#cpf").mask("999.999.999-99");
     $('button[type=submit]').on('click', chooseRoute);
 
-});
+});*/
 </script>
 
 @endsection

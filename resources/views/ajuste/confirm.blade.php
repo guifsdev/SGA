@@ -1,18 +1,6 @@
-@extends('layouts.master')
+<div class="container" style="max-width: 100%; margin: 0; padding: 0">
 
-@section('title', 'SGA - Ajuste de disciplinas')
-
-@section('content')
-
-<div class="container-fluid">
-	<main class="col-12 col-md-9 col-xl-8 py-md-3 pl-md-5 bd-content" role="main" 
-	style="
-		margin: 0 auto; 
-		padding-left: 1rem !important;">
-
-
-	<h3>Ajuste de disciplinas do aluno</h3>
-	<form method="POST" action="/ajuste/salvar">
+	<form method="POST" action="">
 	{{csrf_field()}}
 		<div class="form-group">
 			<label for="nome">Nome completo:</label>
@@ -65,47 +53,10 @@
 			  </tbody>
 			</table>
 			<div class="form-group align-center">
-				<button type="submit" class="btn btn-primary" aria-describedby="aviso" id="confirmar">Confirmar</button>
+				<button type="submit" class="btn btn-primary" aria-describedby="aviso" id="salvar">Confirmar</button>
 				<button type="submit" class="btn btn-secondary" aria-describedby="aviso" id="modificar">Modificar</button>
 			</div>	
-		</main>
 	</form>
-	
-	<!-- Botão modificar  -->
-	<!-- <form method="POST" action="/ajuste/modificar">
-		{{csrf_field()}}	
-		<div class="form-group align-center">
-		</div>
-	</form> -->
 	@include('ajuste.errors')
 </div>
-
-<script type="text/javascript">
-	$(document).ready(function() {
-
-		var submitBtn = $('button:submit');
-
-		submitBtn.click(function(e){
-			//e.preventDefault();
-			reenableInputs();
-			changeFormAction($(this));
-		});
-
-		function changeFormAction(btn)
-		{
-			if(btn.attr('id') === 'modificar')
-			{
-				$('form').attr('action', '/ajuste/modificar');
-			}
-
-		}
-
-
-		function reenableInputs() {
-			var disabledInputs = $('input:disabled');
-			disabledInputs.prop('disabled', false);
-		}
-	});
-</script>
-@endsection
 

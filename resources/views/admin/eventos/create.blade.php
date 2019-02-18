@@ -7,7 +7,7 @@
 
 @section('content')
 
-@include('admin.menu')
+@include('partials.menu')
 <div class="container" style="width: 900px">
 	<form method="POST" action="/admin/eventos/criar">
 	{{csrf_field()}}

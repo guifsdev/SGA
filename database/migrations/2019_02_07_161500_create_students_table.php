@@ -26,6 +26,7 @@ class CreateStudentsTable extends Migration
             $table->string('curriculo');
             $table->string('curso');
             $table->string('email')->nullable();
+            $table->rememberToken();
             $table->timestamps();
         });
     }

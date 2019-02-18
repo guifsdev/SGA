@@ -4,7 +4,7 @@
 @section('title', 'SGA - Templates de Certificados')
 
 @section('content')
-@include('admin.menu')
+@include('partials.menu')
 
 <div class="container" style="margin-top: 25px">
 	<div class="container">

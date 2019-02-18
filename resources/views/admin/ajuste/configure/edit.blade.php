@@ -4,7 +4,7 @@
 
 @section('nav_title', 'Editar configurações do ajuste')
 
-@include('admin.menu')
+@include('partials.menu')
 <div class="container" style="width: 350px">
 <form method="POST" action="/admin/ajuste/config/editar">
 	{{csrf_field()}}

@@ -12,7 +12,7 @@ class SubjectsController extends Controller
 
 	public function __construct()
 	{
-		$this->middleware('auth');
+		$this->middleware('auth')->except('getFromPeriod');
 	}
 
     public function index()
@@ -37,10 +37,36 @@ class SubjectsController extends Controller
 
     public function edit(Subject $subject, Division $division)
     {
-    	//dd($subject, $division);
     	return view('admin.disciplinas.edit', compact('subject', 'division'));
     }
 
+    public function getFromPeriod() 
+    {
+        $subjects = (new Subject())->fromPeriod(request('periodo'));
+        return response()->json($subjects);
+    }
 
-    //public function update
+    public function update(Subject $subject, Division $division)
+    {
+        //dd($subject, $division);
+        $subjectAttributes = request()->validate([
+            'code' => 'required',
+            'name' => 'required',
+            'period' => 'required',
+        ]);
+
+        $divisionAttributes = request()->validate([
+            'division_name' => 'required',
+            'offered' => 'required',
+        ]);
+
+
+        $subject = Subject::find($subject->id);
+        $subject->update($subjectAttributes);
+
+        $division = Division::find($division->id);
+        $division->update($divisionAttributes);
+
+        return redirect('/admin/disciplinas')->with('success','Disciplina/Turma alterada com sucesso.');
+    }
 }

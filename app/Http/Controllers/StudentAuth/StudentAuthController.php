@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
+namespace App\Http\Controllers\StudentAuth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
-use App\User;
+use App\Student;
 
 
-class LoginController extends Controller
+class StudentAuthController extends Controller
 {
     /*
     |--------------------------------------------------------------------------
@@ -29,7 +29,9 @@ class LoginController extends Controller
      *
      * @var string
      */
-    //protected $redirectTo = '/admin';
+    protected $redirectTo = '/estudante';
+
+    protected $guard = 'student';
 
     /**
      * Create a new controller instance.
@@ -38,44 +40,41 @@ class LoginController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('guest')->except('logout');
-        $this->middleware('guest:student')->except('logout');
+        $this->middleware('guest_student')->except('logout');
     }
-
-    /*public function showtudentLogin()
-    {
-        //return "Student Login";
-        $cpf = request('cpf');
-        dd(Auth::guard('student')->attempt(['cpf' => $cpf]));
-    }*/
-
-
 
     public function login()
     {
-        $credentials = request()->only('matricula', 'password');
-        
-        if(Auth::attempt($credentials))
-        {
-            return redirect('/admin');
-        }
-        //else redirect('admin/login');
-        else return redirect()->route('login')->withErrors(['Matricula ou senha incorretos.']);
+        $cpf = request('cpf');
+
+        $student = Student::where('cpf', $cpf)->first();
+        if(!$student) {
+            return redirect('/estudante/login')
+                ->withErrors('Estudante não localizado.');
+        } 
+            
+        Auth::guard('student')->loginUsingId($student->id);
+
+        $fullName = Auth::guard('student')->user()->nome;
+        $firstName = ucfirst(strtolower(explode(' ', $fullName)[0]));
+
+        return redirect('/estudante');
+
     }
 
     public function logout()
     {
-        if(Auth::check())
-        {
-            Auth::logout();
+        if(Auth::guard('student')->check()) {
+            Auth::guard('student')->logout();
         }
-        return redirect('/admin/login');
+        return redirect('/estudante/login');
     }
 
 
 
     public function showLoginForm()
     {
-        return view('auth.admin.login');
+        //return "StudentAuthController@showLoginForm()";
+        return view('auth.student.login');
     }
 }

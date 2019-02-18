@@ -10,35 +10,29 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::get('/home', 'HomeController@index')->name('home');
-//Ajax para o dropdown de busca de disciplinas por período
-Route::post('/disciplinas', 'AdjustmentsController@getFromPeriod');
+Route::get('/estudante/login', 'StudentAuth\StudentAuthController@showLoginForm');
+Route::post('/estudante/login', 'StudentAuth\StudentAuthController@login');
+Route::get('/estudante/logout', 'StudentAuth\StudentAuthController@logout');
+
+Route::post('/disciplinas', 'SubjectsController@getFromPeriod');
+
+Route::get('/estudante', 'StudentsController@index');
+
+Route::post('/ajuste/confirmar', 'AdjustmentsController@confirm');
+Route::post('/ajuste/modificar', 'AdjustmentsController@modify');
+Route::post('/ajuste/salvar', 'AdjustmentsController@store');
 
 Route::get('/admin/disciplinas', 'SubjectsController@index');
 Route::get('/admin/disciplinas/{subject}/{division}', 'SubjectsController@show');
 Route::get('/admin/disciplinas/{subject}/{division}/editar', 'SubjectsController@edit');
-Route::post('/admin/disciplinas/{subject}/{division}/salvar', 'SubjectsController@store');
+Route::post('/admin/disciplinas/{subject}/{division}/salvar', 'SubjectsController@update');
 
-
-
-
-
-//Rota de distribuição de intent
-Route::get('/login', 'IntentsController@show');
-
-//Rotas de ajuste
-Route::post('/ajuste', 'IntentsController@loginAdjustments');
-Route::get('/ajuste', 'AdjustmentsController@show');
-Route::post('/ajuste/confirmar', 'AdjustmentsController@confirm');
-Route::post('/ajuste/modificar', 'AdjustmentsController@modify');
-Route::post('/ajuste/salvar', 'AdjustmentsController@store');
-Route::get('/ajuste/sucesso', 'AdjustmentsController@success');
 
 
 //Rotas de certificados
-Route::post('/certificados', 'IntentsController@loginCertificates');
+/*Route::post('/certificados', 'IntentsController@loginCertificates');
 Route::get('/certificados', 'CertificatesController@index');
-Route::post('/certificados/evento/{event}', 'EventsController@certificate')->name('certificate');
+Route::post('/certificados/evento/{event}', 'EventsController@certificate')->name('certificate');*/
 
 
 
@@ -80,6 +74,10 @@ Route::get('/admin/eventos/configurar', 'AdminCertificatesController@configure')
 
 
 //Auth::routes();
+
+
+
+
 
 
 

@@ -7,13 +7,14 @@
 
 @section('content')
 
-@include('admin.menu')
+@include('partials.menu')
 
 
 
 <div class="container" style="width: 600px; margin-top: 50px">
 	<h4>{{$subject->name}}</h4>
-	<form action="/admin/disciplinas/{{$subject->id}}/{{$division->id}}/editar">
+	<form method="POST" action="/admin/disciplinas/{{$subject->id}}/{{$division->id}}/salvar">
+		{{csrf_field()}}
 		<div class="form-group">
 		    <label for="code">Código</label>
 		    <input type="text" class="form-control" id="code" name="code" value="{{$subject->code}}">
@@ -28,7 +29,7 @@
 		</div>
 		<div class="form-group">
 		    <label for="division">Turma</label>
-		    <input type="text" class="form-control" id="division" name="division" value="{{$division->name}}">
+		    <input type="text" class="form-control" id="division-name" name="division_name" value="{{$division->division_name}}">
 		</div>
 		<div class="form-group">
 		    <label for="code">Ofertada</label>
@@ -37,8 +38,11 @@
 				<option value="0" {{!$division->offered ? 'selected' : ''}}>Não</option>
 			</select>
 		</div>
-		<button type="submit" class="btn btn-primary">Salvar</button>
-		<a class="btn btn-primary" href="{{url()->previous()}}" role="button">Cancelar</a>
+		<div class="form-group">
+			<button type="submit" class="btn btn-primary">Salvar</button>
+			<a class="btn btn-primary" href="{{url()->previous()}}" role="button">Cancelar</a>
+		</div>
+	@include('partials.errors')
 	</form>
 </div>
 

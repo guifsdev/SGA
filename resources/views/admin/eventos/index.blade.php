@@ -4,9 +4,10 @@
 
 @section('nav_title', 'Gerenciamento de Eventos')
 
-@include('admin.menu')
 
 @section('content')
+
+@include('partials.menu')
 
 <div class="container" style="width: 100%">
 	<table class="table table-sm" style="margin-top: 50px">

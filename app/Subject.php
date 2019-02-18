@@ -8,6 +8,7 @@ use App\Division;
 class Subject extends Model
 {
     //Subject->divisions
+    protected $fillable = ['name', 'period', 'code'];
 
     public function divisions()
     {	
@@ -35,6 +36,8 @@ class Subject extends Model
     	}
     	return $offeredDivisions;
     }
+
+    //public function 
 
 
 }

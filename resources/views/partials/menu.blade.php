@@ -34,13 +34,13 @@
 
       <li class="nav-item">
         <a href="/admin/disciplinas" tabindex="-1" aria-disabled="true"
-            class="nav-link {{Auth::user()->role == 'admin' ? '' : 'disabled'}}">Disciplinas</a>
+            class="nav-link {{Auth::user()->is_admin ? '' : 'disabled'}}">Disciplinas</a>
       </li> 
 
 
       <li class="nav-item">
         <a href="/admin/usuarios" tabindex="-1" aria-disabled="true"
-            class="nav-link {{Auth::user()->role == 'admin' ? '' : 'disabled'}}">Usuários</a>
+            class="nav-link {{Auth::user()->is_admin ? '' : 'disabled'}}">Usuários</a>
       </li>      
       <li class="nav-item">
         <a class="nav-link" href="/admin/logout" tabindex="-1" aria-disabled="false">Sair</a>
