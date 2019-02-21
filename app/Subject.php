@@ -30,7 +30,7 @@ class Subject extends Model
     						'name' => $subject->name,
     						'division' => $division->name
     					]);*/
-					array_push($offeredDivisions, $subject->name . ' ' . $division->name);
+					array_push($offeredDivisions, $subject->name . ' ' . $division->division_name);
     			}
     		}
     	}

@@ -16,7 +16,7 @@ class AdjustmentsController extends Controller
 
 	public function __construct()
 	{
-
+        $this->middleware('auth_student');
     }
 
     //Mostrar o formulário de ajuste

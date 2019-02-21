@@ -43,7 +43,10 @@
 $(document).ready( function() {
 
     $(document).delegate('button:submit', 'click', function(e) {
-        $(this).attr('disabled', true);
+        if($(this).attr('id') == 'salvar') {
+            $(this).attr('disabled', true);
+
+        }
         e.preventDefault();
         reenableInputs();
 
