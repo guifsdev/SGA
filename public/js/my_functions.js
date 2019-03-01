@@ -1,3 +1,34 @@
+function getView(view) {
+	$.ajaxSetup({
+	    headers: {
+	        'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+	    }
+	});
+
+	$.ajax({
+		url: '/estudante',
+		type: 'POST',
+		data: {
+			'view': view
+		},
+		dataType: 'JSON',
+		success: function(response) {
+			$('#view').empty();
+			$('#view').html(response.html);
+		},
+		error: function(e) {
+			var response = JSON.parse(e.responseText);
+			var errors = response['errors'];
+			$('#view').empty();
+			
+			$('#view').append('<div class="alert alert-danger form-group" role="alert" id="errors"><ul></ul></div>');
+			$.each(errors, function(key, error) {
+				$('#errors ul').append('<li>' + error + '</li>');
+			});
+		}
+	});
+
+}
 function buscarDisciplinas(route = '/ajuste', selected = null)
 {
     $.ajaxSetup({
@@ -40,7 +71,7 @@ function buscarDisciplinas(route = '/ajuste', selected = null)
 			if(route === '/admin/ajuste') colDisciplinas.append('<option value="Todos">Todas</option>');
 
 			for(var i = 0; i < response.length; ++i) {
-				colDisciplinas.append('<option>' + response[i] + '</option>');
+				colDisciplinas.append('<option>' + response[i]['name'] + ' ' + response[i]['class_name'] + '</option>');
 			}
 		},
 		error: function(data) {
@@ -48,6 +79,37 @@ function buscarDisciplinas(route = '/ajuste', selected = null)
 		}
 	});
 }
+function updateStudentData(form) {
+	$.ajaxSetup({
+	    headers: {
+	        'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+	    }
+	});
+
+	$.ajax({
+		url: '/estudante',
+		type: 'PATCH',
+		data: form.serialize(),
+		dataType: 'JSON',
+		success: function(response) {
+			//console.log(response);
+			$('.alert-success').remove();
+			form.append('<div class="alert alert-success" role="alert">' + 'Dados atualizados com sucesso' + '</div>');
+		},
+		error: function(e) {
+			var response = JSON.parse(e.responseText);
+			var errors = response['errors'];
+
+			$('#errors').remove();
+			
+			form.append('<div class="alert alert-danger form-group" role="alert" id="errors"><ul></ul></div>');
+			$.each(errors, function(key, error) {
+				$('#errors ul').append('<li>' + error + '</li>');
+			});
+		}
+	});
+}
+
 function sendFilterParams(form) 
 {
 	//Remover o nome dos inputs desmarcados
@@ -81,12 +143,12 @@ function ajusteAction(form, action)
 		dataType: 'JSON',
 		success: function(response) {
 			//console.log(response);
-			$('#ajuste').html(response.html);
+			$('#view').html(response.html);
 		},
 		error: function(e) {
 			var response = JSON.parse(e.responseText);
 			var errors = response['errors'];
-
+			$('#errors').remove();
 			form.append('<div class="alert alert-danger form-group" role="alert" id="errors"><ul></ul></div>');
 			$.each(errors, function(key, error) {
 				$('#errors ul').append('<li>' + error + '</li>');
@@ -102,8 +164,6 @@ function removeDisabledAttributes()
 	cpf.prop('disabled', false);
 	matricula.prop('disabled', false);
 }
-
-
 function bulkSelect()
 {
 	//console.log('bulkSelect');
@@ -171,19 +231,6 @@ function processarAjuste(acao)
 	});
 }
 
-
-function chooseRoute()
-{
-	var intent = $(this).attr('id');
-	var form = $('form');
-
-	if(intent == 'ajuste') {
-		form.attr('action', '/ajuste');
-	}
-	else if(intent == 'certificados') {
-		form.attr('action', '/certificados');
-	}
-}
 //Table add row Dynamically
 //https://bootsnipp.com/snippets/402bQ
 function calculateRow(row) 
@@ -199,8 +246,6 @@ function calculateGrandTotal() {
     });
     $("#grandtotal").text(grandTotal.toFixed(2));
 }
-//
-
 function changeInsertionMethod()
 {
 	var method = $(this).find(':selected').val();
@@ -281,3 +326,4 @@ function atualizarTabela()
 { 
     $("#requerimentos table").load(window.location.href + '#requerimentos table');
 }
+

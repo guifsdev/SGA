@@ -30,15 +30,15 @@
 	    </tr>
 	    <tr>
 	      <th scope="row">Turma</th>
-	      <td>{{$division->division_name}}</td>
+	      <td>{{$subject->name}}</td>
 	    </tr>    
 	    <tr>
 	      <th scope="row">Ofertada</th>
-	      <td>{{$division->offered ? 'Sim' : 'Não'}}</td>
+	      <td>{{$subject->offered ? 'Sim' : 'Não'}}</td>
 	    </tr>
 	  </tbody>
 	</table>
-	<a class="btn btn-primary" href="/admin/disciplinas/{{$subject->id}}/{{$division->id}}/editar" role="button">Editar</a>
+	<a class="btn btn-primary" href="/admin/disciplinas/{{$subject->id}}/editar" role="button">Editar</a>
 	<a class="btn btn-primary" href="/admin/disciplinas" role="button">Voltar</a>
 
 

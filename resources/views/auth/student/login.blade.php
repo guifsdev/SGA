@@ -11,17 +11,11 @@
         <input type="text" class="form-control" id="cpf" placeholder="CPF" name="cpf" required>
     </div>
 
-    <!-- <div class="form-group">
-        <label for="matricula">Matrícula:</label>
-        <input type="text" class="form-control" id="matricula" placeholder="Sua matrícula" name="matricula" >
-    </div> -->
     <div class="form-group">
         <button id="ajuste" type="submit" class="btn btn-lg btn-primary btn-block" aria-describedby="aviso">Login</button>
-        <!-- <button id="ajuste" type="submit" class="btn btn-lg btn-primary btn-block" aria-describedby="aviso">Ajuste do plano de estudos</button>
-        <button id="certificados" type="submit" class="btn btn-lg btn-primary btn-block" aria-describedby="aviso">Emissão de certificados</button> -->
     </div>
     <small id="aviso" class="form-text text-muted">Preencha todos os campos do formulário – esta reponsabilidade é do requerente, os documentos incompletos não serão processados.</small>
-    @include('ajuste.errors')
+    @include('partials.errors')
 
     @if(session()->has('no_certificates'))
     <div class="form-group alert alert-warning" role="alert">

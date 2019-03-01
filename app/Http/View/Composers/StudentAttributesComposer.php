@@ -43,6 +43,7 @@ class StudentAttributesComposer
 
 
         $view->with([
+            'student' => Auth::guard('student')->user(),
             'cpf' => Auth::guard('student')->user()->cpf,
             'matricula' => Auth::guard('student')->user()->matricula,
             'nome_completo' => $nomeCompleto,

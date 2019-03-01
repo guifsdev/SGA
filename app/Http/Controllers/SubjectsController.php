@@ -12,32 +12,23 @@ class SubjectsController extends Controller
 
 	public function __construct()
 	{
-		$this->middleware('auth')->except('getFromPeriod');
+		$this->middleware('admin')->except('getFromPeriod');
 	}
 
     public function index()
     {
     	$subjects = Subject::all();
-
-    	/*foreach ($subjects as $key => $subject) {
-    		if ($key == 7) {
-    			foreach ($subject->divisions as $key => $division) {
-    				dd($division);
-				}
-    		}
-    	}*/
     	return view('admin.disciplinas.index', compact('subjects'));
     }
 
-    public function show(Subject $subject, Division $division)
+    public function show(Subject $subject)
     {
-    	//dd($subject, $division);
-    	return view('admin.disciplinas.show', compact('subject', 'division'));
+    	return view('admin.disciplinas.show', compact('subject'));
     }
 
-    public function edit(Subject $subject, Division $division)
+    public function edit(Subject $subject)
     {
-    	return view('admin.disciplinas.edit', compact('subject', 'division'));
+    	return view('admin.disciplinas.edit', compact('subject'));
     }
 
     public function getFromPeriod() 
@@ -46,26 +37,19 @@ class SubjectsController extends Controller
         return response()->json($subjects);
     }
 
-    public function update(Subject $subject, Division $division)
+    public function update(Subject $subject)
     {
-        //dd($subject, $division);
-        $subjectAttributes = request()->validate([
+        $attributes = request()->validate([
             'code' => 'required',
             'name' => 'required',
             'period' => 'required',
+            'class-name' => 'required',
+            'offered' => 'required|boolean',
         ]);
-
-        $divisionAttributes = request()->validate([
-            'division_name' => 'required',
-            'offered' => 'required',
-        ]);
-
+        $attributes['offered'] = (bool) $attributes['offered'];
 
         $subject = Subject::find($subject->id);
-        $subject->update($subjectAttributes);
-
-        $division = Division::find($division->id);
-        $division->update($divisionAttributes);
+        $subject->update($attributes);
 
         return redirect('/admin/disciplinas')->with('success','Disciplina/Turma alterada com sucesso.');
     }

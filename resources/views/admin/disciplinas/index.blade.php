@@ -27,15 +27,13 @@
 	  </thead>
 	  <tbody>
 		@foreach($subjects as $subject)
-			@foreach($subject->divisions as $division)
-			<tr>
-				<th scope="row">{{$subject->code}}</th>
-				<td><a href="/admin/disciplinas/{{$subject->id}}/{{$division->id}}">{{$subject->name}}</a></td>
-				<td>{{$subject->period}}</td>
-				<td>{{$division->division_name}}</td>
-				<td>{{$division->offered ? 'Sim' : 'Não'}}</td>
-			</tr>
-			@endforeach
+		<tr>
+			<th scope="row">{{$subject->code}}</th>
+			<td><a href="/admin/disciplinas/{{$subject->id}}/editar">{{$subject->name}}</a></td>
+			<td>{{$subject->period}}</td>
+			<td>{{$subject->class_name}}</td>
+			<td>{{$subject->offered ? 'Sim' : 'Não'}}</td>
+		</tr>
 		@endforeach
 	  </tbody>
 	</table>

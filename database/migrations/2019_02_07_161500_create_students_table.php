@@ -20,12 +20,13 @@ class CreateStudentsTable extends Migration
             $table->string('nome');
             $table->float('cr');
             $table->integer('cha');
-            $table->integer('chc');
+            $table->integer('chc')->nullable();
             $table->integer('cht');
             $table->string('localidade');
             $table->string('curriculo');
             $table->string('curso');
             $table->string('email')->nullable();
+            $table->string('tel')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

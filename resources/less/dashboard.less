@@ -112,19 +112,20 @@ header {
         transition:all 0.6s;
       
         &:before {
-          font-family: 'entypo', sans-serif;
+          /*font-family: 'entypo', sans-serif;*/
+          font-family: 'FontAwesome';
+          
           font-size:20px;
           position:absolute;
           left:-32px;
         }
       }
     
-      &:first-child a:before {content:"\268f";}
-      &:nth-child(2) a:before {content:"\1f465";}
-      &:nth-child(3) a:before {content:"\1f4c5";}
-      &:nth-child(4) a:before {content:"\e771";}
-      &:nth-child(5) a:before {content:"\2699";}
-      &:nth-child(6) a:before {content:"\1f50d";}
+      &:first-child a:before {content:"\f015";}
+      &:nth-child(2) a:before {content:"\f19d";}
+      &:nth-child(3) a:before {content:"\f044";}
+      &:nth-child(4) a:before {content:"\f0a3";}
+      &:nth-child(5) a:before {content:"\f274";}
   }
 }
 
@@ -142,25 +143,32 @@ main {
   display: -ms-flexbox;
   display: -webkit-flex;
   display:flex;
-  
   & a {
     color: #AAA;
     width: auto;
-    margin: 0 20px;
+    margin: 0 10px;
     float: right;
     line-height: 62px;
     position:relative;
     text-decoration:none;
     transition:all .5s;
-    
-    &:before {
-      content:"\1f464";
-      font-size: 38px;
-      position:absolute;
-      left:-50px;
-      font-family: 'entypo';
-    }
   }
+  & :nth-child(2):before {
+    content:"\1f464";
+    font-size: 38px;
+    position:absolute;
+    left:-50px;
+    font-family: 'entypo';
+  }
+  & :nth-child(3):before {
+    font-family: 'FontAwesome';
+    content:"\f08b";
+    font-size: 38px;
+    /*position:absolute;
+    right:-50px;*/
+  }
+
+
 }
 
 a:hover {

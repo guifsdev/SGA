@@ -57,6 +57,23 @@
 				<button type="submit" class="btn btn-secondary" aria-describedby="aviso" id="modificar">Modificar</button>
 			</div>	
 	</form>
-	@include('ajuste.errors')
+	@include('partials.errors')
 </div>
+
+<script>
+$(document).ready(function() {
+	$('button:submit').on('click', function(e) {
+		e.preventDefault();
+		reenableInputs();
+		
+		if($(this).attr('id') == 'salvar') {
+		    $(this).attr('disabled', true);
+		}
+		var form = $('form');
+		var action = '/ajuste/' + $(this).attr('id');
+
+		ajusteAction(form, action);
+	});
+});
+</script>
 

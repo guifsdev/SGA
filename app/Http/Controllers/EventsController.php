@@ -5,14 +5,16 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
+use Illuminate\Support\Facades\Auth;
 use App\Event;
 use App\Template;
+
 
 class EventsController extends Controller
 {
 	public function __construct()
 	{
-    	$this->middleware('auth')->except('certificate');
+    	$this->middleware('auth_student');
 		
 	}
 
@@ -132,12 +134,13 @@ class EventsController extends Controller
 
     public function certificate(Event $event)
     {
-        //$template = $this->getTemplateFile($event['template']);
-        //$template = Template::getFile($event['template']);
-        $template = new Template();
+        $participant = Auth::guard('student')->user();
+    	return \PDF::loadView('estudante.certificados.show', compact('event','participant'))
+    		->setPaper('a4', 'landscape')
+            ->stream('certificado-sga.pdf');
+        /*$template = new Template();
         $template = $template->getFile($event['template']);
         
-
         if(!$template) {
             return back()->with([
                 'no_template' => 'Nenhum template disponível para este evento. Perturbe o seu coordenador!',
@@ -146,16 +149,12 @@ class EventsController extends Controller
             ]);
         }
 
-    	$participant = [
-    		'nome' => request('nome'),
-    		'email' =>  request('email'),
-    		'cpf' => request('cpf'),
-    		'matricula' => request('matricula')
-    	];
-        //return view('certificados.show', compact('event', 'participant', 'template'));
-    	return \PDF::loadView('certificados.show', compact('event','participant', 'template'))
-    		->setPaper('a4', 'landscape')
-            ->stream('certificado-sga.pdf');
+        $participant = [
+            'nome' => request('nome'),
+            'email' =>  request('email'),
+            'cpf' => request('cpf'),
+            'matricula' => request('matricula')
+        ];*/
     }
 
     public function create()

@@ -50,13 +50,10 @@ class StudentAuthController extends Controller
         $student = Student::where('cpf', $cpf)->first();
         if(!$student) {
             return redirect('/estudante/login')
-                ->withErrors('Estudante não localizado.');
+                ->withErrors('Estudante não localizado. Procure a coordenação');
         } 
             
         Auth::guard('student')->loginUsingId($student->id);
-
-        $fullName = Auth::guard('student')->user()->nome;
-        $firstName = ucfirst(strtolower(explode(' ', $fullName)[0]));
 
         return redirect('/estudante');
 

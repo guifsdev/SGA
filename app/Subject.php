@@ -8,36 +8,18 @@ use App\Division;
 class Subject extends Model
 {
     //Subject->divisions
-    protected $fillable = ['name', 'period', 'code'];
+    protected $fillable = ['name', 'period', 'code', 'offered'];
 
     public function divisions()
     {	
-    	//return "hey";
-    	return $this->hasMany('App\Division', 'subject_id');
     }
 
     public function fromPeriod($period)
     {
-    	$subjects = Subject::where('period', $period)->get();
-    	
-    	$offeredDivisions = [];
+        $subjects = Subject::where('period', $period)
+            ->where('offered', true)
+            ->get();
 
-    	foreach ($subjects as $s => $subject) {
-    		foreach ($subject->divisions as $d => $division) {
-    			if($division->offered) {
-    				/*array_push($offeredDivisions, 
-    					[
-    						'name' => $subject->name,
-    						'division' => $division->name
-    					]);*/
-					array_push($offeredDivisions, $subject->name . ' ' . $division->division_name);
-    			}
-    		}
-    	}
-    	return $offeredDivisions;
+        return $subjects;
     }
-
-    //public function 
-
-
 }

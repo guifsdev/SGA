@@ -9,7 +9,7 @@ class Student extends Authenticatable
 {
     protected $guard = 'student';
 
-    //protected $fillable = ['cpf'];
+    protected $fillable = ['nome', 'email', 'tel'];
 
 
 }

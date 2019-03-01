@@ -32,11 +32,18 @@
         </div>
       </li>
 
-      <li class="nav-item">
-        <a href="/admin/disciplinas" tabindex="-1" aria-disabled="true"
-            class="nav-link {{Auth::user()->is_admin ? '' : 'disabled'}}">Disciplinas</a>
+      <li class="nav-item dropdown">
+        <a href="#"
+            tabindex="-1" aria-disabled="true" id="disciplinasDropdown"
+            role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+            class="nav-link dropdown-toggle {{Auth::user()->is_admin ? '' : 'disabled'}}">
+              Disciplinas
+        </a>
+        <div class="dropdown-menu" aria-labelledby="disciplinasDropdown">
+          <a class="dropdown-item" href="/admin/disciplinas">Ver</a>
+          <a class="dropdown-item" href="/admin/disciplinas/criar">Criar</a>
+        </div>
       </li> 
-
 
       <li class="nav-item">
         <a href="/admin/usuarios" tabindex="-1" aria-disabled="true"

@@ -67,16 +67,16 @@
 	  </thead>
 	  <tbody>
 	    <tr>
-	      <th scope="row">Emitidos</th>
-	      <td>xxx</td>
+	      <th scope="row">Certificados</th>
+	      <td></td>
 	    </tr>
 	    <tr>
-	      <th scope="row">Vizualisados</th>
-	      <td>yyy</td>
+	      <th scope="row">Visualizados</th>
+	      <td></td>
 	    </tr>
 	    <tr>
 	      <th scope="row">Impressos</th>
-	      <td>zz</td>
+	      <td></td>
 	    </tr>
 	  </tbody>
 	</table>

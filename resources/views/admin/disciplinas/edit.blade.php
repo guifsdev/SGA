@@ -9,11 +9,9 @@
 
 @include('partials.menu')
 
-
-
 <div class="container" style="width: 600px; margin-top: 50px">
 	<h4>{{$subject->name}}</h4>
-	<form method="POST" action="/admin/disciplinas/{{$subject->id}}/{{$division->id}}/salvar">
+	<form method="POST" action="/admin/disciplinas/{{$subject->id}}/salvar">
 		{{csrf_field()}}
 		<div class="form-group">
 		    <label for="code">Código</label>
@@ -28,14 +26,14 @@
 		    <input type="number" min="1" max="8" class="form-control" id="period" name="period" value="{{$subject->period}}">
 		</div>
 		<div class="form-group">
-		    <label for="division">Turma</label>
-		    <input type="text" class="form-control" id="division-name" name="division_name" value="{{$division->division_name}}">
+		    <label for="class-name">Turma</label>
+		    <input type="text" class="form-control" id="class-name" name="class-name" value="{{$subject->class_name}}">
 		</div>
 		<div class="form-group">
-		    <label for="code">Ofertada</label>
+		    <label for="offered">Ofertada</label>
 			<select name="offered" class="custom-select custom-select-sm" id="offered">
-				<option value="1" {{$division->offered ? 'selected' : ''}}>Sim</option>
-				<option value="0" {{!$division->offered ? 'selected' : ''}}>Não</option>
+				<option value="1" {{$subject->offered ? 'selected' : ''}}>Sim</option>
+				<option value="0" {{!$subject->offered ? 'selected' : ''}}>Não</option>
 			</select>
 		</div>
 		<div class="form-group">

@@ -16,26 +16,19 @@ Route::get('/estudante/logout', 'StudentAuth\StudentAuthController@logout');
 
 Route::post('/disciplinas', 'SubjectsController@getFromPeriod');
 
+Route::post('/estudante', 'ViewsController@getView');
 Route::get('/estudante', 'StudentsController@index');
+Route::patch('/estudante', 'StudentsController@update');
+Route::get('/certificados/evento/{event}', 'EventsController@certificate')->name('certificate');
 
 Route::post('/ajuste/confirmar', 'AdjustmentsController@confirm');
 Route::post('/ajuste/modificar', 'AdjustmentsController@modify');
 Route::post('/ajuste/salvar', 'AdjustmentsController@store');
 
 Route::get('/admin/disciplinas', 'SubjectsController@index');
-Route::get('/admin/disciplinas/{subject}/{division}', 'SubjectsController@show');
-Route::get('/admin/disciplinas/{subject}/{division}/editar', 'SubjectsController@edit');
-Route::post('/admin/disciplinas/{subject}/{division}/salvar', 'SubjectsController@update');
-
-
-
-//Rotas de certificados
-/*Route::post('/certificados', 'IntentsController@loginCertificates');
-Route::get('/certificados', 'CertificatesController@index');
-Route::post('/certificados/evento/{event}', 'EventsController@certificate')->name('certificate');*/
-
-
-
+Route::get('/admin/disciplinas/{subject}', 'SubjectsController@show');
+Route::get('/admin/disciplinas/{subject}/editar', 'SubjectsController@edit');
+Route::post('/admin/disciplinas/{subject}/salvar', 'SubjectsController@update');
 
 //Rotas de login no sistema de gerenciamento
 Route::get('/admin', 'AdminController@index');
@@ -66,10 +59,6 @@ Route::post('/admin/eventos/criar', 'EventsController@store');
 Route::get('/admin/eventos/{event}', 'EventsController@show');
 Route::get('/admin/eventos/{event}/editar', 'EventsController@edit');
 Route::patch('/admin/eventos/{event}', 'EventsController@update');
-
-
-
-
 Route::get('/admin/eventos/configurar', 'AdminCertificatesController@configure');
 
 

@@ -22,7 +22,7 @@ class AdjustmentsController extends Controller
     //Mostrar o formulário de ajuste
     public function show()
     {
-        return view('ajuste.show');
+        return view('estudante.ajuste.show');
     }
 
     public function modify(Request $request)
@@ -31,7 +31,7 @@ class AdjustmentsController extends Controller
                 'request' => $request,
             ));*/
 
-        $html = view('ajuste.index', compact('request'))->render();
+        $html = view('estudante.ajuste.index', compact('request'))->render();
         return array('success' => true, 'html' => $html);
     }
 
@@ -49,7 +49,7 @@ class AdjustmentsController extends Controller
             ), 422);
         }
 
-        $html = view('ajuste.confirm', compact('request'))->render();
+        $html = view('estudante.ajuste.confirm', compact('request'))->render();
 
         return array('success' => true, 'html' => $html);
     }
@@ -69,7 +69,7 @@ class AdjustmentsController extends Controller
 
 
 
-        $html = view('ajuste.success')
+        $html = view('estudante.ajuste.success')
             ->with([
                 'success' => 'Requerimento enviado com sucesso para análise pelo SGA. 
                               Recomenda-se que o aluno imprima/salve este 
@@ -99,7 +99,7 @@ class AdjustmentsController extends Controller
         if(session()->has(['success', 'userInput']))
         {
             //dd(session('userInput'));
-            return view('ajuste.success')->with([
+            return view('estudante.ajuste.success')->with([
                 'success' => session('success'),
                 'userInput' => session('userInput')
             ]);

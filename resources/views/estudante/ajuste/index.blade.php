@@ -41,7 +41,7 @@
 		  </thead>
 		  <tbody>
 		  	@for($i = 1; $i <= env('MAX_NUM_AJUSTE'); ++$i)
-				@include('ajuste.row')
+				@include('estudante.ajuste.row')
 			@endfor
 		  </tbody>
 		</table>
@@ -49,6 +49,22 @@
 			<button type="submit" class="btn btn-primary" id="confirmar" aria-describedby="aviso">Ajustar plano de estudos</button>
 		</div>
 		<small id="aviso" class="form-text text-muted">Preencha todos os campos do formulário – esta reponsabilidade é do requerente, os documentos incompletos não serão processados.</small>
-	@include('ajuste.errors')
+	@include('partials.errors')
 	</form>
 </div>
+<script>
+$(document).ready(function() {
+	$('button:submit').on('click', function(e) {
+		e.preventDefault();
+		reenableInputs();
+		var form = $('form');
+		var action = '/ajuste/' + $(this).attr('id');
+
+		ajusteAction(form, action);
+	});
+
+	$('.periodo').on('change', function() {
+	    buscarDisciplinas('/ajuste', this);
+	});
+});
+</script>
