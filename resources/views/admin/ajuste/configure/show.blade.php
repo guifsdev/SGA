@@ -5,26 +5,22 @@
 @section('nav_title', 'Configurações do ajuste')
 
 @include('partials.menu')
-<div class="container" style="width: 380px; display: inline-block;">
+<div class="container" style="width: 500px; display: inline-block;">
 <form method="GET" action="/admin/ajuste/config/editar">
   {{csrf_field()}}
   <table class="table">
-    <thead>
-      <tr>
-        <th scope="col" colspan="2" style="text-align: center;">Datas</th>
-        <!-- <th scope="col"></th> -->
-      </tr>
-    </thead>
     <tbody>
       <tr>
         <th scope="row">Data de abertura</th>
-        <td>{{$datas['abertura']}}</td>
+        <td>{{$config['abertura']}}</td>
       </tr>
       <tr>
         <th scope="row">Data de fechamento</th>
-        <td>{{$datas['fechamento']}}</td>
+        <td>{{$config['fechamento']}}</td>
       </tr>
       <tr>
+        <th scope="row">Quantidade de disciplinas por ajustes</th>
+        <td>{{$config['max_ajustes']}}</td>
       </tr>
     </tbody>
   </table>

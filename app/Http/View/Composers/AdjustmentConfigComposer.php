@@ -3,10 +3,9 @@
 namespace App\Http\View\Composers;
 
 use Illuminate\View\View;
-//use App\Repositories\UserRepository;
-use Illuminate\Support\Facades\Auth;
+use App\ConfigAdjustment;
 
-class StudentAttributesComposer
+class AdjustmentConfigComposer
 {
     /**
      * The user repository implementation.
@@ -35,14 +34,7 @@ class StudentAttributesComposer
      */
     public function compose(View $view)
     {
-        $nomeCompleto = Auth::guard('student')->user()->nome;
-        $primeiroNome = ucfirst(strtolower(explode(' ', $nomeCompleto)[0]));
-        $view->with([
-            'student' => Auth::guard('student')->user(),
-            'cpf' => Auth::guard('student')->user()->cpf,
-            'matricula' => Auth::guard('student')->user()->matricula,
-            'nome_completo' => $nomeCompleto,
-            'primeiro_nome' => $primeiroNome]
-        );
+        $config = (new ConfigAdjustment())->getConfig();
+        $view->with(['config' => $config]);
     }
 }

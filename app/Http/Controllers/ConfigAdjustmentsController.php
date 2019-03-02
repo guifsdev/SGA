@@ -13,17 +13,16 @@ class ConfigAdjustmentsController extends Controller
     }
     public function show()
     {
-    	$datas = (new ConfigAdjustment)->dates();
-
-        return view('admin.ajuste.configure.show', compact('datas'));
+    	$config = (new ConfigAdjustment)->getConfig();
+        return view('admin.ajuste.configure.show', compact('config'));
     }
 
     public function edit()
     {
 
-    	$datas = (new ConfigAdjustment())->dates();
+    	$config = (new ConfigAdjustment())->getConfig();
 
-    	return view('admin.ajuste.configure.edit', compact('datas'));
+    	return view('admin.ajuste.configure.edit', compact('config'));
     }
 
     public function save(Request $request)

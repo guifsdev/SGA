@@ -4,35 +4,43 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class ConfigAdjustment extends Model
 {
-    //protected $fillable = ['nome','datas'];
-
-
-    private  $m_dates;
-
+    protected $fillable = ['nome','options'];
+    private $m_config;
 
     public function __construct() {
-    	$config = \DB::table('config_adjustments')->where('nome', 'datas')->first();
-    	$this->m_dates = json_decode($config->options, true);
+    	$config = \DB::table('config_adjustments')->first()->options;
+        $config = json_decode($config, true);
+        $this->m_config = $config;
+        //$this->m_dates = ['abertura' => $config['abertura'], 'fechamento' => $config['fechamento']];
+        //$this->m_maxAdj = $config['max_ajustes'];
     }
 
-
-    public function dates()
+    public function getConfig()
     {
-    	return $this->m_dates;
+        $config = $this->m_config;
+        //dd($config);
+        $config['abertura'] = (new Carbon($config['abertura']))->format('Y-m-d\TH:i:s');
+        $config['fechamento'] = (new Carbon($config['fechamento']))->format('Y-m-d\TH:i:s');
+
+    	return $config;
     }
 
     public static function store(Request $request)
     {
-    	$datas['abertura'] = $request['abertura'];
-    	$datas['fechamento'] = $request['fechamento'];
-//dd(json_encode($datas));
+        //dd($request->abertura);
+        $config = [
+            'abertura' => (new Carbon($request->abertura))->format('Y-m-d\TH:i:s'),
+            'fechamento' => (new Carbon($request->fechamento))->format('Y-m-d\TH:i:s'),
+            'max_ajustes' => $request->max_ajustes,
+        ];
 
-    	$update = ConfigAdjustment::where('nome', 'datas')
+    	$update = ConfigAdjustment::where('nome', 'config')
     		->update([
-    			'options' => json_encode($datas)
+    			'options' => json_encode($config, true),
     		]);
 		
 

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Event;
 use App\Adjustment;
+use App\ConfigAdjustment;
 
 class ViewsController extends Controller
 {
@@ -29,7 +30,7 @@ class ViewsController extends Controller
 
         if($view == 'ajuste' && !Adjustment::isOpen()) {
             return response()->json(['errors' => ['Aguarde período de ajuste.']], 404);
-        }
+        } 
         else if($view == 'certificados') {
             $matricula = Auth::guard('student')->user()->matricula;
             $events = Event::findEvents($matricula);

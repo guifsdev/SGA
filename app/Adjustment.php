@@ -81,10 +81,10 @@ class Adjustment extends Model
 
 	public static function isOpen()
 	{
-		$datas = (new ConfigAdjustment())->dates();
+		$config = (new ConfigAdjustment())->getConfig();
 
-		$abertura = new Carbon($datas['abertura']);
-		$fechamento = new Carbon($datas['fechamento']);
+		$abertura = new Carbon($config['abertura']);
+		$fechamento = new Carbon($config['fechamento']);
 		$now = Carbon::now();
 
 		if(($now >= $abertura) && ($now <= $fechamento)) return true;

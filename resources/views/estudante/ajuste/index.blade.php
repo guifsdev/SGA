@@ -40,7 +40,7 @@
 		    </tr>
 		  </thead>
 		  <tbody>
-		  	@for($i = 1; $i <= env('MAX_NUM_AJUSTE'); ++$i)
+		  	@for($i = 1; $i <= $config['max_ajustes']; ++$i)
 				@include('estudante.ajuste.row')
 			@endfor
 		  </tbody>

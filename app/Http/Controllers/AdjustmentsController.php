@@ -8,6 +8,7 @@ use App\Adjustment;
 use App\Subject;
 use Carbon\Carbon;
 use Validator;
+use App\ConfigAdjustment;
 use App\Mail\AdjustmentSent;
 
 

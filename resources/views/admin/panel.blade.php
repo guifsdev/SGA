@@ -30,7 +30,11 @@
 	    </tr>
 	    <tr>
 	      <th scope="row">Data de abertura</th>
-	      <td>{{$datas['abertura']}}</td>
+	      <td>{{$config['abertura']}}</td>
+	    </tr>
+	    <tr>
+	      <th scope="row">Data de fechamento</th>
+	      <td>{{$config['fechamento']}}</td>
 	    </tr>
 	    <tr>
 	      <th scope="row">Novos</th>

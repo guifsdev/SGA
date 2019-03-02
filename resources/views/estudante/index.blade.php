@@ -5,8 +5,6 @@
 @section('custom_styles')
 <link rel="stylesheet" href="{{asset('css/dashboard.css')}}">
 @endsection
-
-
 @section('content')
 <span class="bckg"></span>
 <header>
