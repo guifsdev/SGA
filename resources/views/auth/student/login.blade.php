@@ -4,9 +4,9 @@
 @section('content')
 <form method="POST" action="/estudante/login" class="form-signin">
     {{csrf_field()}}
-    <h1 class="h3 mb-3 font-weight-normal">Login do Estudante</h1>
+    <h1 class="h3 mb-3 font-weight-normal" style="text-align: center;">Login do Estudante</h1>
     
-    <div class="form-group">
+    <div class="form-group" style="margin-top: 80px">
         <label for="cpf">CPF:</label>
         <input type="text" class="form-control" id="cpf" placeholder="CPF" name="cpf" required>
     </div>
@@ -23,6 +23,7 @@
     </div>
     @endif
 </form>
+@endsection
 
 @section('custom_styles')
 <!-- Custom Signin Template for Bootsrap -->
@@ -30,17 +31,20 @@
 @endsection
 
 @section('custom_scripts')
-<!-- <script type="text/javascript" src="{{ asset('js/jquery.maskedinput-1.1.4.pack.js') }}"></script> -->
 <script type="text/javascript" src="{{ asset('js/my_functions.js') }}"></script>
-
-@endsection
+<script type="text/javascript" src="{{ asset('js/jquery.mask.min.js') }}"></script>
 
 <script type="text/javascript">
-/*$(document).ready(function() {
-    $("#cpf").mask("999.999.999-99");
-    $('button[type=submit]').on('click', chooseRoute);
+$(document).ready(function() {
+    $('#cpf').mask('000.000.000-00', {reverse: true});
 
-});*/
+    $('form').on('submit', function() {
+        var cpf = $('#cpf').val();
+        if(cpf != '') {
+            var stzdCpf = cpf.replace(/[\.-]+/g, '');
+            $('#cpf').val(stzdCpf);
+        }
+    })
+});
 </script>
-
 @endsection

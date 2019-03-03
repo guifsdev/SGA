@@ -21,13 +21,13 @@
 		<div class="form-group">
 			<label for="email">Email:</label>
 			<input type="email" class="form-control" id="email" name="email" 
-				value="{{isset($request['email']) ? $request['email'] : ''}}">
+				value="{{$student->email}}">
 		</div>
 	
 		<div class="form-group">
 			<label for="telefone">Telefone:</label>
 			<input type="tel" class="form-control" id="telefone" name="tel" 
-				value="{{isset($request['tel']) ? $request['tel'] : ''}}">
+				value="{{$student->tel}}">
 		</div>
 		<table class="table table-sm">
 		  <thead>
