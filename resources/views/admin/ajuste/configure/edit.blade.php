@@ -10,15 +10,15 @@
 	{{csrf_field()}}
   <div class="form-group">
     <label for="abertura">Data de abertura:</label>
-    <input type="datetime-local" class="form-control" name="abertura" value="{{$config['abertura']}}">
+    <input type="datetime-local" class="form-control" name="abertura" value="{{$settings['data_abertura']}}">
   </div>  
   <div class="form-group">
     <label for="fechamento">Data de fechamento:</label>
-    <input type="datetime-local" class="form-control" name="fechamento" value="{{$config['fechamento']}}">
+    <input type="datetime-local" class="form-control" name="fechamento" value="{{$settings['data_fechamento']}}">
   </div>
   <div class="form-group">
     <label for="max_ajustes">Quantidade de disciplinas por ajuste:</label>
-    <input type="number" min="1" class="form-control" name="max_ajustes" value="{{$config['max_ajustes']}}">
+    <input type="number" min="1" class="form-control" name="max_ajustes" value="{{$settings['max_ajustes']}}">
   </div>
   
   <button type="submit" class="btn btn-primary">Salvar</button>

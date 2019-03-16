@@ -8,7 +8,6 @@ use App\Adjustment;
 use App\Subject;
 use Carbon\Carbon;
 use Validator;
-use App\ConfigAdjustment;
 use App\Mail\AdjustmentSent;
 
 
@@ -66,9 +65,7 @@ class AdjustmentsController extends Controller
         ];
 
         //disparar e-mail!
-        \Mail::to($request['email'])->send(new AdjustmentSent($attributes));
-
-
+        $mail = \Mail::to($request['email'])->send(new AdjustmentSent($attributes));
 
         $html = view('estudante.ajuste.success')
             ->with([

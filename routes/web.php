@@ -45,14 +45,13 @@ Route::post('/admin/ajuste/deferir', 'AdminAdjustmentsController@defer');
 Route::post('/admin/ajuste/indeferir', 'AdminAdjustmentsController@deny');
 Route::post('/admin/ajuste/filtrar', 'AdminAdjustmentsController@filter');
 //Rotas de configurações do ajuste
-Route::get('/admin/ajuste/config', 'ConfigAdjustmentsController@show');
-Route::get('/admin/ajuste/config/editar', 'ConfigAdjustmentsController@edit');
-Route::post('/admin/ajuste/config/editar', 'ConfigAdjustmentsController@save');
+Route::get('/admin/ajuste/config', 'AdjustmentSettingsController@show');
+Route::get('/admin/ajuste/config/editar', 'AdjustmentSettingsController@edit');
+Route::post('/admin/ajuste/config/editar', 'AdjustmentSettingsController@save');
 //Rotas de configurações dos certificados
 Route::get('/admin/eventos', 'EventsController@index');
 Route::get('/admin/eventos/templates', 'TemplatesController@index');
 Route::post('/admin/eventos/templates', 'TemplatesController@store');
-
 
 Route::get('/admin/eventos/criar', 'EventsController@create');
 Route::post('/admin/eventos/criar', 'EventsController@store');
@@ -60,7 +59,6 @@ Route::get('/admin/eventos/{event}', 'EventsController@show');
 Route::get('/admin/eventos/{event}/editar', 'EventsController@edit');
 Route::patch('/admin/eventos/{event}', 'EventsController@update');
 Route::get('/admin/eventos/configurar', 'AdminCertificatesController@configure');
-
 
 //Auth::routes();
 

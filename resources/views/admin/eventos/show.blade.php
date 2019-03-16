@@ -4,9 +4,9 @@
 
 @section('nav_title', 'Evento')
 
-@include('partials.menu')
-
 @section('content')
+
+@include('partials.menu')
 
 <div class="container">
 	<h3>{{$event['nome']}}</h3>
@@ -28,8 +28,5 @@
 	</p>
 	<a class="btn btn-primary" href="/admin/eventos/{{$event['id']}}/editar" role="button">Editar</a>
 </div>
-
-
-
 
 @endsection

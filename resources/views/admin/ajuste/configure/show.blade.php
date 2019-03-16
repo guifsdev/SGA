@@ -12,15 +12,15 @@
     <tbody>
       <tr>
         <th scope="row">Data de abertura</th>
-        <td>{{$config['abertura']}}</td>
+        <td>{{$settings['data_abertura']}}</td>
       </tr>
       <tr>
         <th scope="row">Data de fechamento</th>
-        <td>{{$config['fechamento']}}</td>
+        <td>{{$settings['data_fechamento']}}</td>
       </tr>
       <tr>
         <th scope="row">Quantidade de disciplinas por ajustes</th>
-        <td>{{$config['max_ajustes']}}</td>
+        <td>{{$settings['max_ajustes']}}</td>
       </tr>
     </tbody>
   </table>

@@ -4,9 +4,8 @@
 
 @section('nav_title', 'Editar Evento')
 
-@include('partials.menu')
-
 @section('content')
+@include('partials.menu')
 <div class="container" style="width: 900px">
 	<form method="POST" action="/admin/eventos/{{$event->id}}">
 	{{csrf_field()}}
@@ -133,7 +132,6 @@
 	</form>
 </div>
 @endsection
-
 
 @section('custom_scripts')
 <script type="text/javascript" src="{{ asset('js/my_functions.js') }}"></script>

@@ -3,7 +3,7 @@
 namespace App\Http\View\Composers;
 
 use Illuminate\View\View;
-use App\ConfigAdjustment;
+use App\Setting;
 
 class AdjustmentConfigComposer
 {
@@ -34,7 +34,7 @@ class AdjustmentConfigComposer
      */
     public function compose(View $view)
     {
-        $config = (new ConfigAdjustment())->getConfig();
-        $view->with(['config' => $config]);
+        $settings = Setting::fromAdjustment();
+        $view->with(['settings' => $settings]);
     }
 }

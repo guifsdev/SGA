@@ -150,9 +150,15 @@ function ajusteAction(form, action)
 			var errors = response['errors'];
 			$('#errors').remove();
 			form.append('<div class="alert alert-danger form-group" role="alert" id="errors"><ul></ul></div>');
-			$.each(errors, function(key, error) {
-				$('#errors ul').append('<li>' + error + '</li>');
-			});
+
+			if(!errors) {
+				$('#errors').prepend('Erro ao enviar requisição. Tente novamente em alguns instantes.');
+			} else {
+				$.each(errors, function(key, error) {
+					$('#errors ul').append('<li>' + error + '</li>');
+				});
+			}
+
 		}
 	});
 }

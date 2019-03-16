@@ -53,7 +53,17 @@
 			  </tbody>
 			</table>
 			<div class="form-group align-center">
-				<button type="submit" class="btn btn-primary" aria-describedby="aviso" id="salvar">Confirmar</button>
+				<!-- <button type="submit" class="btn btn-primary" aria-describedby="aviso" id="salvar">Confirmar</button> -->
+				<!-- <button type="submit" id="salvar" class="btn btn-primary" 
+					data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Salvando">Confirmar</button> -->
+
+				<button type="submit" id="salvar" class="btn btn-primary" type="button">
+				  <!-- <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> -->
+				  Confirmar
+				</button>
+
+				
+
 				<button type="submit" class="btn btn-secondary" aria-describedby="aviso" id="modificar">Modificar</button>
 			</div>	
 	</form>
@@ -65,9 +75,12 @@ $(document).ready(function() {
 	$('button:submit').on('click', function(e) {
 		e.preventDefault();
 		reenableInputs();
-		
-		if($(this).attr('id') == 'salvar') {
-		    $(this).attr('disabled', true);
+
+		var $this = $(this);
+		if($this.attr('id') == 'salvar') {
+			$this.attr('disabled', true);
+			$this.html('Salvando... ');
+			$this.append('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
 		}
 		var form = $('form');
 		var action = '/ajuste/' + $(this).attr('id');

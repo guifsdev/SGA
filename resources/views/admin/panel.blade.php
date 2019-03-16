@@ -26,15 +26,15 @@
 	  <tbody>
 	    <tr>
 	      <th scope="row">Situação</th>
-	      <td>{{$status}}</td>
+	      <td>{{$status ? "Aberto" : "Fechado" }}</td>
 	    </tr>
 	    <tr>
 	      <th scope="row">Data de abertura</th>
-	      <td>{{$config['abertura']}}</td>
+	      <td>{{$settings['data_abertura']}}</td>
 	    </tr>
 	    <tr>
 	      <th scope="row">Data de fechamento</th>
-	      <td>{{$config['fechamento']}}</td>
+	      <td>{{$settings['data_fechamento']}}</td>
 	    </tr>
 	    <tr>
 	      <th scope="row">Novos</th>

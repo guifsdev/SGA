@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use App\ConfigAdjustment;
 use Carbon\Carbon;
+use App\Setting;
 
 class Adjustment extends Model
 {
@@ -81,13 +82,11 @@ class Adjustment extends Model
 
 	public static function isOpen()
 	{
-		$config = (new ConfigAdjustment())->getConfig();
+		$settings = Setting::fromAdjustment();
+		$now = Carbon::now()->format('Y-m-d\TH:i:s');
+		//dd($settings, $now);
 
-		$abertura = new Carbon($config['abertura']);
-		$fechamento = new Carbon($config['fechamento']);
-		$now = Carbon::now();
-
-		if(($now >= $abertura) && ($now <= $fechamento)) return true;
+		if(($now >= $settings['data_abertura']) && ($now <= $settings['data_fechamento'])) return true;
 		else return false;
 	}
 

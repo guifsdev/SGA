@@ -15,7 +15,8 @@
 		</div>
 		<div class="form-group">
 			<label for="nome">Nome completo:</label>
-			<input type="text" class="form-control" id="nome" placeholder="Seu nome" name="nome" 
+			<input type="text" class="form-control" id="nome" placeholder="Seu nome" name="nome"
+				disabled="disabled" 
 				value="{{$nome_completo}}">
 		</div>
 		<div class="form-group">
@@ -40,7 +41,7 @@
 		    </tr>
 		  </thead>
 		  <tbody>
-		  	@for($i = 1; $i <= $config['max_ajustes']; ++$i)
+		  	@for($i = 1; $i <= $settings['max_ajustes']; ++$i)
 				@include('estudante.ajuste.row')
 			@endfor
 		  </tbody>
