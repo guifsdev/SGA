@@ -53,7 +53,7 @@ class LoginController extends Controller
 
     public function login()
     {
-        $credentials = request()->only('matricula', 'password');
+        $credentials = request()->only('cpf', 'password');
         
         if(Auth::attempt($credentials))
         {

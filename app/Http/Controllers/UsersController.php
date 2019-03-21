@@ -35,7 +35,7 @@ class UsersController extends Controller
                 'name' => ['required', 'min:3'],
                 'email' => 'required',
                 'is_admin' => ['required', 'boolean'],
-                'matricula' => 'required',
+                'cpf' => 'required',
                 'password' => 'required'
             ]);
         $attributes['password'] = bcrypt(request('password'));

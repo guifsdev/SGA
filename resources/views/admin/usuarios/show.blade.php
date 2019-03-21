@@ -6,25 +6,23 @@
 
 @include('partials.menu')
 
-<div class="container" style="width: 500px">
+<div class="container" style="width: 500px; margin-top: 20px">
 	<table class="table">
 	  <thead>
 	    <tr>
-	      <th scope="col">Id</th>
 	      <th scope="col">Nome</th>
 	      <th scope="col">Email</th>
-	      <th scope="col">Matricula</th>
-	      <th scope="col">Cargo</th>
+	      <th scope="col">CPF</th>
+	      <th scope="col">Administrador</th>
 	    </tr>
 	  </thead>
 	  <tbody>
 		@foreach($users as $user)
 		<tr>
-		  <th scope="row">{{$user['id']}}</th>
-		  <td>{{$user['name']}}</td>
+		  <th scope="row">{{$user['name']}}</th>
 		  <td>{{$user['email']}}</td>
-		  <td>{{$user['matricula']}}</td>
-		  <td>{{$user['role']}}</td>
+		  <td>{{$user['cpf']}}</td>
+		  <td>{{$user['is_admin'] ? 'Sim' : 'Não'}}</td>
 		</tr>
 		@endforeach
 	  </tbody>

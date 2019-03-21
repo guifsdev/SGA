@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title', 'SGA - Login do estudante')
+@section('title', 'SGA - Gerenciamento')
 
 @section('custom_styles')
 <!-- Custom Signin Template for Bootsrap -->
@@ -13,11 +13,12 @@
 <form method="POST" action="/admin/login" class="form-signin">
     {{csrf_field()}}
 
-    <h1 class="h3 mb-3 font-weight-normal">Gerenciamento de Ajustes e Certificados</h1>
+    <h1 class="h3 mb-3 font-weight-normal" style="text-align: center;">Aplicações SGA</h1>
+    <h3 class="h4 mb-3 font-weight-normal" style="text-align: center; color: gray">Gestão</h3>
 
     <div class="form-group">
-        <label for="matricula">Matricula:</label>
-        <input type="text" class="form-control" id="matricula" autocomplete="on" placeholder="Sua matrícula" name="matricula" required>
+        <label for="cpf">CPF:</label>
+        <input type="text" class="form-control" id="cpf" autocomplete="on" placeholder="Seu CPF" name="cpf" required>
     </div>
 
     <div class="form-group">
@@ -31,8 +32,24 @@
 
     @include('partials.errors')
 </form>
+@endsection
 
+@section('custom_scripts')
+<script type="text/javascript" src="{{ asset('js/jquery.mask.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('js/my_functions.js') }}"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+    $('#cpf').mask('000.000.000-00', {reverse: true});
 
-
+    $('form').on('submit', function() {
+        removeMask($('#cpf'));
+    })
+});
+</script>
 
 @endsection
+
+
+
+
+
