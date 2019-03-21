@@ -57,8 +57,7 @@ class EventsController extends Controller
 
 		$attributes = $this->validateEventAttributes();
     	
-		$attributes['participantes'] = 
-			$this->formatParticipants($request['insertion-method']);
+		//$attributes['participantes'] = $this->formatParticipants($request['insertion-method']);
 
     	$event = Event::create($attributes);
 
@@ -128,7 +127,6 @@ class EventsController extends Controller
 			'duracao' => 'required',
 			'carga_horaria' => 'required',
 			'organizador' => 'required',
-			'template' => 'required',
 		]);
     }
 

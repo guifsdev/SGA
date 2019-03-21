@@ -52,13 +52,15 @@ Route::post('/admin/ajuste/config/editar', 'AdjustmentSettingsController@save');
 Route::get('/admin/eventos', 'EventsController@index');
 Route::get('/admin/eventos/templates', 'TemplatesController@index');
 Route::post('/admin/eventos/templates', 'TemplatesController@store');
-
 Route::get('/admin/eventos/criar', 'EventsController@create');
 Route::post('/admin/eventos/criar', 'EventsController@store');
 Route::get('/admin/eventos/{event}', 'EventsController@show');
 Route::get('/admin/eventos/{event}/editar', 'EventsController@edit');
 Route::patch('/admin/eventos/{event}', 'EventsController@update');
 Route::get('/admin/eventos/configurar', 'AdminCertificatesController@configure');
+
+Route::get('/admin/certificados', 'AdminCertificatesController@index');
+Route::get('/admin/certificados/criar', 'AdminCertificatesController@create');
 
 //Auth::routes();
 

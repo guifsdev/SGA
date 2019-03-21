@@ -65,7 +65,8 @@ class AdjustmentsController extends Controller
         ];
 
         //disparar e-mail!
-        $mail = \Mail::to($request['email'])->send(new AdjustmentSent($attributes));
+        $mail = \Mail::to($request['email'])
+            ->send(new AdjustmentSent($attributes));
 
         $html = view('estudante.ajuste.success')
             ->with([

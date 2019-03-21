@@ -31,19 +31,15 @@
 @endsection
 
 @section('custom_scripts')
-<script type="text/javascript" src="{{ asset('js/my_functions.js') }}"></script>
 <script type="text/javascript" src="{{ asset('js/jquery.mask.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('js/my_functions.js') }}"></script>
 
 <script type="text/javascript">
 $(document).ready(function() {
     $('#cpf').mask('000.000.000-00', {reverse: true});
 
     $('form').on('submit', function() {
-        var cpf = $('#cpf').val();
-        if(cpf != '') {
-            var stzdCpf = cpf.replace(/[\.-]+/g, '');
-            $('#cpf').val(stzdCpf);
-        }
+        removeMask($('#cpf'));
     })
 });
 </script>

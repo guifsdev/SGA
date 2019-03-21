@@ -19,19 +19,22 @@ class ViewsController extends Controller
     public function getView() 
     {
         $availableViews = [
-            'home' => 'estudante.home',
             'meus-dados' => 'estudante.meus-dados',
             'ajuste' => 'estudante.ajuste.index',
-            'certificados' => 'estudante.certificados.index',
             'atualizar' => 'estudante.home',
-            'eventos' => 'estudante.eventos.index',
+            /*'home' => 'estudante.home',
+            'certificados' => 'estudante.certificados.index',
+            'eventos' => 'estudante.eventos.index',*/
+            'certificados' => 'under_construction',
+            'eventos' => 'under_construction',
+            'home' => 'under_construction',
         ];
     	$view = request('view');
 
         if($view == 'ajuste' && !Adjustment::isOpen()) {
             return response()->json(['errors' => ['Aguarde período de ajuste.']], 404);
         } 
-        else if($view == 'certificados') {
+        /*else if($view == 'certificados') {
             $matricula = Auth::guard('student')->user()->matricula;
             $events = Event::findEvents($matricula);
 
@@ -40,7 +43,7 @@ class ViewsController extends Controller
             }
             $html = view($availableViews[$view], compact('events'))->render();
             return array('success' => true, 'html' => $html);
-        }
+        }*/
 
     	$html = view($availableViews[$view])->render();
     	return array('success' => true, 'html' => $html);

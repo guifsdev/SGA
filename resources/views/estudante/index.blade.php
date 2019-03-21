@@ -56,6 +56,6 @@ $(document).ready( function() {
 
 }); //end ready
 </script>
-
+<script type="text/javascript" src="{{ asset('js/jquery.mask.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('js/my_functions.js') }}"></script>
 @endsection

@@ -1,8 +1,8 @@
 @component('mail::message')
 # Recebemos os seu requerimento de ajuste.
 
-Comunicamos que recebemos com sucesso sua solicitação. 
-Segue abaixo as disciplinas passiveis de alteração no seu plano de estudos conforme requerimento.
+Comunicamos que recebemos com sucesso sua solicitação de ajuste de disciplinas. 
+Seguem abaixo as disciplinas passíveis de alteração em seu plano de estudos conforme seu requerimento.
 
 @component('mail::table')
 |Periodo | Disciplina | Requerimento |
@@ -14,11 +14,6 @@ Segue abaixo as disciplinas passiveis de alteração no seu plano de estudos con
 
 Informamos que o resultado estará disponível no idUFF.
 
-
-@component('mail::button', ['url' => ''])
-Button Text
-@endcomponent
-
 Obrigado,<br>
-{{ config('app.name') }}
+Coordenação do curso de Administração da Universidade Federal Fluminense.
 @endcomponent

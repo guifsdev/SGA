@@ -16,9 +16,13 @@ class Event extends Model
     	'duracao', 
     	'carga_horaria',
     	'organizador',
-    	'participantes',
-    	'template'
 	];
+
+    //event->certificates > []
+    public function certificates() {
+        return $this->hasMany('App\Certificate');
+    }
+
 
     public static function findEvents($matricula)
     {

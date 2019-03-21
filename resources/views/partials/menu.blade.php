@@ -34,6 +34,21 @@
 
       <li class="nav-item dropdown">
         <a href="#"
+            tabindex="-1" aria-disabled="true" id="certificadosDropdown"
+            role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+            class="nav-link dropdown-toggle">
+              Certificados
+        </a>
+        <div class="dropdown-menu" aria-labelledby="certificadosDropdown">
+          <a class="dropdown-item" href="/admin/certificados">Ver</a>
+          <a class="dropdown-item" href="/admin/certificados/criar">Criar</a>
+        </div>
+      </li> 
+
+
+
+      <li class="nav-item dropdown">
+        <a href="#"
             tabindex="-1" aria-disabled="true" id="disciplinasDropdown"
             role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
             class="nav-link dropdown-toggle {{Auth::user()->is_admin ? '' : 'disabled'}}">

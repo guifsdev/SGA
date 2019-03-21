@@ -2,20 +2,16 @@ $(document).ready(function() {
 	csvFileContents = '';
     counter = 1;
 
-
-
-
-	$('#csv-file').on('change', function() {
+	/*$('#csv-file').on('change', function() {
 		readFile(this);
 	});
 
-	$('#metodo-inserir').on('change', changeInsertionMethod);
+	$('#metodo-inserir').on('change', changeInsertionMethod);*/
 
     $("#addrow").on("click", function () {
         var newRow = $("<tr>");
         var cols = "";
 
-		cols += '<td><input type="text" class="form-control" id="nome-participante" name="nome-participante[' + counter + ']"></td>';
 		cols += '<td><input type="text" class="form-control" id="cpf-participante"  name="cpf-participante[' + counter + ']"></td>';
 		cols += '<td><input type="text" class="form-control" id="matricula-participante" name="matricula-participante[' + counter + ']"></td>';
 		cols += '<td><input type="email" class="form-control" id="email-participante" name="email-participante[' + counter + ']"></td>';

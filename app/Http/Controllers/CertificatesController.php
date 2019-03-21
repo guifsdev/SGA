@@ -9,4 +9,5 @@ use Illuminate\Support\Facades\Auth;
 
 class CertificatesController extends Controller
 {
+	
 }

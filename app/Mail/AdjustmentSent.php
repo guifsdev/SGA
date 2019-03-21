@@ -33,6 +33,9 @@ class AdjustmentSent extends Mailable
      */
     public function build()
     {
-        return $this->markdown('mail/adjustment-sent');
+        return $this
+            ->subject('Ajuste de Disciplinas')
+            ->replyTo('sga@vm.uff.br')
+            ->markdown('mail/adjustment-sent');
     }
 }

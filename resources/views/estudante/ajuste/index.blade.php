@@ -55,8 +55,11 @@
 </div>
 <script>
 $(document).ready(function() {
+	$('#telefone').mask('(00) 00000-0000');
+
 	$('button:submit').on('click', function(e) {
 		e.preventDefault();
+		removeMask($('#telefone'));
 		reenableInputs();
 		var form = $('form');
 		var action = '/ajuste/' + $(this).attr('id');

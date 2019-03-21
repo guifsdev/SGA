@@ -49,12 +49,22 @@
         @include('partials.errors')
     </form>
 </div>
+
+
+
 <script>
 $(document).ready(function() {
+    $('#telefone').mask('(00) 00000-0000');
+
     $('form').on('submit', function(e) {
         e.preventDefault();
         let form = $('form');
         updateStudentData(form);
+        removeMask($('#telefone'));
     });
+
+
+
+
 });
 </script>

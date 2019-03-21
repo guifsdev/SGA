@@ -13,14 +13,13 @@
 	<table class="table table-sm" style="margin-top: 50px">
 		<thead>
 		<tr>
-		  <th scope="col"">Nome</th>
+		  <th scope="col">Nome</th>
 		  <th scope="col">Local</th>
 		  <th scope="col">Data</th>
 		  <th scope="col">Tipo</th>
 		  <th scope="col">Duração</th>
 		  <th scope="col">Carga horária</th>
 		  <th scope="col">Organizador</th>
-		  <th scope="col">Template</th>
 		</tr>
 		</thead>
 		<tbody>
@@ -34,7 +33,6 @@
 				<td>{{$event['duracao']}}</td>
 				<td>{{$event['carga_horaria']}}</td>
 				<td>{{$event['organizador']}}</td>
-				<td>{{$event['template']}}</td>
 			</tr>
 			@endforeach
 

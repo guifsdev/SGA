@@ -5,7 +5,7 @@
 		<table class="table table-sm">
 			<thead>
 			<tr>
-			  <th scope="col"">Evento</th>
+			  <th scope="col">Evento</th>
 			  <th scope="col">Tipo</th>
 			  <th scope="col">Carga horária</th>
 			  <th scope="col">Organizador</th>
@@ -28,12 +28,6 @@
 					</td>
 				</tr>
 				@endforeach
-
-				<!-- <input type="hidden" value="" name="nome">
-				<input type="hidden" value="" name="email">
-				<input type="hidden" value="" name="cpf">
-				<input type="hidden" value="" name="matricula"> -->
-
 			</tbody>
 		</table>
 

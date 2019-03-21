@@ -12,4 +12,9 @@ class Student extends Authenticatable
     protected $fillable = ['nome', 'email', 'tel'];
 
 
+    //student->certificates > [c1, c2, ...]
+    public function certificates() {
+    	return $this->hasMany('App\Certificate');
+    }
+    
 }

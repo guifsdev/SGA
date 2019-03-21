@@ -79,6 +79,11 @@ function buscarDisciplinas(route = '/ajuste', selected = null)
 		}
 	});
 }
+
+function removeMask(input) {
+	input.val(input.cleanVal());
+}
+
 function updateStudentData(form) {
 	$.ajaxSetup({
 	    headers: {
