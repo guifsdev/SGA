@@ -19,9 +19,10 @@ class CreateStudentsTable extends Migration
             $table->string('cpf');
             $table->string('nome');
             $table->float('cr');
-            $table->integer('cha');
+            $table->integer('cha')->nullable();
             $table->integer('chc')->nullable();
-            $table->integer('cht');
+            $table->integer('cht')->nullable();
+            $table->integer('chs')->nullable();
             $table->string('localidade');
             $table->string('curriculo');
             $table->string('curso');

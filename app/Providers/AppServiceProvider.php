@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Auth;
+use Faker\Factory as FakeFactory;
+use Illuminate\Support\Facades\Blade;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -14,9 +16,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-
-        /*$config = (new ConfigAdjustment())->getConfig();
-        View::share($config);*/
         
     }
 
@@ -27,6 +26,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->singleton(FakerGenerator::class, function () {
+            return FakerFactory::create('pt_BR');
+        });
     }
 }

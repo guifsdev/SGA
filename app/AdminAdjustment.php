@@ -8,9 +8,4 @@ use App\Adjustment;
 
 class AdminAdjustment extends Model
 {
-    public static function show()
-    {
-    	return Adjustment::all();
-
-    }
 }

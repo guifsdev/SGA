@@ -18,18 +18,10 @@ class AdminController extends Controller
 	}
 
 
-    public function index()
-    {
+    public function index() {
+        $adjustment = Adjustment::info();
 
-        $count = Adjustment::all()->count();
-        $status = Adjustment::isOpen();
-
-        $pendentes = Adjustment::where('resultado', 'Pendente')->count();
-        $deferidos = Adjustment::where('resultado', 'Deferido')->count();
-        $indeferidos = Adjustment::where('resultado', 'Indeferido')->count();
-        $novos = Adjustment::recent()->count();
-        $settings = Setting::fromAdjustment();
-    	return view('admin.panel', compact('count', 'status', 'settings', 'pendentes', 'deferidos', 'indeferidos', 'novos'));
+    	return view('admin.panel', compact('adjustment'));
     }
     
 }

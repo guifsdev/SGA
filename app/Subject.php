@@ -3,19 +3,24 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Division;
 
 class Subject extends Model
 {
-    //Subject->divisions
     protected $fillable = ['name', 'period', 'code', 'offered'];
 
-    public function divisions()
-    {	
+    public static function addNames($adjustments) {
+        $out = array();
+        foreach ($adjustments as $adjustment) {
+            $subject = Subject::find($adjustment['subjectId']);
+            $adjustment['subject'] = $subject;
+            $adjustment['subject_name'] = $subject->name;
+            $adjustment['class_name'] = $subject->class_name;
+            $adjustment['period'] = $subject->period;
+            array_push($out, $adjustment);
+        }
+        return $out;
     }
-
-    public function fromPeriod($period)
-    {
+    public static function fromPeriod($period) {
         $subjects = Subject::where('period', $period)
             ->where('offered', true)
             ->get();

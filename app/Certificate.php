@@ -6,13 +6,39 @@ use Illuminate\Database\Eloquent\Model;
 
 class Certificate extends Model
 {
-    //certificate->students > [student1, student2, ...]
-    public function student() {
-    	return $this->belongsTo('App\Student');
-    }
+	protected $guarded = [];
 
-    //certificate->event > event
+
     public function event() {
-    	return $this->belognsTo('App\Event');
+    	return $this->belongsTo('App\Event');
+    }
+    public function store($attributes) {
+        $queryType;
+        //existe um estudante que participou no evento.
+        $certificate = Certificate::where([
+            'student_id' => $attributes['student_id'],
+            'event_id' => $attributes['event_id'],
+        ]);
+
+        if($certificate->count() > 0) {
+            $queryType = 'update';
+            $certificate->update(['template' => $attributes['template']]);
+            $certificate = Certificate::where($attributes)->first();
+        }
+        else {
+            $queryType = 'create';
+            $certificate = Certificate::create($attributes);
+        }
+
+        if($certificate) {
+            $studentData = array(
+                'nome' => $certificate->student->nome,
+                'cpf' => $certificate->student->cpf,
+                'email' => $certificate->student->email,
+                'matricula' => $certificate->student->matricula);
+            return array('success' => true, 'student' => $studentData, 'queryType' => $queryType);
+        }
+        return array('success' => false);
+
     }
 }

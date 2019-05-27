@@ -26,7 +26,6 @@ class EventsController extends Controller
 
     public function show(Event $event)
     {
-    	//dd($event);
     	return view('admin.eventos.show', compact('event'));
     }
 
@@ -34,38 +33,30 @@ class EventsController extends Controller
     public function edit(Event $event)
     {
     	Event::findOrFail($event->id);
-        //$templates = $this->getTemplateList();
     	$templates = Template::listNames();
-
-    	return view('admin.eventos.edit', compact('event', 'templates'));
+    	return view('admin.eventos.edit', compact('event'));
     }
 
     public function update(Event $event)
     {
-    	$attributes = $this->validateEventAttributes();
+        $attributes = $this->validateEventAttributes();
+        $event->update($attributes);
 
-    	$attributes['participantes'] = 
-			$this->formatParticipants(request('insertion-method'));
-		$event->update($attributes);
-		return redirect('admin/eventos')->with(['success' => 'Evento atualizado com sucesso.']);
+        return response([
+            'success' => true, 
+            'message' => 'Evento atualizado com sucesso.']);
     }
 
-
-
-    public function store(Request $request)
-    {
-
+    public function store(Request $request) {
 		$attributes = $this->validateEventAttributes();
-    	
-		//$attributes['participantes'] = $this->formatParticipants($request['insertion-method']);
-
     	$event = Event::create($attributes);
 
-		return redirect('admin/eventos')->with(['success' => 'Evento criado com sucesso.']);
+        return response([
+            'success' => true,
+            'message' => 'Evento criado com sucesso.',]);
     }
 
-    public function formatParticipants($insertionMethod) 
-    {
+    public function formatParticipants($insertionMethod) {
 
     	if($insertionMethod == 'csv') {
     		request()->validate(['file-contents' => 'required']);
@@ -128,31 +119,6 @@ class EventsController extends Controller
 			'carga_horaria' => 'required',
 			'organizador' => 'required',
 		]);
-    }
-
-    public function certificate(Event $event)
-    {
-        $participant = Auth::guard('student')->user();
-    	return \PDF::loadView('estudante.certificados.show', compact('event','participant'))
-    		->setPaper('a4', 'landscape')
-            ->stream('certificado-sga.pdf');
-        /*$template = new Template();
-        $template = $template->getFile($event['template']);
-        
-        if(!$template) {
-            return back()->with([
-                'no_template' => 'Nenhum template disponível para este evento. Perturbe o seu coordenador!',
-                'cpf' => request('cpf'),
-                'matricula' => request('matricula'),
-            ]);
-        }
-
-        $participant = [
-            'nome' => request('nome'),
-            'email' =>  request('email'),
-            'cpf' => request('cpf'),
-            'matricula' => request('matricula')
-        ];*/
     }
 
     public function create()

@@ -26,31 +26,31 @@
 	  <tbody>
 	    <tr>
 	      <th scope="row">Situação</th>
-	      <td>{{$status ? "Aberto" : "Fechado" }}</td>
+	      <td>{{$adjustment['status']}}</td>
 	    </tr>
 	    <tr>
 	      <th scope="row">Data de abertura</th>
-	      <td>{{$settings['data_abertura']}}</td>
+	      <td>{{$adjustment['settings']['data_abertura']}}</td>
 	    </tr>
 	    <tr>
 	      <th scope="row">Data de fechamento</th>
-	      <td>{{$settings['data_fechamento']}}</td>
+	      <td>{{$adjustment['settings']['data_fechamento']}}</td>
 	    </tr>
 	    <tr>
 	      <th scope="row">Novos</th>
-	      <td>{{$novos}}</td>
+	      <td>{{$adjustment['new']}}</td>
 	    </tr>
 	    <tr>
 	      <th scope="row">Deferidos</th>
-	      <td>{{$deferidos}}</td>
+	      <td>{{$adjustment['deferred']}}</td>
 	    </tr>
 	    <tr>
 	      <th scope="row">Indeferidos</th>
-	      <td>{{$indeferidos}}</td>
+	      <td>{{$adjustment['denied']}}</td>
 	    </tr>
 	    <tr>
 	      <th scope="row">Pendentes</th>
-	      <td>{{$pendentes}}</td>
+	      <td>{{$adjustment['pending']}}</td>
 	    </tr>
 	  </tbody>
 	</table>

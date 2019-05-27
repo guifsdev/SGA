@@ -2,10 +2,9 @@
   <td scope="row">
 	<select class="custom-select custom-select-sm periodo" id="{{$i}}" name="periodo-ajuste[{{$i}}]">
 	  	<option selected disabled hidden value="dummy">Selecione</option>
-
-	  @for($j = 1; $j <= 8; ++$j)
-		<option value="{{$j}}">{{$j}}</option>
-	  @endfor
+		@for($j = 1; $j <= 8; ++$j)
+			<option value="{{$j}}">{{$j}}</option>
+		@endfor
 	</select>
   </td>
 
@@ -25,7 +24,5 @@
 	  <input class="form-check-input acao" type="radio" name="acao-ajuste[{{$i}}]" id="excluir-disciplina-{{$i}}" value="excluir">
 	</div>
   </td>
+  <input type="hidden" name="subject-id[{{$j}}]" value="">
 </tr>
-
-<script type="text/javascript">
-</script>

@@ -16,8 +16,11 @@ class CreateCertificatesTable extends Migration
         Schema::create('certificates', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('event_id');
-            $table->string('student_id');
+            $table->string('attendant_name');
+            $table->string('cpf');
             $table->string('template');
+            $table->string('email')->nullable();
+            $table->string('matricula')->nullable();
             $table->timestamps();
         });
     }

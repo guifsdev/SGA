@@ -1,5 +1,5 @@
 @component('mail::message')
-# Recebemos os seu requerimento de ajuste.
+# Olá {{$primeiro_nome}},
 
 Comunicamos que recebemos com sucesso sua solicitação de ajuste de disciplinas. 
 Seguem abaixo as disciplinas passíveis de alteração em seu plano de estudos conforme seu requerimento.
@@ -7,8 +7,8 @@ Seguem abaixo as disciplinas passíveis de alteração em seu plano de estudos c
 @component('mail::table')
 |Periodo | Disciplina | Requerimento |
 |:-------|:-----------|:-------------|
-@foreach($attributes['periodo-ajuste'] as $key => $periodo)
-| {{$periodo}} | {{$attributes['disciplina-ajuste'][$key]}} | {{$attributes['acao-ajuste'][$key]}} |
+@foreach($adjustments as $adjustment)
+| {{$adjustment['period']}} | {{$adjustment['subject_name']}} | {{$adjustment['action'] == '1' ? 'Incluir' : 'Excluir'}} |
 @endforeach
 @endcomponent
 

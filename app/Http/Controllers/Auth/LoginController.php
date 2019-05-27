@@ -39,7 +39,7 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
-        $this->middleware('guest:student')->except('logout');
+        //$this->middleware('guest:student')->except('logout');
     }
 
     /*public function showtudentLogin()
@@ -60,7 +60,7 @@ class LoginController extends Controller
             return redirect('/admin');
         }
         //else redirect('admin/login');
-        else return redirect()->route('login')->withErrors(['Matricula ou senha incorretos.']);
+        else return redirect()->route('login')->withErrors(['Nenhum usuário encontrado para os dados digitados.']);
     }
 
     public function logout()

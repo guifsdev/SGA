@@ -6,7 +6,7 @@ use Illuminate\Database\Migrations\Migration;
 
 class CreateAdjustmentsTable extends Migration
 {
-    /**
+    /*
      * Run the migrations.
      *
      * @return void
@@ -15,16 +15,13 @@ class CreateAdjustmentsTable extends Migration
     {
         Schema::create('adjustments', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('nome');
-            $table->string('cpf');
-            $table->string('matricula');
-            $table->string('email');
-            $table->string('tel');
-            $table->integer('periodo');
-            $table->string('disciplina');
-            $table->string('requerimento');
-            $table->string('motivo_indeferido')->nullable();
-            $table->string('resultado')->nullable();
+            $table->integer('student_id');
+            $table->string('email')->nullable();
+            $table->string('subject_id')->nullable();
+            $table->string('action');
+            $table->string('validation_string')->nullable();
+            $table->string('reason_denied')->nullable();
+            $table->string('result')->nullable();
             $table->timestamps();
 
         });

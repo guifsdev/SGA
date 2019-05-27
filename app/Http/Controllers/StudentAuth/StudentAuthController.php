@@ -29,7 +29,7 @@ class StudentAuthController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/estudante';
+    protected $redirectTo = '/estudante/';
 
     protected $guard = 'student';
 
@@ -55,7 +55,7 @@ class StudentAuthController extends Controller
             
         Auth::guard('student')->loginUsingId($student->id);
 
-        return redirect('/estudante');
+        return redirect('/estudante/');
 
     }
 

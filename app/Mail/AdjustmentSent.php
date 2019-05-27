@@ -16,14 +16,15 @@ class AdjustmentSent extends Mailable
      *
      * @return void
      */
-    public $attributes;
+    public $adjustments;
+    public $studentData;
 
 
 
-    public function __construct($attributes)
+    public function __construct($student, $adjustments)
     {
-        //
-        $this->attributes = $attributes;
+        $this->student = $student;
+        $this->adjustments = $adjustments;
     }
 
     /**

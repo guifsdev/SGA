@@ -12,7 +12,7 @@ class SubjectsController extends Controller
 
 	public function __construct()
 	{
-		$this->middleware('admin')->except('getFromPeriod');
+		//$this->middleware('admin')->except('subjects');
 	}
 
     public function index()
@@ -31,9 +31,9 @@ class SubjectsController extends Controller
     	return view('admin.disciplinas.edit', compact('subject'));
     }
 
-    public function getFromPeriod() 
+    public function subjects(Request $request) 
     {
-        $subjects = (new Subject())->fromPeriod(request('periodo'));
+        $subjects = Subject::fromPeriod($request->period);
         return response()->json($subjects);
     }
 

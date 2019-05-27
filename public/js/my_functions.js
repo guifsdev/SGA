@@ -1,4 +1,10 @@
-function getView(view) {
+function adjustModify() {
+	let studentData = {};
+	$('#student_data input').each(function() {
+		studentData[this.name] = this.value;
+	});
+
+
 	$.ajaxSetup({
 	    headers: {
 	        'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
@@ -6,10 +12,10 @@ function getView(view) {
 	});
 
 	$.ajax({
-		url: '/estudante',
+		url: '/ajuste/modificar',
 		type: 'POST',
 		data: {
-			'view': view
+			'student_data': studentData
 		},
 		dataType: 'JSON',
 		success: function(response) {
@@ -27,63 +33,209 @@ function getView(view) {
 			});
 		}
 	});
-
 }
-function buscarDisciplinas(route = '/ajuste', selected = null)
-{
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
-        }
-    });
+function adjustConfirm() {
+	let subjectId = [], 
+		action  = [];
+	let adjustments = [];
 
-    //em 'admin/ajuste' o select do período é: $('select[name=periodo]')
-    //em '/ajuste' é $('.periodo')
+	['subject_id', 'action'].forEach(column => {
+		$('.' + column + ' option:selected[value != ""]').each(function(data) {
+			if(column == 'subject_id') subjectId.push(this.value);
+			if(column == 'action') action.push(this.value);
+		});
+	});
+	console.log('subject: ', subjectId, 'action: ', action);
 
-    var periodo, colDisciplinas;
+	//malfilled form
+	if(subjectId.length != action.length) {
+		$('#errors').remove();
+		$('form#adjustment').append('<div class="alert alert-danger form-group" role="alert" id="errors"><ul></ul></div>');
+		$('#errors ul').append('<li>Preenchimento incorreto.</li>');
+		return;
+	} 
+	//tranform the arrays in a json obj
+	else {
+		for(let i = 0; i < subjectId.length; ++i) {
+			let adjust = {};
+			adjust.subjectId = subjectId[i];
+			adjust.action = action[i];
+			adjustments.push(adjust);
+		}
+		console.log('confirming adjustments: ', adjustments);
+	}
 
-    if(route === '/ajuste')
-    {
-		var row = $(selected).parents(':eq(1)');
-		periodo = row.find('.periodo :selected').text();
-		colDisciplinas = row.find('.disciplina');
-    }
+	$('#telefone').unmask();
 
-    else if(route === '/admin/ajuste') {
-    	//console.log(route);
+	let studentData = {};
 
-    	periodo = $('select[name=periodo] :selected').text();
-    	colDisciplinas = $('select[name=disciplina]');
-    }
-    
-	//Limpar conteudo da coluna de disciplinas
-	colDisciplinas.html('');
+	$('#student_data input').each(function() {
+		studentData[this.name] = this.value;
+	});
 
-	//Coletar as disciplinas do periodo selecionado
+	$.ajaxSetup({
+	    headers: {
+	        'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+	    }
+	});
+	$.ajax({
+		url: '/ajuste/confirmar',
+		type: 'POST',
+		data: {
+			'student_data': studentData,
+			'adjustments': adjustments,
+		},
+		dataType: 'JSON',
+		success: function(response) {
+			//console.log(response);
+			$('#view').html(response.html);
+		},
+		error: function(data) {
+			$('#telefone').mask('(00) 00000-0000');
+			$('#errors').remove();
+			$('form#adjustment').append('<div class="alert alert-danger form-group" role="alert" id="errors"><ul></ul></div>');
+			let error = data.responseJSON;
+
+			if(error.reason) {
+				$('#errors ul').append('<li>' + error.reason + '</li>');
+			}
+		}
+	});
+}
+function adjustSave() {
+	let studentData = {};
+	let subjectId = [], 
+		action  = [];
+	let adjustments = [];
+
+
+	['action', 'subject_id'].forEach(column => {
+		$('input.' + column).each(function(data) {
+			if(column == 'action') action.push(this.value);
+			if(column == 'subject_id') subjectId.push(this.value);
+		});
+	});
+	for(let i = 0; i < subjectId.length; ++i) {
+		let adjust = {};
+		adjust.action = action[i];
+		adjust.subjectId = subjectId[i];
+
+		adjustments.push(adjust);
+	}
+	console.log('saving adjustments: ' + JSON.stringify(adjustments));
+	
+	$('#save').attr('disabled', true)
+		.html('Salvando... ')
+		.append('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
+	//console.log(`save: ${save}, route: ${route}, adjustments: ${adjustments}`);
+
+	$('#student_data input').each(function() {
+		studentData[this.name] = this.value;
+	});
+
+	$.ajaxSetup({
+	    headers: {
+	        'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+	    }
+	});
+	$.ajax({
+		url: '/ajuste/salvar',
+		type: 'POST',
+		data: {
+			'student_data': studentData,
+			'adjustments': adjustments,
+		},
+		dataType: 'JSON',
+		success: function(response) {
+			//console.log(response);
+			$('#view').html(response.html);
+		},
+		error: function(data) {
+			$('#errors').remove();
+			$('form#adjustment').append('<div class="alert alert-danger form-group" role="alert" id="errors"><ul></ul></div>');
+			let error = data.responseJSON;
+
+			if(error.reason) {
+				$('#errors ul').append('<li>' + error.reason + '</li>');
+			}
+		}
+	});
+}
+function loadDashboardView(route) {
+	$.ajaxSetup({
+	    headers: {
+	        'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+	    }
+	});
+	$.ajax({
+		url: route,
+		type: 'POST',
+		data: {
+			'route': route
+		},
+		dataType: 'JSON',
+		success: function(response) {
+			$('#view').empty();
+			$('#view').html(response.html);
+		},
+		error: function(e) {
+			var response = JSON.parse(e.responseText);
+			var errors = response['errors'];
+			$('#view').empty();
+			
+			$('#view').append('<div class="alert alert-danger form-group" role="alert" id="errors"><ul></ul></div>');
+			$.each(errors, function(key, error) {
+				$('#errors ul').append('<li>' + error + '</li>');
+			});
+		}
+	});
+}
+//substitui buscarDisciplinas
+function getAdjustSubjects(period, row) {
+	let subjects = row.find('#subject'),
+		action = row.find('#action');
+	if(!period) {
+		subjects.empty().append('<option value="">Selecione</option>');
+		action.empty().append('<option value="">Selecione</option>');
+		return;
+	}
+
+	$.ajaxSetup({
+	    headers: {
+	        'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+	    }
+	});
+
 	$.ajax({
 		url: '/disciplinas',
 		type: 'POST',
 		data: {
-			'periodo' : periodo
+			'period' : period
 		},
 		dataType: 'JSON',
 		success: function(response) {
-			if(route === '/admin/ajuste') colDisciplinas.append('<option value="Todos">Todas</option>');
-
-			for(var i = 0; i < response.length; ++i) {
-				colDisciplinas.append('<option>' + response[i]['name'] + ' ' + response[i]['class_name'] + '</option>');
+			//console.log(response);
+			subjects.empty();
+			action.empty();
+			for(let i = 0; i < response.length; ++i) {
+				let attributes = response[i],
+					subjectName = attributes['name'],
+					className = attributes['class_name'],
+					subjectId = attributes['id'];
+				subjects.append('<option value="'+ subjectId +'">' + subjectName + ' ' + className + '</option>');
 			}
+			subjects.find('option').eq(0).remove();
+
+			action.append('<option value="">Selecione</option>' +
+						  '<option value="1">Incluir</option>' +
+						  '<option value="0">Excluir</option>');
+
 		},
 		error: function(data) {
-			//console.log("Error: " + JSON.stringify(data));
+			console.log("Error: " + JSON.stringify(data));
 		}
 	});
 }
-
-function removeMask(input) {
-	input.val(input.cleanVal());
-}
-
 function updateStudentData(form) {
 	$.ajaxSetup({
 	    headers: {
@@ -115,148 +267,19 @@ function updateStudentData(form) {
 	});
 }
 
-function sendFilterParams(form) 
-{
-	//Remover o nome dos inputs desmarcados
-	var checkboxes = form.find('input[type=checkbox]').each(function() {
-		var input = $(this);
-		var inputSiblings = $(this).siblings('.input-filtros');
-
-		//Não está marcada ou está marcada 
-		if(! input.is(':checked') || (input.is(':checked') && (inputSiblings.val() === 'Todos'))) {
-			//console.log(inputSiblings.val())
-			inputSiblings.removeAttr('name');
-		}
-		//TODO Remover nome de filtros com select em 'Todos'
-	});
-}
-
-function ajusteAction(form, action)
-{
-	removeDisabledAttributes();
-	var formData = $(form).serialize();
-	$.ajaxSetup({
-	    headers: {
-	        'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
-	    }
-	});
-
-	$.ajax({
-		url: action,
-		type: 'POST',
-		data: formData,
-		dataType: 'JSON',
-		success: function(response) {
-			//console.log(response);
-			$('#view').html(response.html);
-		},
-		error: function(e) {
-			var response = JSON.parse(e.responseText);
-			var errors = response['errors'];
-			$('#errors').remove();
-			form.append('<div class="alert alert-danger form-group" role="alert" id="errors"><ul></ul></div>');
-
-			if(!errors) {
-				$('#errors').prepend('Erro ao enviar requisição. Tente novamente em alguns instantes.');
-			} else {
-				$.each(errors, function(key, error) {
-					$('#errors ul').append('<li>' + error + '</li>');
-				});
-			}
-
-		}
-	});
-}
-function removeDisabledAttributes() 
-{
-	var cpf = $('#cpf');
-	var matricula = $('#matricula');
-
-	cpf.prop('disabled', false);
-	matricula.prop('disabled', false);
-}
-function bulkSelect()
-{
-	//console.log('bulkSelect');
-	liberarDeferir();
-	var checkLinhas = $('.checkable').filter(function(){
-		var row = $(this).closest('tr');
-		if(row.css('display') === 'none') return false;
-		else return true;
-	});
-
-	if($(this).is(':checked')) {
-		//excluir os não visiveis
-
-		if(!checkLinhas.is(':checked')) {
-			checkLinhas.prop('checked', true);
-		}
-	}
-	else checkLinhas.prop('checked', false);
-}
-function liberarDeferir()
-{
-	var deferirBtn = $('#deferir');
-	var elements = $('#requerimentos').find('input[type=checkbox]:checked');
-	elements.length >= 1 ? deferirBtn.prop('disabled', false) : deferirBtn.prop('disabled', true);
-}
-function toggleActionButtons()
-{
-	var acoesBtns = $('#acoes-btns button');
-	var elements = $('#requerimentos').find('input[type=checkbox]:checked');
-	if(elements.length == 0) acoesBtns.prop('disabled', true);
-}
-function processarAjuste(acao)
-{	
-	var route = '/admin/ajuste/' + $(acao).attr('id');
-	//Se o botão de ação clicado for deferir, 
-
-
-	var form = $('form');
-	form.find('tbody tr').each(function() {
-		var check = $(this).find('input[type=checkbox]');
-
-		if(!check.is(':checked')) {
-			$(this).find('input[type=hidden]').removeAttr('name');
-		}
-	});
-
-	//Implementar Ajax
-	$.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
-        }
-    });
-
-	$.ajax({
-			url: route,
-			type: 'POST',
-			data: form.serialize(),
-			success: function(response) {
-				//console.log('Success: ' + JSON.stringify(response));
-				atualizarTabela();
-			},
-			error: function(data) {
-				//console.log("Error: " + JSON.stringify(data));
-			}
-	});
-}
-
 //Table add row Dynamically
 //https://bootsnipp.com/snippets/402bQ
-function calculateRow(row) 
-{
+/*function calculateRow(row) {
     var price = +row.find('input[name^="price"]').val();
+}*/
 
-}
-
-function calculateGrandTotal() {
+/*function calculateGrandTotal() {
     var grandTotal = 0;
     $("table.order-list").find('input[name^="price"]').each(function () {
         grandTotal += +$(this).val();
     });
     $("#grandtotal").text(grandTotal.toFixed(2));
-}
+}*/
 function changeInsertionMethod()
 {
 	var method = $(this).find(':selected').val();
@@ -311,13 +334,6 @@ function readFile(input)
     })(file);
     reader.readAsText(file);
 }
-
-function viewCertificate(el)
-{
-	$('form').attr('action', $(el).attr('href'));
-	$('form').submit();
-}
-
 
 function changeFormAction(btn)
 {

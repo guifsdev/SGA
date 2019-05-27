@@ -6,72 +6,57 @@
 
 @section('content')
 @include('partials.menu')
-
-<div class="container" style="width: 900px">
-	<form method="POST" action="/admin/certificados/criar">
-	{{csrf_field()}}
-		<div class="form-group">
-			<label for="metodo-inserir">Evento:</label>
-			<select class="form-control" id="evento" name="evento">
-				@foreach($events as $event)
-					<option value="{{$event->id}}">{{$event->nome}}</option>
-				@endforeach
-			</select>
-		</div>
-		<div class="form-group">
-			<label for="template">Template:</label>
-			<select class="form-control" id="template" name="template">
-				@foreach($templates as $template)
-					<option value="{{$template}}">{{$template}}</option>
-				@endforeach
-			</select>
-		</div>
-
-		<div class="form-group" style="margin-bottom: 0">
-			<label for="template">Participantes:</label>
-		</div>
-		<div class="container form-group" 
-		  	style="border: 1px solid #CBD2D9; padding-top: 20px; border-radius: 4px">
-			<table class="table order-list">
-			    <thead>
-			        <tr>
-			            <th scope="col" style="width: 25%">CPF</td>
-			            <th scope="col" style="width: 25%">Matrícula</td>
-			            <th scope="col" style="width: 40%">Email</td>
-			            <th scope="col" style="width: 10%"></td>
-			        </tr>
-			    </thead>
-			    <tbody>
-			        <tr>
-						<td>
-			            	<input type="text" class="form-control" id="cpf"  name="cpf[0]">
-						</td>
-						<td>
-							<input type="text" class="form-control" id="matricula" name="matricula[0]">
-						</td>
-						<td>
-							<input type="email" class="form-control" id="email" name="email[0]">
-						</td>
-
-			            <td><a class="deleteRow"></a></td>
-			        </tr>
-			    </tbody>
-			    <tfoot>
-			        <tr>
-			            <td colspan="5" style="text-align: left;">
-			                <input type="button" class="btn btn-light btn-block " id="addrow" value="Adicionar"/>
-			            </td>
-			        </tr>
-			        <tr>
-			        </tr>
-			    </tfoot>
-			</table>
-		</div> <!-- .container -->
-</div>
-
+<certificates-emit 
+	:events-prop="{{$events}}"
+	:templates-prop="{{json_encode($templates)}}"></certificates-emit>
 @endsection
 
 @section('custom_scripts')
-<script type="text/javascript" src="{{ asset('js/my_functions.js') }}"></script>
 <script type="text/javascript" src="{{ asset('js/manage_events.js') }}"></script>
+<script type="text/javascript" src="{{ asset('js/my_functions.js') }}"></script>
+<script type="text/javascript">
+
+$(document).ready(function() {
+	/*$.jMaskGlobals.watchDataMask = true;
+	$('.cpf').mask('000.000.000-00');
+
+	let eventId = $("#evento").val();
+	getCertificates(eventId);
+
+	$('#evento').on('change', function() {
+		eventId = $(this).val();
+		getCertificates(eventId);
+	});
+	
+	$('#emit').on('click', function() {
+		let studentId = $("input[name='studentId']").val(),
+			template = $('#template').val();
+			email = $("input[name='email']").val();
+		emitCertificate(studentId, eventId, email, template);
+	});
+
+	$(document).on('click focus', '.cpf', function() {$(this).attr('data-mask', '000.000.000-00');});
+
+	$(document).on('focusout', '.searchable', function(e) {
+		let $this = $(this),
+			countEmpty = 0;
+
+		if($this.val() != '') {
+			if($this.hasClass('cpf')) {
+				$this.removeAttr('data-mask');
+				$this.unmask();
+			}
+			findStudent($this.val(), eventId);
+		}
+		$.each($('.searchable'), function() {
+			if($(this).val().length == 0) ++countEmpty;
+		});
+		if(countEmpty == 3) {
+			$('#emit').attr('disabled', true);
+			$('#result').empty();
+			$("input[name='studentId']").val('');
+		}
+	});*/
+});
+</script>
 @endsection

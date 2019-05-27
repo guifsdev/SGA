@@ -14,15 +14,16 @@
 			</tr>
 			</thead>
 			<tbody>
-				@foreach($events as $event)
+				@foreach($certificates as $certificate)
 				<tr>
-					<td scope="row">{{$event->nome}}</td>
-					<td>{{$event->tipo}}</td>
-					<td>{{$event->carga_horaria}}</td>
-					<td>{{$event->organizador}}</td>
-					<td>{{$event->data}}</td>
+					<td scope="row">{{$certificate->event->nome}}</td>
+					<td>{{$certificate->event->tipo}}</td>
+					<td>{{$certificate->event->carga_horaria}}</td>
+					<td>{{$certificate->event->organizador}}</td>
+					<td>{{$certificate->event->data}}</td>
 					<td style="text-align: center;">
-						<a class="certificate" href="/certificados/evento/{{$event->id}}" target="_blank" style="color: red;">
+						<a class="certificate" href="/certificados/{{$certificate->id}}/evento/{{$certificate->event->id}}"
+						   target="_blank" style="color: red;">
 							<i class="fa fa-file-pdf-o fa-lg"></i>
 						</a>
 					</td>

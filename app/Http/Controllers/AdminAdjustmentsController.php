@@ -5,95 +5,45 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\AdminAdjustment;
 use App\Adjustment;
+use App\Subject;
 
 use Carbon\Carbon;
 
 class AdminAdjustmentsController extends Controller
 {
-    public function __construct()
-    {
+    public function __construct() {
     	$this->middleware('auth');
     }
 
-    public function show()
-    {
-        if(session()->has('adjustments')) {
-            return view('admin.ajuste.show')->
-                with([
-                        'adjustments' => session('adjustments'),
-                        'nome' => session('nome'),
-                        'cpf' => session('cpf'),
-                        'matricula' => session('matricula')
-                    ]);            
-        }
-
-        //Mostra tudo
-    	$adjustments = AdminAdjustment::show();
-
-
-    	return view('admin.ajuste.show', compact('adjustments'));
+    public function index() {
+    	$adjustments = Adjustment::all();
+        $subjects = Subject::all();
+    	return view('admin.ajuste.index', compact('adjustments', 'subjects'));
     }
 
-    public function filter(Request $request) 
-    {
-        $adjustments = '';
-        $inputs = $request->except([
-            '_token', 
-            'data-requerimento-de', 
-            'data-requerimento-ate']);
+    public function filter(Request $request) {
+        $filter = $request->filter_params;
 
-        $from = $request->has('data-requerimento-de') ? 
-            Carbon::parse($request['data-requerimento-de'])->startOfDay() : false;
-        $to = $request->has('data-requerimento-ate') ? 
-            Carbon::parse($request['data-requerimento-ate'])->endOfDay() : false;
+        $adjustments = (new Adjustment)->filter($filter);
 
-        //Caso insira nome, fazer uma query like
-        if($request->has('nome')) 
-        {
-            unset($inputs['nome']);
-            $adjustments = Adjustment::where('nome', 'like', '%' . $request['nome'] . '%')->get();
+        $adjustments = collect(json_decode(json_encode($adjustments), true));
 
-            //Para cada input restantes, filtrar
-            foreach ($inputs as $key => $input) {
-                $adjustments = $adjustments->where($key, $input);
-            }
-        }
-        //Caso não coloque nome, utilizar todos os inputs enviados
-        else $adjustments = Adjustment::where($inputs)->get();
+        $html = view('admin.ajuste.filtered', compact('adjustments'))->render();
 
-
-        if($from && $to) {
-            $adjustments = $adjustments->where('created_at', '>=', $from)
-                                       ->where('created_at', '<=', $to);
-        }
-
-        //return view('admin.ajuste.show', compact('adjustments', 'request'));
-        return redirect('/admin/ajuste')
-                    ->with([
-                        'adjustments' => $adjustments,
-                        'nome' => request('nome'),
-                        'cpf' => request('cpf'),
-                        'matricula' => request('matricula')
-                    ]);
+        return array('success' => true, 'html' => $html);
     }
+    public function update(Request $request) {
+        $adjustBag = $request->adjust_bag;
+        $update = $request->update;
+        $result = null;
 
-    public function defer(Request $request)
-    {
 
-        //dd($request);
+        if($update == 'defer') $result = Adjustment::defer($adjustBag);
+        else $result = Adjustment::deny($adjustBag);
 
-        Adjustment::defer($request);
-
-        //Em vez de redirecionar, fazer ajax
-        //return redirect('/admin/ajuste');
+        if($result) return response($result, 200);
+        else return response(array(
+                        'success' => false, 
+                        'reason' => 'Erro no processamento do ajuste.'), 500);
     }
-
-    public function deny(Request $request)
-    {
-        Adjustment::deny($request);
-    }
-    
-
-
-
 }

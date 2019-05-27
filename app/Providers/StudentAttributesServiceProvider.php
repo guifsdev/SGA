@@ -27,10 +27,13 @@ class StudentAttributesServiceProvider extends ServiceProvider
     {
         //
     
+        View::composer('estudante.dashboard', 'App\Http\View\Composers\StudentAttributesComposer');
+
         View::composer('estudante.ajuste.index', 'App\Http\View\Composers\StudentAttributesComposer');
         View::composer('estudante.home', 'App\Http\View\Composers\StudentAttributesComposer');
         View::composer('estudante.index', 'App\Http\View\Composers\StudentAttributesComposer');
         View::composer('estudante.meus-dados', 'App\Http\View\Composers\StudentAttributesComposer');
         View::composer('estudante.certificados.index', 'App\Http\View\Composers\StudentAttributesComposer');
+        View::composer('mail.adjustment-sent', 'App\Http\View\Composers\StudentAttributesComposer');
     }
 }

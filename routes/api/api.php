@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Http\Request;
+use App\Setting;
+use App\Subject;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,4 +17,11 @@ use Illuminate\Http\Request;
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+Route::get('/admin/settings', function() {
+	$lastMerged = Setting::where('nome', 'data_merged')->first();
+    $lastMerged = $lastMerged ? $lastMerged['valor'] : 'nunca';
+
+    return $lastMerged;
 });

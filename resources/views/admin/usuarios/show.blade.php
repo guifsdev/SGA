@@ -1,11 +1,12 @@
 @extends('layouts.master')
 
-@section('title', 'SGA - Painel de Gerenciamento de ajustes e certificados')
+@section('title', 'SGA - Painel de Gerenciamento')
 
 @section('nav_title', 'Usuários')
 
 @include('partials.menu')
 
+@section('content')
 <div class="container" style="width: 500px; margin-top: 20px">
 	<table class="table">
 	  <thead>
@@ -29,3 +30,4 @@
 	</table>
 	<a class="btn btn-primary" href="/admin/usuarios/criar" role="button">Criar</a>
 </div>
+@endsection
