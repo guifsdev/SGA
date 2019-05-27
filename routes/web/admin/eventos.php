@@ -1,7 +1,6 @@
 <?php 
 
-Route::get('/admin/eventos/templates', 'TemplatesController@index');
-Route::post('/admin/eventos/templates', 'TemplatesController@store');
+
 Route::get('/admin/eventos/criar', 'EventsController@create');
 Route::get('/admin/eventos/configurar', 'AdminCertificatesController@configure');
 

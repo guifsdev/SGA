@@ -25,6 +25,11 @@ let routes = [
 		name: 'Certificados',
 		path: '/certificados',
 		component: require('./views/Certificados.vue').default,
+	},
+	{
+		name: 'Eventos',
+		path: '/eventos',
+		component: require('./views/Eventos.vue').default,
 	}
 ];
 

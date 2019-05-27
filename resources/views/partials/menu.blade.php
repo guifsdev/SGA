@@ -27,8 +27,7 @@
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
           <a class="dropdown-item" href="/admin/eventos">Listar</a>
-          <a class="dropdown-item" href="/admin/eventos/criar">Criar</a>
-          <a class="dropdown-item" href="/admin/eventos/templates">Templates</a>
+          <a class="dropdown-item" href="/admin/eventos/criar">Novo</a>
         </div>
       </li>
 
@@ -55,7 +54,7 @@
         </a>
         <div class="dropdown-menu" aria-labelledby="disciplinasDropdown">
           <a class="dropdown-item" href="/admin/disciplinas">Listar</a>
-          <a class="dropdown-item" href="/admin/disciplinas/criar">Criar</a>
+          <a class="dropdown-item" href="/admin/disciplinas/criar">Novo</a>
         </div>
       </li> 
 

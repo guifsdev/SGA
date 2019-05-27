@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>@yield('title', 'SGA UFF- Coordenação do Curso de Administração')</title>
+    <title>@yield('title', 'Aplicações SGA - Coordenação do curso de Administração')</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">    
     <meta name="csrf-token" content="{{ csrf_token() }}">
     

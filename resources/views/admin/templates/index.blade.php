@@ -1,7 +1,6 @@
 @extends('layouts.master')
 
-@section('nav_title', 'Templates de Certificados')
-@section('title', 'SGA - Templates de Certificados')
+@section('nav_title', 'Templates')
 
 @section('content')
 @include('partials.menu')

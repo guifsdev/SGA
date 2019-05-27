@@ -15,7 +15,7 @@ class TemplatesController extends Controller
     public function index()
     {
     	$templates = Template::getPaths();
-    	return view('admin.eventos.templates.index', compact('templates'));
+    	return view('admin.templates.index', compact('templates'));
 
     }
 

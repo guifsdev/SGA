@@ -1,9 +1,6 @@
 @extends('layouts.master')
 
-@section('title', 'SGA - Gerenciamento de Eventos')
-
 @section('nav_title', 'Editar disciplina')
-
 
 @section('content')
 

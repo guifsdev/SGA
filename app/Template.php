@@ -17,7 +17,6 @@ class Template extends Model
 			$name = explode('.', $fullName[count($fullName)-1])[0];
 			$files[$key] = $name;
 		}
-
 		return $files;
     }
     public function getFile($template)

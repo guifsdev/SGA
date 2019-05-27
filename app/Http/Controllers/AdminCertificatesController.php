@@ -17,7 +17,7 @@ class AdminCertificatesController extends Controller
 
     public function index() {
         //$certificates = Certificate::all();
-        $certificates = Certificate::with(['student', 'event'])->get();
+        $certificates = Certificate::with('event')->get();
         return view('admin.certificados.index', compact('certificates'));
     }
 

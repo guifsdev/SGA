@@ -1,89 +1,80 @@
 @extends('layouts.master')
 
-@section('title', 'SGA - Painel de Gerenciamento de ajustes e certificados')
-
-@section('nav_title', 'Painel de gerenciamento de Ajustes e Certificados')
+@section('nav_title', 'SGA - Admin Home')
 
 
 @section('content')
 
 @include('partials.menu')
-<div class="container" style="width: 500px">
-	<table class="table">
-	  <thead>
-	    <tr class="border_bottom">
-	      <th scope="col" class="blue" style="width: 250px">Requerimentos de ajuste</th>
-	      <th scope="col">
-      		<button class="btn btn-info"
-      			onclick="window.location='{{ url("/admin/ajuste") }}'"><i class="fa fa-list"> Ver </i>
-      		</button>
-      		<button class="btn btn-info"
-      			onclick="window.location='{{ url("/admin/ajuste/config") }}'"><i class="fa fa-cog"> Configurar </i>
-      		</button>
-	      </th>
-	    </tr>
-	  </thead>
-	  <tbody>
-	    <tr>
-	      <th scope="row">Situação</th>
-	      <td>{{$adjustment['status']}}</td>
-	    </tr>
-	    <tr>
-	      <th scope="row">Data de abertura</th>
-	      <td>{{$adjustment['settings']['data_abertura']}}</td>
-	    </tr>
-	    <tr>
-	      <th scope="row">Data de fechamento</th>
-	      <td>{{$adjustment['settings']['data_fechamento']}}</td>
-	    </tr>
-	    <tr>
-	      <th scope="row">Novos</th>
-	      <td>{{$adjustment['new']}}</td>
-	    </tr>
-	    <tr>
-	      <th scope="row">Deferidos</th>
-	      <td>{{$adjustment['deferred']}}</td>
-	    </tr>
-	    <tr>
-	      <th scope="row">Indeferidos</th>
-	      <td>{{$adjustment['denied']}}</td>
-	    </tr>
-	    <tr>
-	      <th scope="row">Pendentes</th>
-	      <td>{{$adjustment['pending']}}</td>
-	    </tr>
-	  </tbody>
-	</table>
+<div class="container card-columns">
+	<div class="card border-dark mb-3" style="max-width: 18rem;">
+	  <h4 class="card-header"><a href="/admin/ajuste">Ajuste</a></h4>
+	  <div class="card-body text-dark">
+	    <a href="/admin/ajuste/config">Configurações</a>
 
-	<table class="table">
-	  <thead>
-	    <tr class="border_bottom">
-	      <th scope="col" class="blue" style="width: 250px">Eventos</th>
-	      <th scope="col">
-	  		<button class="btn btn-info"
-	  			onclick="window.location='{{ url("/admin/eventos") }}'"><i class="fa fa-list"> Ver </i>
-	  		</button>
-	  		<button class="btn btn-info"
-	  			onclick="window.location='{{ url("/admin/eventos/configurar") }}'"><i class="fa fa-cog"> Configurar </i>
-	  		</button>
-	      </th>
-	    </tr>
-	  </thead>
-	  <tbody>
-	    <tr>
-	      <th scope="row">Certificados</th>
-	      <td></td>
-	    </tr>
-	    <tr>
-	      <th scope="row">Visualizados</th>
-	      <td></td>
-	    </tr>
-	    <tr>
-	      <th scope="row">Impressos</th>
-	      <td></td>
-	    </tr>
-	  </tbody>
-	</table>
+	    <p class="card-text">
+	    	<span class="font-weight-bold">Situação: </span>{{$adjustment['status']}} <br>
+	    	<span class="font-weight-bold">Abertura: </span>{{$adjustment['settings']['data_abertura']}} <br>
+	    	<span class="font-weight-bold">Fechamento: </span>{{$adjustment['settings']['data_fechamento']}} <br>
+	    	<span class="font-weight-bold">Novos: </span>{{$adjustment['new']}} <br>
+	    	<span class="font-weight-bold">Deferidos: </span>{{$adjustment['deferred']}} <br>
+			<span class="font-weight-bold">Indeferidos: </span>{{$adjustment['denied']}} <br>
+			<span class="font-weight-bold">Pendentes: </span> {{$adjustment['pending']}}
+	    </p>
+	  </div>
+	</div>
+
+	<div class="card border-dark mb-3" style="max-width: 18rem;">
+	  <h4 class="card-header"><a href="/admin/estudantes">Estudantes</a></h4>
+	  <div class="card-body text-dark">
+	    <a href="/admin/estudantes" disabled>Atualizar</a>
+	    <p class="card-text">
+	    	<span class="font-weight-bold">Contagem: </span>{{$students['count']}} <br>
+	    	<span class="font-weight-bold">Último merge: </span>{{$students['last_merge']}}
+	    </p>
+	  </div>
+	</div>
+
+	<div class="card border-dark mb-3" style="max-width: 18rem;">
+	  <h4 class="card-header"><a href="/admin/disciplinas">Disciplinas</a></h4>
+	  <div class="card-body text-dark">
+	    <a href="/admin/disciplinas/criar">Criar</a>
+	    <p class="card-text">
+	    	<span class="font-weight-bold">Contagem: </span>{{$subjects['count']}} <br>
+	    	<span class="font-weight-bold">Ofertadas: </span>{{$subjects['offered']}}
+	    </p>
+	  </div>
+	</div>
+
+	<div class="card border-dark mb-3" style="max-width: 18rem;">
+	  <h4 class="card-header"><a href="/admin/certificados">Certificados</a></h4>
+	  <div class="card-body text-dark">
+	    <a href="/admin/certificados/emitir">Emitir</a>
+	    <p class="card-text">
+	    	<span class="font-weight-bold">Contagem: </span>{{$certificates['count']}} <br>
+	    </p>
+	  </div>
+	</div>
+
+	<div class="card border-dark mb-3" style="max-width: 18rem;">
+	  <h4 class="card-header"><a href="/admin/eventos">Eventos</a></h4>
+	  <div class="card-body text-dark">
+	    <a href="/admin/eventos/criar">Novo</a>
+	    <p class="card-text">
+	    	<span class="font-weight-bold">Contagem: </span>{{$certificates['count']}} <br>
+	    </p>
+	  </div>
+	</div>
+
+	<div class="card border-dark mb-3" style="max-width: 18rem;">
+	  <h4 class="card-header"><a href="/admin/templates">Templates</a></h4>
+	  <div class="card-body text-dark">
+	    <a href="/admin/templates/criar">Novo</a>
+	    <p class="card-text">
+	    	<span class="font-weight-bold">Contagem: </span>{{$templates['count']}} <br>
+	    </p>
+	  </div>
+	</div>
 </div>
 
 @endsection

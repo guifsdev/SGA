@@ -19,10 +19,10 @@
 					<th scope="row">
 						<a :href="'/admin/evento/' + certificate.event.id">{{certificate.event.nome}}</a>
 					</th>
-					<td>{{certificate.student.nome}}</td>
-					<td>{{certificate.student.cpf}}</td>
-					<td>{{certificate.student.email}}</td>
-					<td>{{certificate.student.matricula}}</td>
+					<td>{{certificate.attendant_name}}</td>
+					<td>{{certificate.cpf}}</td>
+					<td>{{certificate.email}}</td>
+					<td>{{certificate.matricula}}</td>
 					<td>{{certificate.event.data}}</td>
 					<td>{{certificate.event.organizador}}</td>
 					<td>{{certificate.event.carga_horaria}}</td>
@@ -42,7 +42,7 @@
 			}
 
 		},
-		mounted: function() { 
+		mounted: function() {
 			this.certificates = this.certificatesProp;
 		}
 

@@ -55,6 +55,8 @@ class RouteServiceProvider extends ServiceProvider
 
         $this->mapAdminEventosRoutes();
 
+        $this->mapTemplatesRoutes();
+
         $this->mapAdminUsuariosRoutes();
 
     }
@@ -119,6 +121,12 @@ class RouteServiceProvider extends ServiceProvider
         Route::middleware('web')
              ->namespace($this->namespace)
              ->group(base_path('routes/web/admin/eventos.php'));
+    }
+    protected function mapTemplatesRoutes()
+    {
+        Route::middleware('web')
+             ->namespace($this->namespace)
+             ->group(base_path('routes/web/admin/templates.php'));
     }
     protected function mapAdminUsuariosRoutes()
     {

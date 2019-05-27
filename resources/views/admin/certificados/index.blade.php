@@ -1,5 +1,4 @@
 @extends('layouts.master')
-@section('title', 'SGA - Gerenciamento de Certificados')
 @section('nav_title', 'Certificados')
 
 

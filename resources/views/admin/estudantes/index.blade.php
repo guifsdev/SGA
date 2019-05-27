@@ -1,7 +1,5 @@
 @extends('layouts.master')
 
-@section('title', 'SGA - Painel de Gerenciamento')
-
 @section('nav_title', 'Estudantes')
 
 

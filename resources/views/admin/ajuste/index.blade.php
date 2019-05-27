@@ -1,7 +1,6 @@
 @extends('layouts.master')
 
-@section('title', 'SGA - Gerenciamento de Ajustes')
-@section('nav_title', 'Gerenciamento de ajustes')
+@section('nav_title', 'Requerimentos de Ajuste')
 
 @section('content')
 
