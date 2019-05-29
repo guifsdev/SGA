@@ -29,7 +29,7 @@
 					<td>{{certificate.event.data}}</td>
 					<td style="text-align: center;">
 						<a 
-							:href="'/certificado/' + certificate.id"
+							:href="'/estudante/certificado/' + certificate.id" 
 							class="certificate" 
 						   	target="_blank">
 							<i class="fa fa-file-pdf"></i>

@@ -4,7 +4,10 @@ Route::post('/estudante/login', 'StudentAuth\StudentAuthController@login');
 Route::get('/estudante/login', 'StudentAuth\StudentAuthController@showLoginForm');
 Route::get('/estudante/logout', 'StudentAuth\StudentAuthController@logout');
 Route::patch('/estudante/update', 'StudentsController@update');
+
+
 Route::post('/estudante/certificados', 'StudentsController@certificates');
+Route::get('/estudante/certificado/{certificate}', 'CertificatesController@print');
 
 
 Route::get('/estudante/', 'SpaController@index');

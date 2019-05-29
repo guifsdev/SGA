@@ -12,7 +12,9 @@
 		<button type="submit" class="btn btn-primary">Validar</button>
 	</form>
 	<div v-if="valid" class="alert alert-success" role="alert">
-	  O documento é válido.
+	  O documento é válido. <br>
+	  <span class="font-weight-bold">Data de emissão: </span>{{this.created_at}} <br>
+	  <span class="font-weight-bold">CPF: </span>{{this.cpf}}
 	</div>
 	<div v-if="valid === false " class="alert alert-danger" role="alert">
 	  O documento não é válido.
@@ -22,20 +24,48 @@
 
 <script>
 export default {
+	props: ['resultProp'],
 	data: function() {
 		return {
+			result: null,
+			created_at: '',
+			cpf: '',
 			valid: '',
 			hash: '',
 		}
 	},
 	methods: {
 		onSubmit: function() {
-			axios.get('/certificado/validar/' + this.hash)
+			this.validate('string', this.hash);
+		},
+		getData: function(data) {
+			Object.keys(data).forEach(entry => {
+				this[entry] = data[entry];
+				this.valid = true;
+			})
+		},
+		validate: function(source = 'string', hash) {
+			axios.get('/certificado/validar?&hash=' + this.hash + '&source=' + source)
 				.then(response => {
-					//console.log(response.data);
-					if(response.data.validation.length) this.valid = true;
+					console.log(response.data);
+					if(response.data.validation.length) {
+						this.getData(response.data.validation[0]);
+					}
 					else this.valid = false;
-				})
+
+				});
+		}
+	},
+	mounted: function() {
+		console.log(this.resultProp);
+		this.result = this.resultProp;
+		console.log(this.result);
+
+		if(this.result.validation.length) {
+			this.getData(this.result.validation[0]);
+		} else if(this.result.hash) {
+			this.hash = this.result.hash;
+			this.valid = false;
 		}
 	}
 }

@@ -1,5 +1,5 @@
 @extends('layouts.master')
 
 @section('content')
-<certificates-validator></certificates-validator>
+<certificates-validator :result-prop="{{$result}}"></certificates-validator>
 @endsection

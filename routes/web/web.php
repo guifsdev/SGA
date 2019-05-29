@@ -14,10 +14,9 @@ use App\Setting;
 */
 Route::post('/disciplinas', 'SubjectsController@subjects');
 
+//Route::get('/certificado/validar', 'CertificatesController@hashValidator');
+//Route::get('/certificado/validar/{hash}', 'CertificatesController@hashValidate');
 Route::get('/certificado/validar', 'CertificatesController@hashValidator');
-Route::get('/certificado/validar/{hash}', 'CertificatesController@hashValidate');
-
-Route::get('/certificado/{certificate}', 'CertificatesController@print');
 
 Route::middleware('student')->get('/subjects/{period}', function($period) {
 	//$subjects = Subject::where('period', $period)->get();
