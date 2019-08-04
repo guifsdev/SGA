@@ -61,7 +61,7 @@
 	  <div class="card-body text-dark">
 	    <a href="/admin/eventos/criar">Novo</a>
 	    <p class="card-text">
-	    	<span class="font-weight-bold">Contagem: </span>{{$certificates['count']}} <br>
+	    	<span class="font-weight-bold">Contagem: </span>{{$events['count']}} <br>
 	    </p>
 	  </div>
 	</div>

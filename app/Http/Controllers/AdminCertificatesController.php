@@ -16,22 +16,18 @@ class AdminCertificatesController extends Controller
     }
 
     public function index() {
-        //$certificates = Certificate::all();
         $certificates = Certificate::with('event')->get();
         return view('admin.certificados.index', compact('certificates'));
     }
 
     public function create() {
         $events = Event::all();
-        $templates = Template::listNames();
-        //$certificates = Certificate::all();
-        $certificates = Event::first()->certificates;
-        //$certificates = Event::with('student')->get();
+        $templates = json_encode(Template::listNames());
+        $certificates = count(Event::all()) ? Event::first()->certificates : json_encode([]);
         return view('admin.certificados.create', compact('events', 'templates', 'certificates'));
     }
 
     public function store(Request $request) {
-        //return array('success' => true, 'request' => [$request['student_id'], $request['event_id'], $request['template']]);
         $attributes = $request->validate([
             'event_id' => 'required',
             'template' => 'required',
@@ -41,16 +37,20 @@ class AdminCertificatesController extends Controller
             'matricula' => '',
         ]);
 
-        $result = Certificate::create($attributes);
-        if($result) {
-            return response(['success' => true, 'message' => 'Certificado emitido com sucesso'], 200);
-        }
+        $exists = Certificate::where(['event_id' => $attributes['event_id'], 'cpf' => $attributes['cpf']])
+            ->first();
 
-        //$certificate = new Certificate();
-        //return $certificate->store($attributes);
+        if($exists) return response(
+            ['status' => false, 
+             'message' => 'Já existe certificado deste evento para o cpf informado.'], 403);
+
+        $result = Certificate::create($attributes);
+        return response(
+            ['status' => true, 
+             'message' => 'Certificado emitido com sucesso.'], 200);
     }
     public function certificates(Event $event) {
-        $certificates = Certificate::where('event_id', $event->id)->get()
+        $certificates = Certificate::where('event_id', $event->id)->latest()->get()
             ->map(function($certificate) {
                 return array(
                     'nome' => $certificate->attendant_name,
@@ -59,17 +59,15 @@ class AdminCertificatesController extends Controller
                     'cpf' => $certificate->cpf
                 );
             });
-        return response(['success' => true, 'certificates' => $certificates], 200);
+        return response(['status' => true, 'certificates' => $certificates], 200);
     }
 
 
-    public function show()
-    {
+    public function show() {
     	return "AdminCertificatesController@show";
     }
 
-    public function configure()
-    {
+    public function configure() {
     	return 'AdminCertificatesController@configure';
     }
 }

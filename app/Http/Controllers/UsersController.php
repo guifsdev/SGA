@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\User;
 use Illuminate\Support\Facades\Auth;
+use Validator;
 
 class UsersController extends Controller
 {
@@ -28,22 +29,33 @@ class UsersController extends Controller
 
     public function store(Request $request)
     {
-        $request['is_admin'] = (bool) $request['is_admin'];
-
-        $attributes = $request
+        /*$attributes = $request->user
             ->validate([
-                'name' => ['required', 'min:3'],
+                'name' => 'required',
                 'email' => 'required',
                 'is_admin' => ['required', 'boolean'],
                 'cpf' => 'required',
                 'password' => 'required'
-            ]);
+            ]);*/
+
+        $attributes = Validator::make($request->all(), [
+            'name' => 'required',
+            'email' => 'required',
+            'is_admin' => ['required', 'boolean'],
+            'cpf' => 'required',
+            'password' => 'required'
+        ])->validate();
+
         $attributes['password'] = bcrypt(request('password'));
 
         //dd($attributes);
+        $exists = User::where('cpf', $attributes['cpf'])->first();
+        if($exists) return response(['status' => false, 'message' => 'Já existe usuário para o cpf informado.'], 403);
 
         User::create($attributes);
 
-        return redirect('/admin/usuarios');
+        return response(['status' => true, 'message' => 'Usuário criado com successo.'], 200);
+
+        //return redirect('/admin/usuarios');
     }
 }

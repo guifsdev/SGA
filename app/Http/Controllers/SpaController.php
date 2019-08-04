@@ -11,6 +11,7 @@ class SpaController extends Controller
 		$this->middleware('auth_student');
 	}
     public function index() {
+    	
     	$status = Adjustment::isOpen();
     	return view('estudante.dashboard');
     }

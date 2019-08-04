@@ -12,6 +12,8 @@ use App\Setting;
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::get('/', 'SpaController@index');
+
 Route::post('/disciplinas', 'SubjectsController@subjects');
 
 //Route::get('/certificado/validar', 'CertificatesController@hashValidator');

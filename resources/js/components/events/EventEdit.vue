@@ -63,7 +63,7 @@
 						:value="template">{{template}}</option>
 				</select>
 			</div> -->
-			<div class="form-group">
+			<!-- <div class="form-group">
 				<label for="metodo-inserir">Inserir participantes:</label>
 				<select class="form-control" id="metodo-inserir" name="insertion-method">
 					<option value="manual">Manual</option>
@@ -125,7 +125,7 @@
 					  </div>
 					</div>
 				</div>
-			</div>
+			</div> -->
 
 			<div class="form-group">
 				<button 

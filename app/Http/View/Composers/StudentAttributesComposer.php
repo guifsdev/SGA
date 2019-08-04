@@ -36,6 +36,8 @@ class StudentAttributesComposer
     public function compose(View $view)
     {
         $nomeCompleto = Auth::guard('student')->user()->nome;
+        $nomeCompleto = trim(str_replace('  ', ' ', $nomeCompleto));
+        
         $primeiroNome = ucfirst(strtolower(explode(' ', $nomeCompleto)[0]));
         $view->with([
             'student' => Auth::guard('student')->user(),

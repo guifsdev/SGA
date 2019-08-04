@@ -111,7 +111,7 @@ class EventsController extends Controller
     {
 		return request()->validate([
 			'nome' => 'required',
-			'descricao' => 'required',
+			//'descricao' => 'required',
 			'local' => 'required',
 			'data' => 'required',
 			'tipo' => 'required',

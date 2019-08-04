@@ -1,8 +1,7 @@
 <template>
 	<div class="container" v-if="events">
 		<form 
-			@submit.prevent="onSubmit"
-			action="/admin/certificados/criar">
+			@submit.prevent="onSubmit">
 			<div class="form-group">
 				<label for="metodo-inserir">Evento:</label>
 				<select
@@ -41,13 +40,19 @@
 				    <tbody>
 				        <tr>
 							<td>
-				            	<vue-mask 
+								<input 
+									type="text" 
+									maxlength="11" 
+									class="form-control" 
+									v-model="cpf"
+									name="cpf">
+				            	<!-- <vue-mask 
 			            	        class="form-control"
 			            	        v-model="cpf" 
 			            	        mask="000.000.000-00" 
 			            	        required
 			            	        :raw="false"> 
-			            	    </vue-mask>
+			            	    </vue-mask> -->
 							</td>
 							<td>
 								<input 
@@ -94,13 +99,14 @@
 			</div>
 	  	    <div
 	  	    	v-if="success"
-	  	    	class="alert alert-success alert-dismissible" role="alert">
+	  	    	:class="success.status ? 'alert-success': 'alert-danger'"
+	  	    	class="alert alert-dismissible" role="alert">
 	  	      	{{success.message}}
-			<button 
-				@click="this.success = ''"
-				type="button" class="close" data-dismiss="alert" aria-label="Close">
-				<span aria-hidden="true">&times;</span>
-			</button>
+				<button 
+					@click="success = ''"
+					type="button" class="close" data-dismiss="alert" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
 	  	    </div>
 			<div class="container form-group emited-group" id="certificates_table">
 			  	<p style="display: none;">Nenhum certificado emitido.</p>
@@ -128,14 +134,15 @@
 </template>
 
 <script>
-	 import vueMask from 'vue-jquery-mask';
+	 //import vueMask from 'vue-jquery-mask';
 	
 	export default {
-		props: ['eventsProp', 'templatesProp'],
-		components: {vueMask},
+		props: ['eventsProp', 'templatesProp', 'certificatesProp'],
+		//components: {vueMask},
 		data: function() {
 			return {
 				success: '',
+				error: '',
 				events: null,
 				templates: null,
 				template: '',
@@ -155,7 +162,7 @@
 		},
 		watch: {
 			cpf: function() {
-				let cpf = this.cpf.replace(/[\.-]/g, '');
+				let cpf = this.cpf;
 				if(cpf.length == 11 && this.found == '') {
 					this.enableEmit();
 					this.findStudent({type: 'cpf', value: cpf});
@@ -196,7 +203,7 @@
 				this.fetchCertificates(eventId);
 			},
 			fetchCertificates: function(eventId) {
-				axios.get('/admin/certificados/' + eventId)
+				axios.get('/admin/certificados/evento/' + eventId)
 					.then(response => {
 						this.certificates = response.data.certificates;
 					});
@@ -208,21 +215,23 @@
 			disableEmit: function() {this.emitDisabled = true;},
 			enableEmit: function() {this.emitDisabled = false;},
 			onSubmit: function() {
-				console.log('onSubmit');
+				this.success = '';
 				if(!this.eventId) {
-					alert('Selecione o evento.');
+					alert('Nenhum evento selecionado.');
 					return;
 				}
-				axios.post('/admin/certificados/emitir/', 
+				axios.post('/admin/certificados/emitir', 
 					{event_id: this.eventId,
 					 template: this.template,
-					 cpf: this.cpf.replace(/[\.-]/g, ''), 
+					 cpf: this.cpf, 
 					 matricula: this.matricula,
 					 email: this.email,
 					 attendant_name: this.attendant_name})
 					.then(response => {
 						this.success = response.data;
 						this.fetchCertificates(this.eventId);
+					}).catch(error => {
+						this.success = error.response.data;
 					});
 			}
 		},

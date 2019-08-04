@@ -43,13 +43,13 @@
 <div class="container">
 	<div id="template"></div>
 	<div id="text">
-		<p>Conferido a <span style="font-weight: bold;">{{$student->nome}}</span>, portador do CPF de nº <span style="font-weight: bold;">{{$student->cpf}}</span>, pela participação no evento "{{$certificate->event->nome}}", realizado em {{$eventDay}} com carga horária de {{$certificate->event->carga_horaria}} horas.</p>
+		<p>Conferido a <span style="font-weight: bold;">{{$student->nome}}</span>, portador(a) do CPF de nº <span style="font-weight: bold;">{{$student->cpf}}</span>, pela participação no evento "{{$certificate->event->nome}}", realizado em {{$eventDay}} com carga horária de {{$certificate->event->carga_horaria}} horas.</p>
 	</div>
 	<div id="footer">
 		<p>Niterói, {{$today}}, às {{$now}}<br>
 		<span style="font-size: .8em">Este documento foi gerado pelo Sistema Acadêmico do SGA <br>
 			Para verificar sua autenticidade, escaneie o qrcode ao lado ou visite <br> 
-			http://aplicacoes.sga.uff.br/certificado/validar e insira o código:<br>
+			<a href="http://aplicacoes.sga.uff.br/certificado/validar">http://aplicacoes.sga.uff.br/certificado/validar</a> e insira o código:<br>
 		<pre>{{$hash}}</pre>
 		</span>
 		</p>

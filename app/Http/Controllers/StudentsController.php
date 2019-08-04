@@ -37,7 +37,7 @@ class StudentsController extends Controller
     }
     public function find($input) {
         $studentData = Student::findStudent($input);
-        return array('success' => true, 'student' => $studentData);
+        return ['success' => true, 'student' => $studentData];
     }
 
     public function certificates(Request $request) {

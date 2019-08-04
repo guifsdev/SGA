@@ -51,15 +51,12 @@ class LoginController extends Controller
 
 
 
-    public function login()
-    {
+    public function login() {
         $credentials = request()->only('cpf', 'password');
+        //$credentials['password'] = bcrypt($credentials['password']);
+        //dd($credentials);
         
-        if(Auth::attempt($credentials))
-        {
-            return redirect('/admin');
-        }
-        //else redirect('admin/login');
+        if(Auth::attempt($credentials)) return redirect('/admin');
         else return redirect()->route('login')->withErrors(['Nenhum usuário encontrado para os dados digitados.']);
     }
 

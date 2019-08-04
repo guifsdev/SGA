@@ -7,7 +7,8 @@ use Illuminate\Http\Request;
 
 class Event extends Model
 {
-    protected $fillable = [
+    protected $guarded = [];
+    /*protected $fillable = [
     	'nome', 
         'descricao',
     	'local', 
@@ -16,7 +17,7 @@ class Event extends Model
     	'duracao', 
     	'carga_horaria',
     	'organizador',
-	];
+	];*/
 
     //event->certificates > []
     public function certificates() {

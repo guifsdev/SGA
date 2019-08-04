@@ -41,7 +41,7 @@
 		<div 
 			v-else
 			class="alert alert-primary" role="alert">
-		  	A simple primary alert—check it out!
+		  	Você não possui certificados.
 		</div>
 
 	</div>

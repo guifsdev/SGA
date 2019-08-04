@@ -10,6 +10,9 @@ import CertificatesEmit from './components/certificados/CertificatesEmit.vue';
 import CertificatesList from './components/certificados/CertificatesList.vue'; 
 import CertificatesValidator from './components/certificados/CertificatesValidator.vue'; 
 
+import CreateUsers from './components/usuarios/CreateUsers.vue'; 
+
+
 import routes from './routes.js';
 
 const app = new Vue({
@@ -20,5 +23,6 @@ const app = new Vue({
     	ActiveStudentsUpdater, 
     	Event, EventList, EventEdit, EventCreate,
     	CertificatesList, CertificatesEmit, CertificatesValidator,
+    	CreateUsers,
     },
 });
