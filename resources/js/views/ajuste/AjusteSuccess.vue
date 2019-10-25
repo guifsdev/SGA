@@ -59,9 +59,11 @@
 		</table>
 		<!-- Mensagem de sucesso -->
 		<div class="alert alert-success" role="alert" v-if="$parent.success">
-			{{$parent.success.message}}
-			<span class="font-weight-bold">Autenticação:</span> {{$parent.success.stamp.date}}<br>
-			<span class="font-weight-bold">Data do requerimento:</span> {{$parent.success.stamp.signature}}</p>
+			{{$parent.success.message}}<br>
+			<p>
+				<span class="font-weight-bold">Autenticação: </span>{{$parent.success.stamp.signature}}<br>
+				<span class="font-weight-bold">Data do requerimento: </span>{{$parent.success.stamp.date}}
+			</p>
 		</div>
 		
 		<!-- Encerrar -->

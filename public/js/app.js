@@ -3417,6 +3417,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({});
 
 /***/ }),
@@ -7693,18 +7695,21 @@ var render = function() {
           "div",
           { staticClass: "alert alert-success", attrs: { role: "alert" } },
           [
-            _vm._v("\n\t\t" + _vm._s(_vm.$parent.success.message) + "\n\t\t"),
-            _c("span", { staticClass: "font-weight-bold" }, [
-              _vm._v("Autenticação:")
-            ]),
-            _vm._v(" " + _vm._s(_vm.$parent.success.stamp.date)),
+            _vm._v("\n\t\t" + _vm._s(_vm.$parent.success.message)),
             _c("br"),
             _vm._v(" "),
-            _c("span", { staticClass: "font-weight-bold" }, [
-              _vm._v("Data do requerimento:")
-            ]),
-            _vm._v(" " + _vm._s(_vm.$parent.success.stamp.signature)),
-            _c("p")
+            _c("p", [
+              _c("span", { staticClass: "font-weight-bold" }, [
+                _vm._v("Autenticação: ")
+              ]),
+              _vm._v(_vm._s(_vm.$parent.success.stamp.signature)),
+              _c("br"),
+              _vm._v(" "),
+              _c("span", { staticClass: "font-weight-bold" }, [
+                _vm._v("Data do requerimento: ")
+              ]),
+              _vm._v(_vm._s(_vm.$parent.success.stamp.date) + "\n\t\t")
+            ])
           ]
         )
       : _vm._e(),

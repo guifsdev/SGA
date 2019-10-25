@@ -1,4 +1,4 @@
-@import (css) "weloveiconfonts.com.css";
+/* @import (css) "weloveiconfonts.com.css"; */
 
 body {
   display: -webkit-box;
@@ -9,7 +9,7 @@ body {
   margin:0;
   padding:0;
   background-color:#f0f0f0;
-  font-family:Muli, sans-serif;
+  font-family: Muli, sans-serif;
   color:#444;
 }
 ul {
@@ -89,7 +89,7 @@ header {
   
   & nav ul li {
     border-bottom:1px solid #42454D;
-    padding-left:48px;
+    padding-left: 24px;
     transition:all 0.6s;
     border-top:1px solid #2E3036;
       
@@ -121,11 +121,11 @@ header {
         }
       }
     
-      &:first-child a:before {content:"\f015";}
+      /* &:first-child a:before {content:"\f015";}
       &:nth-child(2) a:before {content:"\f19d";}
       &:nth-child(3) a:before {content:"\f044";}
       &:nth-child(4) a:before {content:"\f0a3";}
-      &:nth-child(5) a:before {content:"\f274";}
+      &:nth-child(5) a:before {content:"\f274";} */
   }
 }
 
@@ -152,23 +152,10 @@ main {
     position:relative;
     text-decoration:none;
     transition:all .5s;
+    & i {
+      font-size: 22px;
+    }
   }
-  & :nth-child(2):before {
-    content:"\1f464";
-    font-size: 38px;
-    position:absolute;
-    left:-50px;
-    font-family: 'entypo';
-  }
-  & :nth-child(3):before {
-    font-family: 'FontAwesome';
-    content:"\f08b";
-    font-size: 38px;
-    /*position:absolute;
-    right:-50px;*/
-  }
-
-
 }
 
 a:hover {

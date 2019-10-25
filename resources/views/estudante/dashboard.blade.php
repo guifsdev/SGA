@@ -8,19 +8,19 @@
     <nav>
       <ul>
         <router-link to="/home" tag="li">
-          <a>Home</a>
+          <a><i class="fa fa-home"></i> Home</a>
         </router-link>
         <router-link to="/meus-dados" tag="li">
-          <a>Meus Dados</a>
+          <a><i class="fa fa-graduation-cap"></i> Meus Dados</a>
         </router-link>        
         <router-link to="/ajuste" tag="li">
-          <a>Ajuste</a>
+          <a><i class="fa fa-edit"></i> Ajuste</a>
         </router-link>        
         <router-link to="/certificados" tag="li">
-          <a>Certificados</a>
+          <a><i class="fa fa-certificate"></i> Certificados</a>
         </router-link>
         <router-link to="/eventos" tag="li">
-          <a>Eventos</a>
+          <a><i class="fa fa-calendar-check"></i> Eventos</a>
         </router-link>
       </ul>
     </nav>
@@ -28,7 +28,8 @@
 <main>
   <div class="title">
     <h2>@{{$route.name}}</h2>
-    <a href="javascript:void(0);">Olá {{$primeiro_nome}}!</a>
+    <a href="javascript:void(0);"><i class="fa fa-user-graduate"></i> Olá {{$primeiro_nome}}!</a>
+    <a href="/estudante/logout"><i class="fa fa-sign-out-alt"></i></a>
   </div>
 
   <article class="larg">
