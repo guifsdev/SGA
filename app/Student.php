@@ -2,14 +2,20 @@
 
 namespace App;
 
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Http\Request;
+
 use League\Csv\Reader;
 use App\Setting;
 use Carbon\Carbon;
 
 class Student extends Authenticatable
 {
+	use Notifiable;
+
     protected $guard = 'student';
 
     protected $guarded = [];

@@ -15,19 +15,21 @@ class CreateStudentsTable extends Migration
     {
         Schema::create('students', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('matricula');
-            $table->string('cpf');
-            $table->string('nome');
-            $table->float('cr');
-            $table->integer('cha')->nullable();
-            $table->integer('chc')->nullable();
-            $table->integer('cht')->nullable();
-            $table->integer('chs')->nullable();
-            $table->string('localidade');
-            $table->string('curriculo');
-            $table->string('curso');
+            $table->string('name');
             $table->string('email')->nullable();
-            $table->string('tel')->nullable();
+            $table->string('enrolment_number');
+            $table->string('cpf');
+            $table->string('celphone_number')->nullable();
+            $table->string('course');
+            $table->string('locality');
+			$table->string('curriculum');
+            $table->float('cr');
+			$table->integer('cha');
+			$table->integer('chc');
+			$table->integer('cht');
+			$table->integer('chs');
+            $table->string('password');
+            $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
