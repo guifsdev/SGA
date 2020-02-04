@@ -45,7 +45,7 @@ class StudentLoginController extends Controller
     {
 		$crawler = new IdUFFCrawler('https://app.uff.br/iduff/', 2.0);
 		$crawler->login('login.uff', $request->cpf, $request->password);
-		return $crawler->getHtml();
+		//return $crawler->getHtml();
     }
 
     /**
