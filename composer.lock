@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "77f3b47471a3f362853be1d1e82e4ce9",
+    "content-hash": "2d3ac21bdd0691361a7745ec7857fdb2",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -1338,6 +1338,46 @@
                 "storage"
             ],
             "time": "2019-05-20T20:21:14+00:00"
+        },
+        {
+            "name": "lucascudo/laravel-pt-br-localization",
+            "version": "v1.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/lucascudo/laravel-pt-BR-localization.git",
+                "reference": "e2195ed6f83237eec2040528ba1440cd12d53556"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/lucascudo/laravel-pt-BR-localization/zipball/e2195ed6f83237eec2040528ba1440cd12d53556",
+                "reference": "e2195ed6f83237eec2040528ba1440cd12d53556",
+                "shasum": ""
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Lucascudo\\LaravelPtBRLocalization\\LaravelPtBRLocalizationServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Lucascudo\\LaravelPtBRLocalization\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Cascudo",
+                    "email": "lucas.sisau@gmail.com"
+                }
+            ],
+            "description": "Arquivos de linguagem em Português do Brasil (pt-BR) para Laravel >= 5.6",
+            "time": "2020-02-01T23:26:48+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -3779,6 +3819,7 @@
                 "psr",
                 "psr-7"
             ],
+            "abandoned": "laminas/laminas-diactoros",
             "time": "2019-04-29T21:11:00+00:00"
         }
     ],

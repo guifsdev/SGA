@@ -80,7 +80,7 @@ return [
     |
     */
 
-    'locale' => 'en',
+    'locale' => 'pt-BR',
 
     /*
     |--------------------------------------------------------------------------
@@ -177,6 +177,8 @@ return [
         App\Providers\RouteServiceProvider::class,
         App\Providers\StudentAttributesServiceProvider::class,
         App\Providers\AdjustmentConfigServiceProvider::class,
+		App\Providers\IdUFFServiceProvider::class,
+
 
     ],
 

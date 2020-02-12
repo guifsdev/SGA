@@ -14,6 +14,7 @@
         "laravel/framework": "5.7.*",
         "laravel/tinker": "^1.0",
         "league/csv": "^9.0",
+        "lucascudo/laravel-pt-br-localization": "^1.0",
         "simplesoftwareio/simple-qrcode": "~2"
     },
     "require-dev": {

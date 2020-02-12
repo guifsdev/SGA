@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use App\Lib\IdUFFCrawler;
 
 class IdUFFServiceProvider extends ServiceProvider
 {
@@ -13,7 +14,10 @@ class IdUFFServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+		$this->app->bind(IdUffCrawler::class, function($app) {
+			$domDocument = new \DOMDocument;
+			return new IdUFFCrawler($domDocument);
+		});
     }
 
     /**
