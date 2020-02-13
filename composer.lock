@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2d3ac21bdd0691361a7745ec7857fdb2",
+    "content-hash": "ff05278e926e7b47a86ddde5eb36aa2e",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -381,6 +381,76 @@
                 "schedule"
             ],
             "time": "2019-03-31T00:38:28+00:00"
+        },
+        {
+            "name": "duzun/hquery",
+            "version": "3.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/duzun/hQuery.php.git",
+                "reference": "e3e8dcbe9de7cac5693aeb8c2a62a761cb152e49"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/duzun/hQuery.php/zipball/e3e8dcbe9de7cac5693aeb8c2a62a761cb152e49",
+                "reference": "e3e8dcbe9de7cac5693aeb8c2a62a761cb152e49",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3"
+            },
+            "require-dev": {
+                "symfony/css-selector": "*",
+                "symfony/dom-crawler": "*"
+            },
+            "suggest": {
+                "php-http/discovery": "Might be required by hQuery::sendRequest()",
+                "php-http/message": "Might be required by hQuery::fromHTML($message) or hQuery::fromURL()",
+                "php-http/socket-client": "Could be used to make HTTP requests before calling hQuery::fromHTML($message)"
+            },
+            "type": "library",
+            "extra": {
+                "apigen/apigen": "*",
+                "php-http/mock-client": "*",
+                "php-http/discovery": "*",
+                "guzzlehttp/psr7": "*"
+            },
+            "autoload": {
+                "psr-4": {
+                    "duzun\\": "src/"
+                },
+                "psr-0": {
+                    "hQuery": "src/"
+                },
+                "classmap": [
+                    "hquery.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Dumitru Uzun",
+                    "email": "contact@duzun.me",
+                    "homepage": "https://DUzun.Me",
+                    "role": "Author"
+                }
+            ],
+            "description": "An extremely fast web scraper that parses megabytes of HTML in a blink of an eye. No dependencies. PHP5+",
+            "homepage": "https://duzun.me/playground/hquery",
+            "keywords": [
+                "crawling",
+                "html",
+                "php",
+                "scraper",
+                "scraping",
+                "web",
+                "xhtml",
+                "xml"
+            ],
+            "time": "2019-07-19T09:39:05+00:00"
         },
         {
             "name": "egulias/email-validator",
@@ -4275,6 +4345,7 @@
                 "bcmath",
                 "math"
             ],
+            "abandoned": "brick/math",
             "time": "2017-02-16T16:54:46+00:00"
         },
         {

@@ -6,6 +6,7 @@ use Illuminate\Support\Arr;
 use App\Interfaces\IdUFFCrawlerInterface as Crawler;
 use GuzzleHttp\Client;
 use GuzzleHttp\Cookie\CookieJar;
+use duzun\hQuery;
 
 class IdUFFCrawler implements Crawler
 {
@@ -13,11 +14,10 @@ class IdUFFCrawler implements Crawler
 	private $timeout;
 	private $client;
 	private $xpath;
-	//private $courseId = '/^\d{3}023/';
 	private $courseId = '^\d{3}023';
 	public $failed = true;
-	public $bag = [];
-
+	public $bag;
+	private $hQueryDom;
 	public $jar;
 
 	
@@ -27,6 +27,7 @@ class IdUFFCrawler implements Crawler
 		$this->timeout = 20;
 		$this->dom = $domDocument;
 		$this->jar = new CookieJar();
+		$this->bag = collect();
 
 		$this->client = new Client([
 			'base_uri' => $this->base_uri,
@@ -83,21 +84,52 @@ class IdUFFCrawler implements Crawler
 			return;
 		}
 		$progressPage = $this->toProgressPage($index);
-		//dd($progressPage);
-		
-		$data = $this->getData($progressPage);
-
+		$this->getProgressData($progressPage);
+		$this->failed = false;
 		return;
 	}
+	public function getPersonalData($page)
+	{
+
+		
+	}
 	
-	public function getData($page)
+	public function getProgressData($page)
 	{
 		$this->dom->loadHTML($page);
+
+		//Testing hQueryDom
+		$this->hQueryDom = hQuery::fromHTML($page);
+		//
 		$this->dom->saveHTML();
 		$this->xpath = new \DOMXpath($this->dom);
 
 		$this->getHeaderData();
 		$this->getProgressData();
+	}
+
+	public function getProgressData()
+	{
+		$tds = $this->hQueryDom->find('form#formSuporteIntegralizacao span table:first-child td');
+
+		$cells = array();
+		$i = 0;
+		foreach($tds as $td) {
+			$cells[$i] = $td->text();
+			++$i;
+		}
+		$cells = collect(array_slice($cells, 1));
+
+		$data = collect();
+
+		$cells->map(function($item, $key) use ($cells, &$data) {
+			if($key % 2 == 0) {
+				$title = preg_replace('/[\r\n\:]+|\s{2}+|\s\*+/', '', $item);
+				$value = preg_replace('/\s/', '', $cells[$key+1]);
+				$data->put($title, $value);
+			}
+		});
+		$this->bag = $this->bag->merge($data);
 	}
 
 	public function getHeaderData()
@@ -106,6 +138,7 @@ class IdUFFCrawler implements Crawler
 		
 		$name = $this->xpath->query('(//td)[3]/text()', $header)[0]->data;
 		$cpf = $this->xpath->query('(//td)[4]/text()', $header)[0]->data;
+		$cpf = preg_replace('/\D/', '', $cpf); 
 
 		if(! Arr::exists($this->bag, 'enrolment_number')) {
 			$enrolmentNumber = $this->xpath
@@ -113,26 +146,9 @@ class IdUFFCrawler implements Crawler
 			$this->bag['enrolment_number'] = preg_replace('/\D/', '', $enrolmentNumber);
 		}
 
-		$this->bag['name'] = $name;
-		$this->bag['cpf'] = preg_replace('/\D/', '', $cpf);
+		$this->bag->put('name', $name);
+		$this->bag->put('cpf', $cpf);
 	}
-
-	public function getProgressData()
-	{
-		#formSuporteIntegralizacao\:tabelaResumos table tr
-		//$prefix =  '//table[@id=formSuporteIntegralizacao:tabelaResumos]';
-		//dd($this->xpath);
-		$prefix =  "//form[@id='formSuporteIntegralizacao']//span//table";
-		dd($this->bag);
-		dd($this->xpath->query("{$prefix}"));
-		//$test = $this->xpath->query('//table[@id=formSuporteIntegralizacao\:tabelaResumos]//tr[position()=1]//td[position()=2]/text()');
-		//dd($test);
-			
-		$degree = $this
-			->queryNode("{$prefix}//tr[position()=1]//td[position()=2]/text()");
-		dd($degree);
-	}
-
 	
 	public function queryNode($selector, $key)
 	{
@@ -140,7 +156,7 @@ class IdUFFCrawler implements Crawler
 		return Arr::pluck(\iterator_to_array($value), $key)[0];
 	}
 
-	public function toProgressPage($index = null)
+	public function toProgressPage($index = 0)
 	{
 		$viewState = $this->xpath->query('//input[@name="javax.faces.ViewState"]/@value');
 		$viewState = $viewState[0]->value;
@@ -227,7 +243,3 @@ class IdUFFCrawler implements Crawler
 		echo $this->html;
 	}
 }
-
-
-
-

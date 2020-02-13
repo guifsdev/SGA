@@ -15,9 +15,10 @@ class CreateStudentsTable extends Migration
     {
         Schema::create('students', function (Blueprint $table) {
             $table->increments('id');
+			
+            $table->string('enrolment_number');
             $table->string('name');
             $table->string('email')->nullable();
-            $table->string('enrolment_number');
             $table->string('cpf');
             $table->string('celphone_number')->nullable();
             $table->string('course');

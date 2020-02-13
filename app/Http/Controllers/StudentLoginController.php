@@ -9,6 +9,7 @@ use Illuminate\Validation\ValidationException;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Support\Facades\Auth;
 use App\Lib\IdUFFCrawler;
+use GuzzleHttp\Exception\ConnectException;
 
 class StudentLoginController extends Controller
 {
@@ -19,7 +20,7 @@ class StudentLoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/test';
+    //protected $redirectTo = '/test';
 
 	public function showLoginForm()
 	{
@@ -54,23 +55,41 @@ class StudentLoginController extends Controller
      */
     protected function attemptLogin(Request $request)
     {
-        //return $this->guard()->attempt(
-            //$this->credentials($request), $request->filled('remember')
-        //);
+		//Try to find the user in database
+		//return $this->guard()->attempt(
+			//$this->credentials($request), $request->filled('remember')
+		//);
+		//
+		//$result = $this->guard()->attempt(
+			//$this->credentials($request), $request->filled('remember')
+		//);
+		//dd($result);
 
 		//First we use the crawler
 		$crawler = app(IdUFFCrawler::class);
-		$crawler->attemptLogin('login.uff', $request->cpf, $request->password);
-		
-		//Check if the crawler succeded or failed
-		if($crawler->failed) {
-			return false;
-		} else {
-			//Get the crawler data and update student data in base
-			return true;
+		try {
+			$crawler->attemptLogin('login.uff', $request->cpf, $request->password);
+			//Check if the crawler succeded or failed
+			if($crawler->failed) {
+				return false;
+			}
+		} catch (ConnectException $connectError) {
+			return $this->sendFailedLoginResponse($request, $connectError);
 		}
+		
+		dd($crawler->bag);
 
 		//If the user is found, check if he has a valid enrolment number
+    }
+    /**
+     * Get the needed authorization credentials from the request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return array
+     */
+    protected function credentials(Request $request)
+    {
+        return $request->only($this->username());
     }
 	
     /**
@@ -81,10 +100,15 @@ class StudentLoginController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    protected function sendFailedLoginResponse(Request $request)
-    {
+    protected function sendFailedLoginResponse(Request $request, ConnectException $connectError = null)
+	{
+		if($connectError) {
+			throw ValidationException::withMessages([
+				'connection_error' => [trans('auth.failed.connection')],
+			]);
+		}
         throw ValidationException::withMessages([
-            $this->username() => [trans('auth.failed')],
+            $this->username() => [trans('auth.failed.credentials')],
         ]);
     }
 }

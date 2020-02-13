@@ -13,7 +13,10 @@ return [
     |
     */
 
-    'failed' => 'Essas credenciais não foram encontradas em nossos registros.',
+	'failed' => [
+		'credentials' => 'Essas credenciais não foram encontradas em nossos registros.',
+		'connection' => 'Erro na conexão com o IdUff. Tente novamente em alguns instantes.',
+	],
     'throttle' => 'Muitas tentativas de login. Tente novamente em :seconds segundos.',
 
 ];
