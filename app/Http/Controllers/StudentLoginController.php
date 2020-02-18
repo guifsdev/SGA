@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Student;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\RedirectsUsers;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
@@ -20,8 +22,12 @@ class StudentLoginController extends Controller
      *
      * @var string
      */
-    //protected $redirectTo = '/test';
+	protected $redirectTo = 'estudante/home';
 
+	public function __construct()
+	{
+		$this->middleware('guest:student')->except('logout');
+	}
 	public function showLoginForm()
 	{
 		return view('student.auth.login');
@@ -56,16 +62,42 @@ class StudentLoginController extends Controller
     protected function attemptLogin(Request $request)
     {
 		//Try to find the user in database
-		//return $this->guard()->attempt(
-			//$this->credentials($request), $request->filled('remember')
-		//);
-		//
-		//$result = $this->guard()->attempt(
-			//$this->credentials($request), $request->filled('remember')
-		//);
-		//dd($result);
+		$student = Student::where('cpf', $request->cpf)->first();
 
-		//First we use the crawler
+		//dd($student);
+		if($student) {
+			//If the student is found, check the state of his crawled data
+			$crawledAt = new Carbon($student->crawled_at);
+
+			$pref = config('settings.crawler.trigger');
+
+			$limit = $pref['limit'];
+			$measure = $pref['measure'];
+			$today = Carbon::now();
+
+			switch($measure) {
+				case 'months': 
+					$diff = $crawledAt->diffInMonths($today);
+					break;
+				case 'weeks': 
+					$diff = $crawledAt->diffInWeeks($today);
+					break;
+				case 'days': 
+					$diff = $crawledAt->diffInDays($today);
+					break;
+				case 'hours': 
+					$diff = $crawledAt->diffInHours($today);
+					break;
+			}
+
+			if($diff <= $limit) {
+				//Does not need to update
+				$this->guard()->login($student);
+				return true;
+			}
+		}
+
+		//Maybe a new student
 		$crawler = app(IdUFFCrawler::class);
 		try {
 			$crawler->attemptLogin('login.uff', $request->cpf, $request->password);
@@ -77,7 +109,16 @@ class StudentLoginController extends Controller
 			return $this->sendFailedLoginResponse($request, $connectError);
 		}
 		
-		dd($crawler->bag);
+		//Create a student from crawler scrapped content
+		$attributes = $crawler->bag
+			->except(['degree', 'degree_type', 'emphasis'])
+			->put('crawled_at', Carbon::now())
+			->toArray();
+
+		$student = Student::create($attributes);
+
+		//Reatempt to login...
+		return $this->attemptLogin($request);
 
 		//If the user is found, check if he has a valid enrolment number
     }
@@ -110,6 +151,21 @@ class StudentLoginController extends Controller
         throw ValidationException::withMessages([
             $this->username() => [trans('auth.failed.credentials')],
         ]);
+    }
+
+    /**
+     * Log the user out of the application.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function logout(Request $request)
+    {
+        $this->guard()->logout();
+
+        $request->session()->invalidate();
+
+        return $this->loggedOut($request) ?: redirect('estudante/login');
     }
 }
 

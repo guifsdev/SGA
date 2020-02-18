@@ -3,21 +3,23 @@
 use Faker\Generator as Faker;
 
 $factory->define(App\Student::class, function (Faker $faker) {
+	$percentageCompleted = $faker->randomFloat(2, 0, 100);
     return [
         //
-        'name' => strtoupper($faker->name),
-        'email' => $faker->email,
         'enrolment_number' => $faker->randomNumber($nbDigits = 9, $strict = false),
+        'first_name' => strtoupper($faker->firstName),
+        'last_name' => strtoupper($faker->lastName),
         'cpf' => $faker->regexify('([0-9]{3}[0-9]{3}[0-9]{3}[0-9]{2})'),
-        'celphone_number' => $faker->phoneNumber,
-        'course' => 'administração',
-        'locality' => 'niterói',
+        'cell_phone_number' => $faker->phoneNumber,
+        'email_primary' => $faker->email,
+        'email_secondary' => $faker->email,
         'curriculum' => '2301004',
-        'cr' => $faker->randomFloat($nbMaxDecimals = 1, $min = 0.0, $max = 10.0), // 48.8932
-		'cha' => $faker->numberBetween($min = 0, $max = 3400),
-		'chc' => $faker->numberBetween($min = 0, $max = 3400),
-		'cht' => $faker->numberBetween($min = 0, $max = 3400),
-		'chs' => $faker->numberBetween($min = 0, $max = 3400),
-		'password' => '$2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgaHb9cbcoQgdIVFlYg7B77UdFm', //secret
+		'total_workload' => 3000,
+		'obtained_workload' => $faker->numberBetween($min = 0, $max = 3000),
+		'attended_workload' => $faker->numberBetween($min = 0, $max = 3000),
+		'percentage_completed' => $percentageCompleted,
+		'performance_coeficient' => $faker->randomFloat(2, 0, 10),
+		'current_status' => $percentageCompleted < 100 ? 'Cursando' : 'Formado',
+		'crawled_at' => $faker->dateTime(),
     ];
 });

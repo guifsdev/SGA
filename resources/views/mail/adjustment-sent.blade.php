@@ -1,8 +1,8 @@
 @component('mail::message')
-# Olá {{$primeiro_nome}},
+# Olá {{$studentName}},
 
 Comunicamos que recebemos com sucesso sua solicitação de ajuste de disciplinas. 
-Seguem abaixo as disciplinas passíveis de alteração em seu plano de estudos conforme seu requerimento.
+Abaixo, as disciplinas passíveis de alteração em seu plano de estudos conforme seu requerimento.
 
 @component('mail::table')
 |Periodo | Disciplina | Requerimento |
@@ -12,8 +12,12 @@ Seguem abaixo as disciplinas passíveis de alteração em seu plano de estudos c
 @endforeach
 @endcomponent
 
+Assinatura: **`{{$signature}}`**
+
 Informamos que o resultado estará disponível no idUFF.
 
 Obrigado,<br>
+SGA
+
 Coordenação do curso de Administração da Universidade Federal Fluminense.
 @endcomponent

@@ -1,7 +1,5 @@
 <?php
 
-use App\Subject;
-use App\Setting;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -13,23 +11,20 @@ use App\Setting;
 |
 */
 
-Route::get('test', function() {
-	//return 'Hello world';
-});
-
 Route::prefix('estudante')->group(function() {
 	Route::get('login', 'StudentLoginController@showLoginForm');
 	Route::post('login', 'StudentLoginController@login');
+	Route::get('logout', 'StudentLoginController@logout');
+	Route::get('home', 'StudentHomeController@home');
+
+	Route::get('adjustment/index', 'StudentAdjustmentController@index');
+	Route::post('adjustment/store', 'StudentAdjustmentController@store');
 });
 
+//Route::prefix('adjustment')->group(function() {
+	//Route::get('index', 'AdjustmentsController@index');
+//});
 
-
-
-//Route::get('/estudante/login', 'Auth\StudentAuthController@showLoginForm');
-
-
-//Route::get('/estudante/logout', 'Auth\StudentAuthController@logout');
-//Route::post('/estudante/login', 'Auth\StudentAuthController@login');
 
 //Route::get('/', 'SpaController@index');
 
@@ -64,7 +59,6 @@ Route::prefix('estudante')->group(function() {
 ////Auth::routes();
 
 
-//Route::middleware('auth_student')->post('/ajuste/store', 'AdjustmentsController@store');
 
 //Route::get('/ajuste/status', 'AdjustmentsController@status');
 

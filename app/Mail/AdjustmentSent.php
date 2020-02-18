@@ -17,14 +17,16 @@ class AdjustmentSent extends Mailable
      * @return void
      */
     public $adjustments;
-    public $studentData;
+    public $studentName;
+	public $signature;
 
 
 
-    public function __construct($student, $adjustments)
+    public function __construct($studentName, $adjustments, $signature)
     {
-        $this->student = $student;
+        $this->studentName = ucfirst(strtolower($studentName));
         $this->adjustments = $adjustments;
+		$this->signature = $signature;
     }
 
     /**

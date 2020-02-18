@@ -9,17 +9,17 @@ let routes = [
 		name: 'Home',
 		path: '/home',
 		alias: '/',
-		component: require('./views/Home.vue').default,
+		component: require('./views/student/Home.vue').default,
 	},
 	{
 		name: 'Meus Dados',
 		path: '/meus-dados',
-		component: require('./views/MeusDados.vue').default,
+		component: require('./views/student/MyData.vue').default,
 	},
 	{
 		name: 'Ajuste',
 		path: '/ajuste',
-		component: require('./views/ajuste/Ajuste.vue').default,
+		component: require('./views/student/adjustment/Adjustment.vue').default,
 	},
 	{
 		name: 'Certificados',

@@ -18,8 +18,17 @@ class Student extends Authenticatable
 
     protected $guard = 'student';
 
+	protected $hidden = ['remember_token', 'created_at', 'crawled_at'];
     protected $guarded = [];
 
+	public function getNameAttribute()
+	{
+		return ucfirst(strtolower($this->first_name));
+	}
+	public function getCompletedPercentage()
+	{
+		return "{$this->percentage_completed}%";
+	}
 
     //student->certificates > [c1, c2, ...]
     public function certificates() {

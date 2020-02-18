@@ -17,21 +17,21 @@ class CreateStudentsTable extends Migration
             $table->increments('id');
 			
             $table->string('enrolment_number');
-            $table->string('name');
-            $table->string('email')->nullable();
+            $table->string('first_name');
+            $table->string('last_name');
             $table->string('cpf');
-            $table->string('celphone_number')->nullable();
-            $table->string('course');
-            $table->string('locality');
+            $table->string('cell_phone_number')->nullable();
+            $table->string('email_primary')->nullable();
+            $table->string('email_secondary')->nullable();
 			$table->string('curriculum');
-            $table->float('cr');
-			$table->integer('cha');
-			$table->integer('chc');
-			$table->integer('cht');
-			$table->integer('chs');
-            $table->string('password');
-            $table->timestamp('email_verified_at')->nullable();
-            $table->rememberToken();
+			$table->integer('total_workload');
+			$table->integer('obtained_workload');
+			$table->integer('attended_workload');
+			$table->float('percentage_completed', 5, 2);
+			$table->float('performance_coeficient', 3, 2);
+			$table->string('current_status');
+			$table->timestamp('crawled_at');
+			$table->rememberToken();
             $table->timestamps();
         });
     }

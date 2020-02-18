@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\DB;
 class Adjustment extends Model
 {
 	protected $guarded = [];
+	public $timestamps = true;
 
 	const filter_columns = ['adjustments.id', 
 							'student_id', 
