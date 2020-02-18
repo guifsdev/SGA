@@ -7,6 +7,7 @@ use App\Interfaces\IdUFFCrawlerInterface as Crawler;
 use GuzzleHttp\Client;
 use GuzzleHttp\Cookie\CookieJar;
 use duzun\hQuery;
+use Illuminate\Support\Facades\Log;
 
 class IdUFFCrawler implements Crawler
 {
@@ -54,15 +55,15 @@ class IdUFFCrawler implements Crawler
 		]);
 	}
 
-	public function attemptLogin($path, $cpf, $password)
+	public function attemptLogin($path, $request)
 	{
 		$response = $this->client->request('GET', 'login.uff');
 		$response = $this->client->request('POST', $path,
 			[ 
 				'form_params' => [
 					"login" => "login",
-					"login:id" => $cpf,
-					"login:senha" => $password,
+					"login:id" => $request->cpf,
+					"login:senha" => $request->password,
 					"login:btnLogar" => "Logar",
 					'javax.faces.ViewState' => 'j_id1'
 				],
@@ -82,7 +83,6 @@ class IdUFFCrawler implements Crawler
 		if($this->login()) {
 			//Not in profile page 
 			if($this->inEnrolmentSelectionPage()) {
-
 				//But is not in profile page because of multiple enrolments
 				$enrolments = $this->getEnrolments();
 				$enrolment = $this->getValidEnrolment($enrolments);
@@ -102,7 +102,10 @@ class IdUFFCrawler implements Crawler
 					$this->failed = true;
 					return;
 				}
-			} 
+			}
+			//Inspect single enrolment students
+			else Log::channel('slack')->info($request, get_object_vars($this));
+
 		} else {
 			//Something went wrong with cpf or password
 			$this->failed = true;

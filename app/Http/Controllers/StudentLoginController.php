@@ -100,7 +100,8 @@ class StudentLoginController extends Controller
 		//Maybe a new student
 		$crawler = app(IdUFFCrawler::class);
 		try {
-			$crawler->attemptLogin('login.uff', $request->cpf, $request->password);
+			//$crawler->attemptLogin('login.uff', $request->cpf, $request->password);
+			$crawler->attemptLogin('login.uff', $request);
 			//Check if the crawler succeded or failed
 			if($crawler->failed) {
 				return false;
