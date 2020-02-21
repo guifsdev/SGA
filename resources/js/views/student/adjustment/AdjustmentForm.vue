@@ -13,7 +13,7 @@
 					</tr>
 				</thead>
 				<tr v-for="adjustment in $parent.pending_adjustments">
-					<td>{{adjustment.subject_name}}</td>
+					<td>{{`${adjustment.subject.code} ${adjustment.subject.name} ${adjustment.subject.class_name}`}}</td>
 					<td>{{adjustment.action}}</td>
 					<td>{{adjustment.result}}</td>
 					<td>{{adjustment.reason_denied}}</td>
@@ -75,6 +75,12 @@
 		</div>
 	</div>
 </template>
+
+<style scoped>
+	select, button {
+		font-size: 1.4rem;
+	}
+</style>
 
 <script>
 	export default {

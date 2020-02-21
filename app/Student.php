@@ -25,7 +25,7 @@ class Student extends Authenticatable
 	{
 		return ucfirst(strtolower($this->first_name));
 	}
-	public function getCompletedPercentage()
+	public function getCompletedPercentageAttribute()
 	{
 		return "{$this->percentage_completed}%";
 	}

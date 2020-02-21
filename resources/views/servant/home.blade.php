@@ -14,12 +14,6 @@
 					Home
 				</a>
 			</router-link>
-			<router-link to="/meus-dados" tag="li">
-			  	<a>
-					<i class="fas fa-info-circle"></i>
-					Meus Dados
-				</a>
-			</router-link>		
 			<router-link to="/ajuste" tag="li">
 			  	<a>
 					<i class="fas fa-edit"></i>
@@ -46,15 +40,15 @@
 		<h2 class="title-box__title">@{{$route.name}}</h2>
 		<a href="javascript:void(0);" class="icon-link">
 			<i class="fas fa-user-graduate"></i>
-			Olá {{$student->name}}!
+			Olá {{$servant->name}}!
 		</a>
-		<a href="/estudante/logout" class="icon-link">
+		<a href="/servidor/logout" class="icon-link">
 			<i class="fas fa-sign-out-alt"></i>
 		</a>
 	  </div>
 
 	  <article class="larg">
-		<router-view :student="{{$student}}"></router-view> </article>
+		<router-view :servant="{{$servant}}"></router-view> </article>
 	</main>
 </div>
 @endsection

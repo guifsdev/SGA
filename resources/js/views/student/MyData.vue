@@ -1,6 +1,6 @@
 <template>
 	<div class="container" v-if="student">
-	    <div class="card" style="width: 18rem;">
+	    <div class="card">
 	      <ul class="list-group list-group-flush">
 	        <li class="list-group-item"><span class="font-weight-bold">CR:</span> {{student.performance_coeficient}}</li>
 	        <li class="list-group-item"><span class="font-weight-bold">Carga horária obtida:</span> {{student.obtained_workload}}</li>
@@ -53,6 +53,13 @@
 	    </form>
 	</div>
 </template>
+
+<style scoped>
+	.card {
+		margin-bottom: 2rem;
+	}
+</style>
+
 
 <script>
 	export default {

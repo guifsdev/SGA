@@ -20,13 +20,6 @@ class StudentAdjustmentController extends Controller
 
 	public function index(Request $request)
 	{
-		//Check if student already has adjustments
-		$pendingAdjustments = Adjustment::where('student_id', $request->student_id)
-			->get()
-			->each(function($adjustment) {
-				$adjustment['subject_name'] = Subject::find($adjustment['subject_id'])
-					->name;
-			});
 
 		$date = config('settings.adjustment.date');
 		$now = Carbon::now();
@@ -34,6 +27,10 @@ class StudentAdjustmentController extends Controller
 		$data = [];
 
 		if($open) {
+			//Check if student already has adjustments
+			$pendingAdjustments = Adjustment::where('student_id', $request->student_id)
+				->with('subject')
+				->get();
 			$data = [
 				'open' => $open,
 				'periods' => Subject::all()->max('period'),
@@ -43,8 +40,7 @@ class StudentAdjustmentController extends Controller
 			];
 			return response($data, 200);
 		}
-		return response([
-			'open' => $open, 200]);
+		return response(['open' => $open, 200]);
 	}
     
     public function store(Request $request) {

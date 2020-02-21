@@ -3,19 +3,21 @@
 		v-if="$parent.student">
 		<div class="container" style="margin-bottom: 2rem;"
 			v-if="$parent.pending_adjustments.length">
-			<h3>Requerimentos pendentes</h3>
+			<h3><b>Requerimentos enviados</b></h3>
 			<table class="table table-sm">
 				<thead>
 					<tr>
 						<th scope="col">Disciplina</th>
 						<th scope="col">Ação</th>
 						<th scope="col">Status</th>
+						<th scope="col">Resultado</th>
 					</tr>
 				</thead>
 				<tr v-for="adjustment in $parent.pending_adjustments">
-					<td>{{adjustment.subject_name}}</td>
+					<td>{{`${adjustment.subject.code} ${adjustment.subject.name} ${adjustment.subject.class_name}`}}</td>
 					<td>{{adjustment.action}}</td>
 					<td>{{adjustment.result}}</td>
+					<td>{{adjustment.reason_denied}}</td>
 				</tr>
 			</table>
 		</div>
@@ -69,6 +71,7 @@
 		</div>
 	</div>
 </template>
+
 
 <script>
 	export default {

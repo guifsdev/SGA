@@ -15,10 +15,17 @@ Route::prefix('estudante')->group(function() {
 	Route::get('login', 'StudentLoginController@showLoginForm');
 	Route::post('login', 'StudentLoginController@login');
 	Route::get('logout', 'StudentLoginController@logout');
-	Route::get('home', 'StudentHomeController@home');
+	Route::get('/', 'StudentHomeController@home');
 
 	Route::get('adjustment/index', 'StudentAdjustmentController@index');
 	Route::post('adjustment/store', 'StudentAdjustmentController@store');
+});
+
+Route::prefix('servidor')->group(function() {
+	Route::get('login', 'ServantsLoginController@showLoginForm');
+	Route::post('login', 'ServantsLoginController@login');
+	Route::get('logout', 'ServantsLoginController@logout');
+	Route::get('/', 'ServantHomeController@home');
 });
 
 //Route::prefix('adjustment')->group(function() {

@@ -12,17 +12,12 @@ import CertificatesValidator from './components/certificados/CertificatesValidat
 
 import CreateUsers from './components/usuarios/CreateUsers.vue'; 
 
-
+//vuetify plugin
+import vuetify from './plugins/vuetify'; // path to vuetify export
 import routes from './routes.js';
 
 const app = new Vue({
     el: '#app',
-
+	vuetify,
     router: routes,
-    components: {
-    	ActiveStudentsUpdater, 
-    	Event, EventList, EventEdit, EventCreate,
-    	CertificatesList, CertificatesEmit, CertificatesValidator,
-    	CreateUsers,
-    },
 });

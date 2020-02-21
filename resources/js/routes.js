@@ -1,10 +1,6 @@
 import VueRouter from 'vue-router';
 
 let routes = [
-	/*{
-		path: '/',
-		component: require('./views/Home.vue').default,
-	},*/
 	{
 		name: 'Home',
 		path: '/home',
@@ -30,7 +26,12 @@ let routes = [
 		name: 'Eventos',
 		path: '/eventos',
 		component: require('./views/Eventos.vue').default,
-	}
+	},
+	{
+		name: 'Resoler ajustes',
+		path: '/resolver-ajustes',
+		component: require('./views/servant/adjustment/ResolveAdjustment.vue').default,
+	},
 ];
 
 

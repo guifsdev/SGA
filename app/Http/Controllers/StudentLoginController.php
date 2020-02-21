@@ -22,7 +22,7 @@ class StudentLoginController extends Controller
      *
      * @var string
      */
-	protected $redirectTo = 'estudante/home';
+	protected $redirectTo = 'estudante/';
 
 	public function __construct()
 	{

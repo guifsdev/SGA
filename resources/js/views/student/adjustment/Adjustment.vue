@@ -7,6 +7,12 @@
 	</component>
 </template>
 
+<style scoped>
+	>>> select, >>> button {
+		font-size: 1.4rem;
+	}
+</style>
+
 <script>
 import AdjustmentForm from './AdjustmentForm.vue';
 import AdjustmentConfirmForm from './AdjustmentConfirmForm.vue';
@@ -39,15 +45,18 @@ import AdjustmentConfirmForm from './AdjustmentConfirmForm.vue';
 			}
 		},
 		mounted: function() {
-			axios.get('adjustment/index', {
+			axios.get('estudante/adjustment/index', {
 				params: {'student_id': this.student.id}
 			})
 				.then(response => {
 					this.open = response.data.open;
-					this.max_num = response.data.max_num;
-					this.periods = response.data.periods;
-					this.subjects = response.data.subjects;
-					this.pending_adjustments = response.data.pending_adjustments;
+					if(this.open) {
+						this.max_num = response.data.max_num;
+						this.periods = response.data.periods;
+						this.subjects = response.data.subjects;
+						this.pending_adjustments = response.data.pending_adjustments;
+					}
+
 
 				});
 		}

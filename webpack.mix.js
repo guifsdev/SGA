@@ -13,7 +13,7 @@ let mix = require('laravel-mix');
 
 //mix.js('src/app.js', 'dist/').sass('src/app.scss', 'dist/');
 
-mix.less('resources/less/dashboard.less', 'public/css')
+mix.sass('resources/sass/app.scss', 'public/css/')
    .js('resources/js/app.js', 'public/js')
    .extract(['jquery', 'bootstrap', 'popper.js'])
    .version();
