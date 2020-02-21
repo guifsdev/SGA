@@ -63,34 +63,23 @@ class StudentLoginController extends Controller
     {
 		//Try to find the user in database
 		$student = Student::where('cpf', $request->cpf)->first();
-
-		//dd($student);
+		$crawler = app(IdUFFCrawler::class);
+		
+		//If the student is found, check the state of his crawled data
 		if($student) {
-			//If the student is found, check the state of his crawled data
 			$crawledAt = new Carbon($student->crawled_at);
 
 			$pref = config('settings.crawler.trigger');
 
 			$limit = $pref['limit'];
 			$measure = $pref['measure'];
-			$today = Carbon::now();
 
-			switch($measure) {
-				case 'months': 
-					$diff = $crawledAt->diffInMonths($today);
-					break;
-				case 'weeks': 
-					$diff = $crawledAt->diffInWeeks($today);
-					break;
-				case 'days': 
-					$diff = $crawledAt->diffInDays($today);
-					break;
-				case 'hours': 
-					$diff = $crawledAt->diffInHours($today);
-					break;
-			}
 
-			if($diff <= $limit) {
+			$uncrawledTime = $this->getUncrawledTime($crawledAt, $measure);
+
+
+			if($uncrawledTime <= $limit && $crawler->verifyCredentials($request)) {
+				//Inside time frame, but must verify password...
 				//Does not need to update
 				$this->guard()->login($student);
 				return true;
@@ -98,7 +87,6 @@ class StudentLoginController extends Controller
 		}
 
 		//Maybe a new student
-		$crawler = app(IdUFFCrawler::class);
 		try {
 			//$crawler->attemptLogin('login.uff', $request->cpf, $request->password);
 			$crawler->attemptLogin('login.uff', $request);
@@ -123,6 +111,26 @@ class StudentLoginController extends Controller
 
 		//If the user is found, check if he has a valid enrolment number
     }
+	public function getUncrawledTime($crawledAt, $measure)
+	{
+		$today = Carbon::now();
+		switch($measure) {
+			case 'months': 
+				$uncrawledTime = $crawledAt->diffInMonths($today);
+				break;
+			case 'weeks': 
+				$uncrawledTime = $crawledAt->diffInWeeks($today);
+				break;
+			case 'days': 
+				$uncrawledTime = $crawledAt->diffInDays($today);
+				break;
+			case 'hours': 
+				$uncrawledTime = $crawledAt->diffInHours($today);
+				break;
+		}
+		return $uncrawledTime;
+
+	}
     /**
      * Get the needed authorization credentials from the request.
      *

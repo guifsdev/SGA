@@ -55,6 +55,26 @@ class IdUFFCrawler implements Crawler
 		]);
 	}
 
+	public function verifyCredentials($request, $path = 'login.uff')
+	{
+		$response = $this->client->request('GET', 'login.uff');
+		$response = $this->client->request('POST', $path,
+			[ 
+				'form_params' => [
+					"login" => "login",
+					"login:id" => $request->cpf,
+					"login:senha" => $request->password,
+					"login:btnLogar" => "Logar",
+					'javax.faces.ViewState' => 'j_id1'
+				],
+			]);
+		
+		$html = (string) $response->getBody();
+		$this->hQueryDom = hQuery::fromHTML($html);
+		$error = $this->hQueryDom->find('.form-messages-error');
+		return !$error ? true : false;
+	}
+
 	public function attemptLogin($path, $request)
 	{
 		$response = $this->client->request('GET', 'login.uff');
