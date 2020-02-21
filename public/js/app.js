@@ -3061,7 +3061,7 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       stage: 'adjustment-form',
-      max_num: null,
+      max_adjustments: null,
       periods: null,
       subjects: null,
       adjustments: null,
@@ -3095,7 +3095,7 @@ __webpack_require__.r(__webpack_exports__);
       _this.open = response.data.open;
 
       if (_this.open) {
-        _this.max_num = response.data.max_num;
+        _this.max_adjustments = response.data.max_adjustments;
         _this.periods = response.data.periods;
         _this.subjects = response.data.subjects;
         _this.pending_adjustments = response.data.pending_adjustments;
@@ -7389,7 +7389,7 @@ var render = function() {
                   _vm._v(" "),
                   _c(
                     "tbody",
-                    _vm._l(_vm.$parent.max_num, function(item, index) {
+                    _vm._l(_vm.$parent.max_adjustments, function(item, index) {
                       return _c("tr", [
                         _c("td", [
                           _c(

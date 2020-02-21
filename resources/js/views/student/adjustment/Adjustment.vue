@@ -23,7 +23,7 @@ import AdjustmentConfirmForm from './AdjustmentConfirmForm.vue';
 		data: function() {
 			return {
 				stage: 'adjustment-form',
-				max_num: null,
+				max_adjustments: null,
 				periods: null,
 				subjects: null,
 				adjustments: null,
@@ -51,7 +51,7 @@ import AdjustmentConfirmForm from './AdjustmentConfirmForm.vue';
 				.then(response => {
 					this.open = response.data.open;
 					if(this.open) {
-						this.max_num = response.data.max_num;
+						this.max_adjustments = response.data.max_adjustments;
 						this.periods = response.data.periods;
 						this.subjects = response.data.subjects;
 						this.pending_adjustments = response.data.pending_adjustments;

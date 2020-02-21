@@ -23,24 +23,25 @@ class StudentAdjustmentController extends Controller
 
 		$date = config('settings.adjustment.date');
 		$now = Carbon::now();
-		$open = (( $date['open'] <= $now ) && ( $date['close'] >= $now ) );
+		$openState = (( $date['open'] <= $now ) && ( $date['close'] >= $now ) );
 		$data = [];
 
-		if($open) {
+		if($openState) {
 			//Check if student already has adjustments
 			$pendingAdjustments = Adjustment::where('student_id', $request->student_id)
+				->where('created_at', '>=', $date['open'])
 				->with('subject')
 				->get();
 			$data = [
-				'open' => $open,
+				'open' => $openState,
 				'periods' => Subject::all()->max('period'),
-				'max_num' => config('settings.adjustment.max_num'),
+				'max_adjustments' => config('settings.adjustment.max_adjustments'),
 				'subjects' => Subject::all(),
 				'pending_adjustments' => $pendingAdjustments,
 			];
 			return response($data, 200);
 		}
-		return response(['open' => $open, 200]);
+		return response(['open' => $openState, 200]);
 	}
     
     public function store(Request $request) {

@@ -37,7 +37,7 @@
 					</tr>
 				</thead>
 				<tbody>
-				  <tr v-for="(item, index) in $parent.max_num">
+				  <tr v-for="(item, index) in $parent.max_adjustments">
 					  <td>
 						  <select name="period" class="custom-select custom-select-sm"
 		  					@change="fetchSubjects($event, index)">
