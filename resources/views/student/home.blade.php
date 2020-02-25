@@ -5,7 +5,7 @@
 <div class="home">
 	<span class="background"></span>
 	<header class="home__navigation">
-		<h1 class="home__logo-text">SGA</h1>
+		<h1 class="home__logo-text home__logo-text--student">SGA</h1>
 		<nav>
 		  <ul>
 			<router-link to="/home" tag="li">

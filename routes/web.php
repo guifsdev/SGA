@@ -26,6 +26,8 @@ Route::prefix('servidor')->group(function() {
 	Route::post('login', 'ServantsLoginController@login');
 	Route::get('logout', 'ServantsLoginController@logout');
 	Route::get('/', 'ServantHomeController@home');
+
+	Route::get('adjustment/index', 'ServantAdjustmentController@index');
 });
 
 //Route::prefix('adjustment')->group(function() {

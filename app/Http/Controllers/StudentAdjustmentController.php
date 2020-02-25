@@ -21,6 +21,7 @@ class StudentAdjustmentController extends Controller
 	public function index(Request $request)
 	{
 
+		//dd($request);
 		$date = config('settings.adjustment.date');
 		$now = Carbon::now();
 		$openState = (( $date['open'] <= $now ) && ( $date['close'] >= $now ) );

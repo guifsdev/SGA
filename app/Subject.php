@@ -8,6 +8,11 @@ class Subject extends Model
 {
     protected $fillable = ['name', 'period', 'code', 'offered'];
 
+	public function getFullNameAttribute()
+	{
+		return "{$this->code} {$this->name}";
+	}
+
     public static function addNames($adjustments) {
         $out = array();
         foreach ($adjustments as $adjustment) {

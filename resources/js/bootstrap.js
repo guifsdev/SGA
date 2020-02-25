@@ -14,11 +14,15 @@ try {
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import axios from 'axios';
+import floatThead from 'floatthead';
 
 window.Vue = Vue;
 Vue.use(VueRouter);
 
 window.axios = axios;
+
+
+window.floatThead = floatThead;
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests
  * to our Laravel back-end. This library automatically handles sending the
@@ -61,3 +65,5 @@ if (token) {
 //     cluster: process.env.MIX_PUSHER_APP_CLUSTER,
 //     encrypted: true
 // });
+
+

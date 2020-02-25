@@ -5,7 +5,8 @@
 <div class="home">
 	<span class="background"></span>
 	<header class="home__navigation">
-		<h1 class="home__logo-text">SGA</h1>
+		<h1 class="home__logo-text home__logo-text--servant">SGA</h1>
+		<span class="user-cue">(Servidor)</span>
 		<nav>
 		  <ul>
 			<router-link to="/home" tag="li">
@@ -14,7 +15,7 @@
 					Home
 				</a>
 			</router-link>
-			<router-link to="/ajuste" tag="li">
+			<router-link to="/resolver-ajustes" tag="li">
 			  	<a>
 					<i class="fas fa-edit"></i>
 					Ajuste
@@ -39,7 +40,7 @@
 	  <div class="title-box">
 		<h2 class="title-box__title">@{{$route.name}}</h2>
 		<a href="javascript:void(0);" class="icon-link">
-			<i class="fas fa-user-graduate"></i>
+			<i class="fas fa-user"></i>
 			Olá {{$servant->name}}!
 		</a>
 		<a href="/servidor/logout" class="icon-link">

@@ -2,6 +2,7 @@
 
 html {
   font-size: 62.5% !important;
+  height: 100vh;
 }
 
 /*!
@@ -16499,11 +16500,18 @@ readers do not read off random characters that represent icons */
   text-align: center;
   font-weight: normal;
   color: #F6F6EF;
-  line-height: 6rem;
   margin: 0;
   font-size: 2rem;
   letter-spacing: 0.2rem;
   background-color: #34363A;
+}
+
+.home__logo-text--servant {
+  line-height: 3.6rem;
+}
+
+.home__logo-text--student {
+  line-height: 6rem;
   border-bottom: 1px solid rgba(101, 116, 134, 0.57);
 }
 
@@ -16523,6 +16531,17 @@ readers do not read off random characters that represent icons */
   float: left;
   position: relative;
   z-index: 99;
+}
+
+.home__navigation .user-cue {
+  position: relative;
+  text-align: center;
+  display: block;
+  background-color: #34363A;
+  color: #F6F6EF;
+  line-height: 2.3rem;
+  font-size: 1.35rem;
+  border-bottom: 1px solid rgba(101, 116, 134, 0.57);
 }
 
 .home__navigation ul {
@@ -16604,7 +16623,6 @@ readers do not read off random characters that represent icons */
   font-weight: normal;
   padding-left: 40px;
   line-height: 60px;
-  text-shadow: 1px 1px 2px #fff;
   position: relative;
   flex: 1;
   -webkit-flex: 1;
@@ -16627,5 +16645,6 @@ readers do not read off random characters that represent icons */
   max-width: 100%;
   margin: 1rem auto;
   padding: 0 1.5rem;
+  font-size: 1.5rem;
 }
 

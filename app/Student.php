@@ -30,6 +30,11 @@ class Student extends Authenticatable
 		return "{$this->percentage_completed}%";
 	}
 
+	public function getFullNameAttribute()
+	{
+		return "{$this->first_name} {$this->last_name}";
+	}
+
     //student->certificates > [c1, c2, ...]
     public function certificates() {
     	return $this->hasMany('App\Certificate');

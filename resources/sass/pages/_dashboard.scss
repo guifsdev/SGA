@@ -19,12 +19,19 @@
 		text-align: center;
 		font-weight: normal;
 		color: #F6F6EF;
-		line-height: 6rem;
 		margin:0;
 		font-size:2rem;
 		letter-spacing: .2rem;
 		background-color:#34363A;
-		border-bottom:1px solid rgba(101, 116, 134, 0.57);
+
+		&--servant {
+			line-height: 3.6rem;
+		}
+		&--student {
+			line-height: 6rem;
+			border-bottom:1px solid rgba(101, 116, 134, 0.57);
+
+		}
 	}
 	& .background {
 		background-color:#383B42;
@@ -41,7 +48,17 @@
 		float:left;
 		position:relative;
 		z-index:99;
-
+		
+		& .user-cue {
+			position: relative;
+			text-align: center;
+			display: block;
+			background-color:#34363A;
+			color: #F6F6EF;
+			line-height: 2.3rem;
+			font-size: 1.35rem;
+			border-bottom: 1px solid rgba(101, 116, 134, 0.57);
+		}
 		& ul {
 			list-style:none;
 			margin-top:0;
@@ -123,7 +140,6 @@
 				font-weight: normal;
 				padding-left: 40px;
 				line-height: 60px;
-				text-shadow: 1px 1px 2px #fff;
 				position: relative;
 				flex:1;
 				-webkit-flex:1;
@@ -146,8 +162,10 @@
 
 		& article {
 			max-width: 100%;
+			//height: 100vh;
 			margin: 1rem auto;
 			padding:0 1.5rem;
+			font-size: 1.5rem;
 		}
 	}
 
