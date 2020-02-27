@@ -5,31 +5,190 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use App\ConfigAdjustment;
+use App\Mail\AdjustmentResolved;
 use Carbon\Carbon;
 use App\Setting;
 use App\Student;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Builder;
 
 class Adjustment extends Model
 {
 	protected $guarded = [];
 	public $timestamps = true;
 
-	const filter_columns = ['adjustments.id', 
-							'student_id', 
-							'students.nome as student_name', 
-							'cpf as student_cpf', 
-							'matricula as student_matricula', 
-							'subjects.code as subject_code', 
-							'subjects.name as subject_name', 
-							'subjects.class_name as subject_class_name',
-							'subject_id', 
-							'subjects.period as subject_period',
-							'reason_denied', 
-							'action', 
-							'adjustments.created_at', 
-							'result'];
+	//const filter_columns = ['adjustments.id', 
+							//'student_id', 
+							//'students.nome as student_name', 
+							//'cpf as student_cpf', 
+							//'matricula as student_matricula', 
+							//'subjects.code as subject_code', 
+							//'subjects.name as subject_name', 
+							//'subjects.class_name as subject_class_name',
+							//'subject_id', 
+							//'subjects.period as subject_period',
+							//'reason_denied', 
+							//'action', 
+							//'adjustments.created_at', 
+							//'result'];
+	public $filterColumn;
+
+
+	public function index($filters) 
+	{
+		$query = Adjustment::query()->with(['student', 'subject']);
+
+
+		if($filters) {
+			$params = collect(explode('&', $filters));
+			$filterType = explode('=', $params[0])[1] == 'and' ? 'where' : 'orWhere';
+
+			$params->forget(0);
+
+			$params->map(function($param) use ($query, $filterType) {
+
+				$scope = $filterType;
+
+				preg_match('/\[(\w+)\]/', $param, $match);
+				$operator = count($match) == 2 ? $match[1] : '=';
+				$operator = $operator == 'contains' ? 'like' : $operator;
+
+				$pair = ($operator == '=') ? explode('=', $param) :
+					explode('=', preg_replace("/".preg_quote($match[0])."/", '', $param));
+
+				$value = urldecode($pair[1]);
+				$columnName = $pair[0];
+
+				if(in_array($columnName, ['student_name', 'cpf', 'enrolment_number', 'subject_name']))
+					$scope = "${filterType}Has";
+
+				if($columnName == 'student_name') {
+					
+					$query->$scope('student', function(Builder $q) use ($value, $operator) {
+						if($operator == 'like') 
+							$q ->where('first_name', $operator, "%${value}%")
+								->orWhere('last_name', $operator, "%${value}%");
+						else $q->where('first_name', $operator, $value)
+								->orWhere('last_name', $operator, $value);
+					}); 
+				}
+				elseif(in_array($columnName, ['cpf', 'enrolment_number'])) {
+					$query->$scope('student', function(Builder $q) use ($value, $columnName, $operator) {
+						if($operator == 'like') $q->where($columnName, $operator, "%${value}%");
+						else $q->where($columnName, $operator, $value);
+					});
+				} 
+				elseif($columnName == 'subject_name') {
+					$columnName = 'code';
+					//Get subject code...
+					$value = preg_match('/\w{3}\d{5}/', $value, $matches);
+					$value = $matches[0];
+
+					$query->$scope('subject', function(Builder $q) use ($value, $columnName, $operator) {
+						$q->where($columnName, $operator, $value);
+					});
+				}
+				elseif($columnName == 'created_at') {
+					switch($operator) {
+					case "before" : $query->whereDate($columnName, '<=',$value); break;
+					case "after" : $query->whereDate($columnName, '>=',$value); break;
+					default: $query->whereDate($columnName, $value); 
+					}
+				} 
+				else $query->$scope($columnName, $value);
+			});
+		}
+
+		$adjustments = $query->get();
+		$subjects = $adjustments->map(function($item) {
+				return "{$item['subject']['code']} {$item['subject']['name']}";
+			})
+			->unique()->sort()->toArray();
+
+		
+
+		$reasonsDenied = $adjustments->map(function($item) {
+			return $item['reason_denied'] ?: 'Vazio';
+		})->unique()->sort()->toArray();
+
+		$results = $adjustments->map(function($item) {
+			return $item['result'];
+		})->unique()->sort()->toArray();
+
+		$adjustments->map(function($adjustment) {
+				$adjustment['student_name'] = $adjustment->student->full_name;
+				$adjustment['cpf'] = $adjustment->student->cpf;
+				$adjustment['enrolment_number'] = $adjustment->student->enrolment_number;
+				$adjustment['subject_name'] = $adjustment->subject->full_name;
+				$adjustment = collect($adjustment)
+					->forget(['student', 'subject'])
+					->toArray();
+				return $adjustment;
+			});
+		$reasonsToDeny = config('settings.adjustment.reasons_to_deny');
+
+		return response([
+			'adjustments' => $adjustments, 
+			'subjects' => array_values($subjects),
+			'reasons_denied' => array_values($reasonsDenied),
+			'results' => array_values($results),
+			'reasons_to_deny' => $reasonsToDeny,
+		], 200);
+	}
+
+	public function resolve($adjustments, $decision, $reason)
+	{
+		$result = $decision == 'deny' ? 'Indeferido' : 'Deferido';
+		$studentAdjustments = collect([]);
+		$adjustmentIds = [];
+
+		foreach($adjustments as $adjustment) {
+			$studentId = $adjustment['student_id'];
+			$adjustmentId = $adjustment['id'];
+			$action = $adjustment['action'];
+
+			$subject = $adjustment['subject'];
+			$subjectAction = collect($adjustment['subject'])
+				->put('action', $action)
+				->put('subject_name', "${subject['code']} ${subject['name']} ${subject['class_name']}");
+
+			if($studentAdjustments->has($studentId)) {
+				$studentAdjustments[$studentId]['adjustments']->push($subjectAction);
+			} else {
+				$student = collect($adjustment['student'])
+					->only(['id', 'first_name', 'last_name', 
+					'email_primary', 'email_secondary'])
+					->toArray();
+
+				$studentAdjustments->put($studentId, [
+					'student' => $student, 
+					'adjustments' => collect([$subjectAction])]);
+			}
+			array_push($adjustmentIds, $adjustmentId);
+		}
+		//dd($decision, $reason);
+		$updated = Adjustment::whereIn('id', $adjustmentIds)
+			->update(['result' => $result, 'reason_denied' => $reason]);
+
+		//Send out emails
+		//dd($studentAdjustments);
+		if($updated) {
+			$studentAdjustments->each(function($studentAdjustment) use ($reason, $result){
+				$student = $studentAdjustment['student'];
+				$adjustments = $studentAdjustment['adjustments'];
+				$email = $student['email_primary'] ? $student['email_primary'] : $student['email_secondary'];
+
+				\Mail::to($email)->send(new AdjustmentResolved($student['first_name'], $adjustments, $result, $reason));
+			});
+		}
+		return response(
+			[
+				'updated' => $updated, 
+				'id' => $adjustmentIds, 
+				'result' => $result, 
+				'reason' => $reason], 200);
+	}
 
 	//adjustment->subject->code
 	public function subject() {

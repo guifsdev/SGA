@@ -16,7 +16,8 @@
         "laravel/tinker": "^1.0",
         "league/csv": "^9.0",
         "lucascudo/laravel-pt-br-localization": "^1.0",
-        "simplesoftwareio/simple-qrcode": "~2"
+        "simplesoftwareio/simple-qrcode": "~2",
+        "spatie/laravel-query-builder": "^2.7"
     },
     "require-dev": {
         "beyondcode/laravel-dump-server": "^1.0",

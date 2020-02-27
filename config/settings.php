@@ -13,5 +13,11 @@ return [
 			"close" => "2020-03-20 11:28:40"
 		],
 		"max_adjustments" => 5,
+		"reasons_to_deny" => [
+			"Não há vagas",
+			"Não possui pré-requisito",
+			"Horário em conflito",
+			"Outro",
+		]
 	],
 ];

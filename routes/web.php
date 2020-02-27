@@ -27,7 +27,11 @@ Route::prefix('servidor')->group(function() {
 	Route::get('logout', 'ServantsLoginController@logout');
 	Route::get('/', 'ServantHomeController@home');
 
-	Route::get('adjustment/index', 'ServantAdjustmentController@index');
+	Route::prefix('adjustments')->group(function() {
+		Route::get('index', 'ServantAdjustmentController@index');
+
+		Route::post('resolve', 'ServantAdjustmentController@resolve');
+	});
 });
 
 //Route::prefix('adjustment')->group(function() {

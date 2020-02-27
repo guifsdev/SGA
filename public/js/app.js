@@ -1776,6 +1776,103 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -1991,61 +2088,55 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      date: new Date().toISOString().substr(0, 10),
-      menu: false,
-      modal: false,
-      menu2: false,
+      actionBtnVisible: false,
       showSelect: true,
-      dialog: true,
+      filtersModal: false,
+      actionModal: false,
+      reasonsToDeny: [],
+      reasonToDenyText: '',
+      reasonToDenyTextVisible: false,
+      reasonToDeny: '',
       filters: {
         available: [{
           name: 'Nome',
           criteria: ['Igual a', 'Contém'],
-          type: 'text',
-          criteria_selected: ''
+          type: 'text'
         }, {
           name: 'CPF',
           criteria: ['Igual a', 'Contém'],
-          type: 'text',
-          criteria_selected: ''
+          type: 'text'
         }, {
           name: 'Matrícula',
           criteria: ['Igual a', 'Contém'],
-          type: 'text',
-          criteria_selected: ''
+          type: 'text'
         }, {
           name: 'Disciplina',
           criteria: ['Igual a'],
           type: 'select',
-          values: [],
-          criteria_selected: ''
+          values: []
         }, {
           name: 'Req.',
           criteria: ['Igual a'],
           type: 'select',
-          values: ['Incluir', 'Excluir'],
-          criteria_selected: ''
+          values: ['Incluir', 'Excluir']
         }, {
           name: 'Motivo indef.',
           criteria: ['Igual a'],
           type: 'select',
-          values: [],
-          criteria_selected: ''
+          values: []
         }, {
           name: 'Data req.',
           criteria: ['Igual a', 'Entre', 'Antes de', 'Depois de'],
-          type: 'date',
-          criteria_selected: ''
+          type: 'date'
         }, {
           name: 'Resultado',
           criteria: ['Igual a'],
           type: 'select',
-          values: [],
-          criteria_selected: ''
+          values: []
         }],
+        type: 'E',
         names: [],
-        active: [],
-        reload: true
+        active: []
       },
       headers: [{
         text: '#',
@@ -2069,7 +2160,7 @@ __webpack_require__.r(__webpack_exports__);
         value: 'action'
       }, {
         text: 'Motivo indef.',
-        value: 'reason_deny'
+        value: 'reason_denied'
       }, {
         text: 'Data req.',
         value: 'created_at'
@@ -2077,47 +2168,185 @@ __webpack_require__.r(__webpack_exports__);
         text: 'Resultado',
         value: 'result'
       }],
-      adjustments: []
+      adjustments: [],
+      dates: [],
+      date: new Date().toISOString().substr(0, 10)
     };
   },
+  watch: {
+    filtersModal: function filtersModal(newValue, oldValue) {
+      this.fixFloatThead(newValue);
+    },
+    actionModal: function actionModal(newValue, oldValue) {
+      this.fixFloatThead(newValue);
+    }
+  },
   mounted: function mounted() {
-    var _this = this;
-
     var $table = $('table');
-    $table.floatThead();
-    this.addRow();
+    $table.floatThead(); //Set repeating properties to available filters
+
+    this.filters.available.forEach(function (filter) {
+      filter.criteria_selected = 'Igual a';
+      filter.value = '';
+    });
+    this.setColumnNames();
+    this.addRow(); //Column names for usage
+
     this.filters.names = this.filters.available.map(function (column) {
       return column.name;
     });
-    axios.get('servidor/adjustment/index').then(function (response) {
-      _this.adjustments = response.data.adjustments;
-
-      _this.setFilterValues([{
-        name: 'Disciplina',
-        values: response.data.subjects
-      }, {
-        name: 'Motivo indef.',
-        values: response.data.reasons_denied
-      }, {
-        name: 'Resultado',
-        values: response.data.results
-      }]);
-    });
+    this.fetchAdjustments();
   },
   methods: {
+    dispatchAction: function dispatchAction(decision) {
+      var _this = this;
+
+      this.actionModal = false;
+      var adjustments = this.$refs['data-table'].selection;
+      var reason = '';
+      if (decision === 'deny' && this.reasonToDeny == 'Outro') reason = this.reasonToDenyText;else if (decision === 'deny') reason = this.reasonToDeny;
+      axios.post('servidor/adjustments/resolve', {
+        adjustments: adjustments,
+        decision: decision,
+        reason: reason
+      }).then(function (response) {
+        if (response.data.updated) {
+          var ids = response.data.id;
+          var result = response.data.result;
+          var _reason = response.data.reason;
+          ids.map(function (id) {
+            var adjustment = _this.adjustments.filter(function (adjustment) {
+              return adjustment.id === id;
+            });
+
+            adjustment[0].result = result;
+            adjustment[0].reason_denied = _reason;
+          });
+        }
+      });
+    },
+    reasonToDenySelected: function reasonToDenySelected(value) {
+      this.reasonToDenyTextVisible = value === "Outro" ? true : false;
+    },
+    fixFloatThead: function fixFloatThead(newValue) {
+      //Floating header fix z-index when dialog opens
+      var floatTheadTable = $('.floatThead-container');
+      if (newValue) floatTheadTable.css('z-index', 0);else floatTheadTable.css('z-index', 1000);
+    },
+    toggleActionButton: function toggleActionButton(event) {
+      this.actionBtnVisible = event.length ? true : false;
+    },
+    fetchAdjustments: function fetchAdjustments() {
+      var _this2 = this;
+
+      var filters = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+      axios.get('servidor/adjustments/index', {
+        params: {
+          filters: filters
+        }
+      }).then(function (response) {
+        _this2.adjustments = response.data.adjustments;
+
+        _this2.setFilterValues([{
+          name: 'Disciplina',
+          values: response.data.subjects
+        }, {
+          name: 'Motivo indef.',
+          values: response.data.reasons_denied
+        }, {
+          name: 'Resultado',
+          values: response.data.results
+        }]);
+
+        _this2.reasonsToDeny = response.data.reasons_to_deny;
+        _this2.reasonToDeny = _this2.reasonsToDeny[0];
+      });
+    },
+    getQuerySting: function getQuerySting(filtersActive) {
+      var type = this.filters.type == 'E' ? 'and' : 'or';
+      var esc = encodeURIComponent;
+      var query = "type=".concat(type, "&");
+      filtersActive.map(function (row) {
+        var colName = row.column_name;
+        var value = _typeof(row.value) === 'object' ? [esc(row.value[0]), esc(row.value[1])] : esc(row.value);
+
+        switch (row.criteria_selected) {
+          case "Igual a":
+            query += "".concat(colName, "=").concat(value, "&");
+            break;
+
+          case "Contém":
+            query += "".concat(colName, "[contains]=").concat(value, "&");
+            break;
+
+          case "Antes de":
+            query += "".concat(colName, "[before]=").concat(value, "&");
+            break;
+
+          case "Depois de":
+            query += "".concat(colName, "[after]=").concat(value, "&");
+            break;
+
+          case "Entre":
+            query += "".concat(colName, "[after]=").concat(value[0], "&").concat(colName, "[before]=").concat(value[1], "&");
+            break;
+        }
+      });
+      return query.substring(0, query.length - 1);
+    },
+    applyFilters: function applyFilters() {
+      this.filtersModal = false;
+      var filters = this.getQuerySting(this.filters.active); //console.log(filters);
+
+      this.fetchAdjustments(filters);
+    },
+    removeFilters: function removeFilters() {
+      this.filtersModal = false;
+      this.fetchAdjustments();
+    },
+    setColumnNames: function setColumnNames() {
+      var _this3 = this;
+
+      this.filters.available.map(function (filter, index) {
+        var changed = filter;
+
+        var headerValue = _this3.headers.filter(function (header) {
+          return header.text == filter.name;
+        })[0].value;
+
+        changed.column_name = headerValue;
+        Vue.set(_this3.filters.available, index, changed);
+      });
+    },
     filterChanged: function filterChanged(value, index) {
       //Must alert to the row that a new column is selected and populate criteria
       var result = this.filters.available.filter(function (e) {
         return e.name == value;
       });
-      this.filters.active[index] = Object.assign(this.filters.active[index], result[0], {
-        criteria_selected: 'Igual a'
-      });
+      this.filters.active[index] = Object.assign(this.filters.active[index], result[0]);
+
+      if (value === 'Data req.') {
+        Vue.set(this.dates, index, {
+          equals: false,
+          start: false,
+          end: false
+        });
+        this.criterionChanged('Igual a', index);
+      }
+
       this.$forceUpdate();
     },
     criterionChanged: function criterionChanged(value, index) {
       var changed = this.filters.active[index];
-      changed.criteria_selected = value;
+
+      if (this.filters.active[index].name === 'Data req.') {
+        var today = new Date().toISOString().substr(0, 10);
+
+        if (value === 'Entre') {
+          changed.value = [today, today];
+        } else changed.value = today;
+      }
+
       Vue.set(this.filters.active, index, changed);
     },
     addRow: function addRow() {
@@ -2125,14 +2354,19 @@ __webpack_require__.r(__webpack_exports__);
         name: 'Nome',
         criteria: ['Igual a', 'Contém'],
         type: 'text',
-        criteria_selected: 'Igual a'
+        criteria_selected: 'Igual a',
+        value: '',
+        column_name: 'name'
       });
+      var index = this.filters.active.length - 1;
+      this.filterChanged('Nome', index);
+      this.criterionChanged('Igual a', index);
     },
     setFilterValues: function setFilterValues(data) {
-      var _this2 = this;
+      var _this4 = this;
 
       data.forEach(function (element) {
-        var target = _this2.filters.available.filter(function (f) {
+        var target = _this4.filters.available.filter(function (f) {
           return f.name === element.name;
         })[0].values = element.values;
       });
@@ -2666,7 +2900,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../../node_modules/c
 
 
 // module
-exports.push([module.i, ".v-application {\n  background-color: transparent !important;\n  font-size: 1.3rem;\n}\n.v-application * {\n  font-size: inherit !important;\n}\n.v-application .v-data-footer {\n  font-size: 1.1rem;\n}\n.v-application .v-data-footer * {\n  font-size: inherit !important;\n}\n.v-application .v-icon:before {\n  font-size: 2rem !important;\n}\n.v-application .v-input {\n  width: 100%;\n}\n.v-application .date-picker--dual {\n  margin-right: 1rem;\n}\n.v-application .v-list-item__title {\n  line-height: 1.5rem !important;\n}\n.v-application .v-data-table--float-head {\n  position: relative;\n}\n.v-application .v-data-table--float-head .floatThead-container {\n  z-index: initial !important;\n  overflow: hidden;\n}\n.v-application .v-data-table--float-head .v-data-table-header {\n  background-color: #fff;\n}\n.filters {\n  margin-bottom: 1.5rem;\n  display: block;\n  height: 3.6rem;\n}\n.filters .v-btn {\n  float: right;\n}", ""]);
+exports.push([module.i, ".v-application {\n  background-color: transparent !important;\n  font-size: 1.3rem;\n}\n.v-application * {\n  font-size: inherit !important;\n}\n.v-application .v-data-footer {\n  font-size: 1.1rem;\n}\n.v-application .v-data-footer * {\n  font-size: inherit !important;\n}\n.v-application .v-icon:before {\n  font-size: 2rem !important;\n}\n.v-application .v-input {\n  width: 100%;\n}\n.v-application .date-picker--dual {\n  margin-right: 1rem;\n}\n.v-application .v-list-item__title {\n  line-height: 1.5rem !important;\n}\n.v-application .v-data-table--float-head {\n  position: relative;\n}\n.v-application .v-data-table--float-head .floatThead-container {\n  overflow: hidden;\n}\n.v-application .v-data-table--float-head .v-data-table-header {\n  background-color: #fff;\n}\n.v-btn.action {\n  margin-left: 0 !important;\n  width: 5.5rem;\n  height: 5.5rem;\n  position: fixed;\n  left: calc(-5.5rem/2);\n  bottom: 2rem;\n  -webkit-transform: translateX(50vw);\n          transform: translateX(50vw);\n}\n.filters {\n  margin-bottom: 1.5rem;\n  display: block;\n  height: 3.6rem;\n}\n.filters .v-btn {\n  float: right;\n}", ""]);
 
 // exports
 
@@ -4194,11 +4428,11 @@ var render = function() {
                 }
               ]),
               model: {
-                value: _vm.dialog,
+                value: _vm.filtersModal,
                 callback: function($$v) {
-                  _vm.dialog = $$v
+                  _vm.filtersModal = $$v
                 },
-                expression: "dialog"
+                expression: "filtersModal"
               }
             },
             [
@@ -4224,42 +4458,24 @@ var render = function() {
                           staticClass: "filters-container",
                           attrs: { fluid: "" }
                         },
-                        _vm._l(_vm.filters.active, function(column, index) {
-                          return _c(
+                        [
+                          _c(
                             "v-row",
-                            {
-                              key: index,
-                              attrs: { align: "center", dense: "" }
-                            },
+                            { attrs: { dense: "" } },
                             [
                               _c(
                                 "v-col",
                                 {
                                   staticClass: "d-flex",
-                                  attrs: { cols: "12", sm: "4" }
+                                  attrs: { cols: "12", sm: "2" }
                                 },
                                 [
-                                  _c("v-select", {
-                                    attrs: {
-                                      items: _vm.filters.names,
-                                      dense: "",
-                                      solo: ""
-                                    },
-                                    on: {
-                                      change: function($event) {
-                                        return _vm.filterChanged($event, index)
-                                      }
-                                    },
-                                    model: {
-                                      value: column.name,
-                                      callback: function($$v) {
-                                        _vm.$set(column, "name", $$v)
-                                      },
-                                      expression: "column.name"
-                                    }
-                                  })
-                                ],
-                                1
+                                  _c(
+                                    "p",
+                                    { staticStyle: { "line-height": "4rem" } },
+                                    [_vm._v("Tipo de filtro:")]
+                                  )
+                                ]
                               ),
                               _vm._v(" "),
                               _c(
@@ -4270,460 +4486,591 @@ var render = function() {
                                 },
                                 [
                                   _c("v-select", {
+                                    ref: "filter-type",
                                     attrs: {
-                                      items: column.criteria,
+                                      items: ["E", "Ou"],
                                       dense: "",
                                       solo: ""
                                     },
-                                    on: {
-                                      change: function($event) {
-                                        return _vm.criterionChanged(
-                                          $event,
-                                          index
-                                        )
-                                      }
-                                    },
                                     model: {
-                                      value: column.criteria_selected,
+                                      value: _vm.filters.type,
                                       callback: function($$v) {
-                                        _vm.$set(
-                                          column,
-                                          "criteria_selected",
-                                          $$v
-                                        )
+                                        _vm.$set(_vm.filters, "type", $$v)
                                       },
-                                      expression: "column.criteria_selected"
+                                      expression: "filters.type"
                                     }
                                   })
-                                ],
-                                1
-                              ),
-                              _vm._v(" "),
-                              _c(
-                                "v-col",
-                                {
-                                  staticClass: "d-flex",
-                                  attrs: { cols: "12", sm: "6" }
-                                },
-                                [
-                                  column.type == "text"
-                                    ? _c("v-text-field", {
-                                        attrs: { label: column.name, dense: "" }
-                                      })
-                                    : column.type == "select"
-                                    ? _c("v-select", {
-                                        attrs: {
-                                          items: column.values,
-                                          dense: "",
-                                          solo: ""
-                                        },
-                                        model: {
-                                          value: column.values[0],
-                                          callback: function($$v) {
-                                            _vm.$set(column.values, 0, $$v)
-                                          },
-                                          expression: "column.values[0]"
-                                        }
-                                      })
-                                    : _vm._e(),
-                                  _vm._v(" "),
-                                  column.type == "date" &&
-                                  column.criteria_selected == "Entre"
-                                    ? _c(
-                                        "v-menu",
-                                        {
-                                          ref: "menu",
-                                          refInFor: true,
-                                          attrs: {
-                                            "close-on-content-click": false,
-                                            "return-value": _vm.date,
-                                            transition: "scale-transition",
-                                            "offset-y": "",
-                                            "min-width": "290px"
-                                          },
-                                          on: {
-                                            "update:returnValue": function(
-                                              $event
-                                            ) {
-                                              _vm.date = $event
-                                            },
-                                            "update:return-value": function(
-                                              $event
-                                            ) {
-                                              _vm.date = $event
-                                            }
-                                          },
-                                          scopedSlots: _vm._u([
-                                            {
-                                              key: "activator",
-                                              fn: function(ref) {
-                                                var on = ref.on
-                                                return [
-                                                  _c(
-                                                    "v-text-field",
-                                                    _vm._g(
-                                                      {
-                                                        staticClass:
-                                                          "date-picker--dual",
-                                                        attrs: {
-                                                          dense: "",
-                                                          label:
-                                                            "Picker in menu",
-                                                          readonly: ""
-                                                        },
-                                                        model: {
-                                                          value: _vm.date,
-                                                          callback: function(
-                                                            $$v
-                                                          ) {
-                                                            _vm.date = $$v
-                                                          },
-                                                          expression: "date"
-                                                        }
-                                                      },
-                                                      on
-                                                    )
-                                                  )
-                                                ]
-                                              }
-                                            }
-                                          ]),
-                                          model: {
-                                            value: _vm.menu,
-                                            callback: function($$v) {
-                                              _vm.menu = $$v
-                                            },
-                                            expression: "menu"
-                                          }
-                                        },
-                                        [
-                                          _vm._v(" "),
-                                          _c(
-                                            "v-date-picker",
-                                            {
-                                              attrs: {
-                                                "no-title": "",
-                                                scrollable: ""
-                                              },
-                                              model: {
-                                                value: _vm.date,
-                                                callback: function($$v) {
-                                                  _vm.date = $$v
-                                                },
-                                                expression: "date"
-                                              }
-                                            },
-                                            [
-                                              _c("v-spacer"),
-                                              _vm._v(" "),
-                                              _c(
-                                                "v-btn",
-                                                {
-                                                  attrs: {
-                                                    text: "",
-                                                    color: "primary"
-                                                  },
-                                                  on: {
-                                                    click: function($event) {
-                                                      _vm.menu = false
-                                                    }
-                                                  }
-                                                },
-                                                [_vm._v("Cancel")]
-                                              ),
-                                              _vm._v(" "),
-                                              _c(
-                                                "v-btn",
-                                                {
-                                                  attrs: {
-                                                    text: "",
-                                                    color: "primary"
-                                                  },
-                                                  on: {
-                                                    click: function($event) {
-                                                      return _vm.$refs.menu.save(
-                                                        _vm.date
-                                                      )
-                                                    }
-                                                  }
-                                                },
-                                                [_vm._v("OK")]
-                                              )
-                                            ],
-                                            1
-                                          )
-                                        ],
-                                        1
-                                      )
-                                    : _vm._e(),
-                                  _vm._v(" "),
-                                  _c("v-spacer"),
-                                  _vm._v(" "),
-                                  column.type == "date" &&
-                                  column.criteria_selected == "Entre"
-                                    ? _c(
-                                        "v-menu",
-                                        {
-                                          ref: "menu",
-                                          refInFor: true,
-                                          attrs: {
-                                            "close-on-content-click": false,
-                                            "return-value": _vm.date,
-                                            transition: "scale-transition",
-                                            "offset-y": "",
-                                            "min-width": "290px"
-                                          },
-                                          on: {
-                                            "update:returnValue": function(
-                                              $event
-                                            ) {
-                                              _vm.date = $event
-                                            },
-                                            "update:return-value": function(
-                                              $event
-                                            ) {
-                                              _vm.date = $event
-                                            }
-                                          },
-                                          scopedSlots: _vm._u([
-                                            {
-                                              key: "activator",
-                                              fn: function(ref) {
-                                                var on = ref.on
-                                                return [
-                                                  _c(
-                                                    "v-text-field",
-                                                    _vm._g(
-                                                      {
-                                                        attrs: {
-                                                          dense: "",
-                                                          label:
-                                                            "Picker in menu",
-                                                          readonly: ""
-                                                        },
-                                                        model: {
-                                                          value: _vm.date,
-                                                          callback: function(
-                                                            $$v
-                                                          ) {
-                                                            _vm.date = $$v
-                                                          },
-                                                          expression: "date"
-                                                        }
-                                                      },
-                                                      on
-                                                    )
-                                                  )
-                                                ]
-                                              }
-                                            }
-                                          ]),
-                                          model: {
-                                            value: _vm.menu,
-                                            callback: function($$v) {
-                                              _vm.menu = $$v
-                                            },
-                                            expression: "menu"
-                                          }
-                                        },
-                                        [
-                                          _vm._v(" "),
-                                          _c(
-                                            "v-date-picker",
-                                            {
-                                              attrs: {
-                                                "no-title": "",
-                                                scrollable: ""
-                                              },
-                                              model: {
-                                                value: _vm.date,
-                                                callback: function($$v) {
-                                                  _vm.date = $$v
-                                                },
-                                                expression: "date"
-                                              }
-                                            },
-                                            [
-                                              _c("v-spacer"),
-                                              _vm._v(" "),
-                                              _c(
-                                                "v-btn",
-                                                {
-                                                  attrs: {
-                                                    text: "",
-                                                    color: "primary"
-                                                  },
-                                                  on: {
-                                                    click: function($event) {
-                                                      _vm.menu = false
-                                                    }
-                                                  }
-                                                },
-                                                [_vm._v("Cancel")]
-                                              ),
-                                              _vm._v(" "),
-                                              _c(
-                                                "v-btn",
-                                                {
-                                                  attrs: {
-                                                    text: "",
-                                                    color: "primary"
-                                                  },
-                                                  on: {
-                                                    click: function($event) {
-                                                      return _vm.$refs.menu.save(
-                                                        _vm.date
-                                                      )
-                                                    }
-                                                  }
-                                                },
-                                                [_vm._v("OK")]
-                                              )
-                                            ],
-                                            1
-                                          )
-                                        ],
-                                        1
-                                      )
-                                    : column.type == "date" &&
-                                      [
-                                        "Igual a",
-                                        "Antes de",
-                                        "Depois de"
-                                      ].includes(column.criteria_selected)
-                                    ? _c(
-                                        "v-menu",
-                                        {
-                                          ref: "menu",
-                                          refInFor: true,
-                                          attrs: {
-                                            "close-on-content-click": false,
-                                            "return-value": _vm.date,
-                                            transition: "scale-transition",
-                                            "offset-y": "",
-                                            "min-width": "290px"
-                                          },
-                                          on: {
-                                            "update:returnValue": function(
-                                              $event
-                                            ) {
-                                              _vm.date = $event
-                                            },
-                                            "update:return-value": function(
-                                              $event
-                                            ) {
-                                              _vm.date = $event
-                                            }
-                                          },
-                                          scopedSlots: _vm._u([
-                                            {
-                                              key: "activator",
-                                              fn: function(ref) {
-                                                var on = ref.on
-                                                return [
-                                                  _c(
-                                                    "v-text-field",
-                                                    _vm._g(
-                                                      {
-                                                        attrs: {
-                                                          dense: "",
-                                                          label:
-                                                            "Picker in menu",
-                                                          readonly: ""
-                                                        },
-                                                        model: {
-                                                          value: _vm.date,
-                                                          callback: function(
-                                                            $$v
-                                                          ) {
-                                                            _vm.date = $$v
-                                                          },
-                                                          expression: "date"
-                                                        }
-                                                      },
-                                                      on
-                                                    )
-                                                  )
-                                                ]
-                                              }
-                                            }
-                                          ]),
-                                          model: {
-                                            value: _vm.menu,
-                                            callback: function($$v) {
-                                              _vm.menu = $$v
-                                            },
-                                            expression: "menu"
-                                          }
-                                        },
-                                        [
-                                          _vm._v(" "),
-                                          _c(
-                                            "v-date-picker",
-                                            {
-                                              attrs: {
-                                                "no-title": "",
-                                                scrollable: ""
-                                              },
-                                              model: {
-                                                value: _vm.date,
-                                                callback: function($$v) {
-                                                  _vm.date = $$v
-                                                },
-                                                expression: "date"
-                                              }
-                                            },
-                                            [
-                                              _c("v-spacer"),
-                                              _vm._v(" "),
-                                              _c(
-                                                "v-btn",
-                                                {
-                                                  attrs: {
-                                                    text: "",
-                                                    color: "primary"
-                                                  },
-                                                  on: {
-                                                    click: function($event) {
-                                                      _vm.menu = false
-                                                    }
-                                                  }
-                                                },
-                                                [_vm._v("Cancel")]
-                                              ),
-                                              _vm._v(" "),
-                                              _c(
-                                                "v-btn",
-                                                {
-                                                  attrs: {
-                                                    text: "",
-                                                    color: "primary"
-                                                  },
-                                                  on: {
-                                                    click: function($event) {
-                                                      return _vm.$refs.menu.save(
-                                                        _vm.date
-                                                      )
-                                                    }
-                                                  }
-                                                },
-                                                [_vm._v("OK")]
-                                              )
-                                            ],
-                                            1
-                                          )
-                                        ],
-                                        1
-                                      )
-                                    : _vm._e()
                                 ],
                                 1
                               )
                             ],
                             1
-                          )
-                        }),
-                        1
+                          ),
+                          _vm._v(" "),
+                          _vm._l(_vm.filters.active, function(column, index) {
+                            return _c(
+                              "v-row",
+                              {
+                                key: index,
+                                attrs: { align: "center", dense: "" }
+                              },
+                              [
+                                _c(
+                                  "v-col",
+                                  {
+                                    staticClass: "d-flex",
+                                    attrs: { cols: "12", sm: "4" }
+                                  },
+                                  [
+                                    _c("v-select", {
+                                      attrs: {
+                                        items: _vm.filters.names,
+                                        dense: "",
+                                        solo: ""
+                                      },
+                                      on: {
+                                        change: function($event) {
+                                          return _vm.filterChanged(
+                                            $event,
+                                            index
+                                          )
+                                        }
+                                      },
+                                      model: {
+                                        value: column.name,
+                                        callback: function($$v) {
+                                          _vm.$set(column, "name", $$v)
+                                        },
+                                        expression: "column.name"
+                                      }
+                                    })
+                                  ],
+                                  1
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "v-col",
+                                  {
+                                    staticClass: "d-flex",
+                                    attrs: { cols: "12", sm: "2" }
+                                  },
+                                  [
+                                    _c("v-select", {
+                                      attrs: {
+                                        items: column.criteria,
+                                        dense: "",
+                                        solo: ""
+                                      },
+                                      on: {
+                                        change: function($event) {
+                                          return _vm.criterionChanged(
+                                            $event,
+                                            index
+                                          )
+                                        }
+                                      },
+                                      model: {
+                                        value: column.criteria_selected,
+                                        callback: function($$v) {
+                                          _vm.$set(
+                                            column,
+                                            "criteria_selected",
+                                            $$v
+                                          )
+                                        },
+                                        expression: "column.criteria_selected"
+                                      }
+                                    })
+                                  ],
+                                  1
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "v-col",
+                                  {
+                                    staticClass: "d-flex",
+                                    attrs: { cols: "12", sm: "6" }
+                                  },
+                                  [
+                                    column.type == "text"
+                                      ? _c("v-text-field", {
+                                          attrs: {
+                                            label: column.name,
+                                            dense: ""
+                                          },
+                                          model: {
+                                            value: column.value,
+                                            callback: function($$v) {
+                                              _vm.$set(column, "value", $$v)
+                                            },
+                                            expression: "column.value"
+                                          }
+                                        })
+                                      : column.type == "select"
+                                      ? _c("v-select", {
+                                          attrs: {
+                                            items: column.values,
+                                            dense: "",
+                                            solo: ""
+                                          },
+                                          model: {
+                                            value: column.value,
+                                            callback: function($$v) {
+                                              _vm.$set(column, "value", $$v)
+                                            },
+                                            expression: "column.value"
+                                          }
+                                        })
+                                      : _vm._e(),
+                                    _vm._v(" "),
+                                    column.type == "date" &&
+                                    column.criteria_selected == "Entre"
+                                      ? _c(
+                                          "v-menu",
+                                          {
+                                            ref: "menu",
+                                            refInFor: true,
+                                            attrs: {
+                                              "close-on-content-click": false,
+                                              "return-value": _vm.date,
+                                              transition: "scale-transition",
+                                              "offset-y": "",
+                                              "min-width": "290px"
+                                            },
+                                            on: {
+                                              "update:returnValue": function(
+                                                $event
+                                              ) {
+                                                _vm.date = $event
+                                              },
+                                              "update:return-value": function(
+                                                $event
+                                              ) {
+                                                _vm.date = $event
+                                              }
+                                            },
+                                            scopedSlots: _vm._u([
+                                              {
+                                                key: "activator",
+                                                fn: function(ref) {
+                                                  var on = ref.on
+                                                  return [
+                                                    _c(
+                                                      "v-text-field",
+                                                      _vm._g(
+                                                        {
+                                                          staticClass:
+                                                            "date-picker--dual",
+                                                          attrs: {
+                                                            dense: "",
+                                                            value:
+                                                              column.value[0],
+                                                            label:
+                                                              "Picker in menu",
+                                                            readonly: ""
+                                                          },
+                                                          model: {
+                                                            value:
+                                                              column.value[0],
+                                                            callback: function(
+                                                              $$v
+                                                            ) {
+                                                              _vm.$set(
+                                                                column.value,
+                                                                0,
+                                                                $$v
+                                                              )
+                                                            },
+                                                            expression:
+                                                              "column.value[0]"
+                                                          }
+                                                        },
+                                                        on
+                                                      )
+                                                    )
+                                                  ]
+                                                }
+                                              }
+                                            ]),
+                                            model: {
+                                              value: _vm.dates[index].start,
+                                              callback: function($$v) {
+                                                _vm.$set(
+                                                  _vm.dates[index],
+                                                  "start",
+                                                  $$v
+                                                )
+                                              },
+                                              expression: "dates[index].start"
+                                            }
+                                          },
+                                          [
+                                            _vm._v(" "),
+                                            _c(
+                                              "v-date-picker",
+                                              {
+                                                attrs: {
+                                                  "no-title": "",
+                                                  scrollable: ""
+                                                },
+                                                model: {
+                                                  value: column.value[0],
+                                                  callback: function($$v) {
+                                                    _vm.$set(
+                                                      column.value,
+                                                      0,
+                                                      $$v
+                                                    )
+                                                  },
+                                                  expression: "column.value[0]"
+                                                }
+                                              },
+                                              [
+                                                _c("v-spacer"),
+                                                _vm._v(" "),
+                                                _c(
+                                                  "v-btn",
+                                                  {
+                                                    attrs: {
+                                                      text: "",
+                                                      color: "primary"
+                                                    },
+                                                    on: {
+                                                      click: function($event) {
+                                                        _vm.dates[
+                                                          index
+                                                        ].start = false
+                                                      }
+                                                    }
+                                                  },
+                                                  [_vm._v("Cancel")]
+                                                ),
+                                                _vm._v(" "),
+                                                _c(
+                                                  "v-btn",
+                                                  {
+                                                    attrs: {
+                                                      text: "",
+                                                      color: "primary"
+                                                    },
+                                                    on: {
+                                                      click: function($event) {
+                                                        _vm.dates[
+                                                          index
+                                                        ].start = false
+                                                      }
+                                                    }
+                                                  },
+                                                  [_vm._v("OK")]
+                                                )
+                                              ],
+                                              1
+                                            )
+                                          ],
+                                          1
+                                        )
+                                      : _vm._e(),
+                                    _vm._v(" "),
+                                    _c("v-spacer"),
+                                    _vm._v(" "),
+                                    column.type == "date" &&
+                                    column.criteria_selected == "Entre"
+                                      ? _c(
+                                          "v-menu",
+                                          {
+                                            ref: "menu",
+                                            refInFor: true,
+                                            attrs: {
+                                              "close-on-content-click": false,
+                                              "return-value": _vm.date,
+                                              transition: "scale-transition",
+                                              "offset-y": "",
+                                              "min-width": "290px"
+                                            },
+                                            on: {
+                                              "update:returnValue": function(
+                                                $event
+                                              ) {
+                                                _vm.date = $event
+                                              },
+                                              "update:return-value": function(
+                                                $event
+                                              ) {
+                                                _vm.date = $event
+                                              }
+                                            },
+                                            scopedSlots: _vm._u([
+                                              {
+                                                key: "activator",
+                                                fn: function(ref) {
+                                                  var on = ref.on
+                                                  return [
+                                                    _c(
+                                                      "v-text-field",
+                                                      _vm._g(
+                                                        {
+                                                          attrs: {
+                                                            dense: "",
+                                                            value: _vm.date,
+                                                            label:
+                                                              "Picker in menu",
+                                                            readonly: ""
+                                                          },
+                                                          model: {
+                                                            value:
+                                                              column.value[1],
+                                                            callback: function(
+                                                              $$v
+                                                            ) {
+                                                              _vm.$set(
+                                                                column.value,
+                                                                1,
+                                                                $$v
+                                                              )
+                                                            },
+                                                            expression:
+                                                              "column.value[1]"
+                                                          }
+                                                        },
+                                                        on
+                                                      )
+                                                    )
+                                                  ]
+                                                }
+                                              }
+                                            ]),
+                                            model: {
+                                              value: _vm.dates[index].end,
+                                              callback: function($$v) {
+                                                _vm.$set(
+                                                  _vm.dates[index],
+                                                  "end",
+                                                  $$v
+                                                )
+                                              },
+                                              expression: "dates[index].end"
+                                            }
+                                          },
+                                          [
+                                            _vm._v(" "),
+                                            _c(
+                                              "v-date-picker",
+                                              {
+                                                attrs: {
+                                                  "no-title": "",
+                                                  scrollable: ""
+                                                },
+                                                model: {
+                                                  value: column.value[1],
+                                                  callback: function($$v) {
+                                                    _vm.$set(
+                                                      column.value,
+                                                      1,
+                                                      $$v
+                                                    )
+                                                  },
+                                                  expression: "column.value[1]"
+                                                }
+                                              },
+                                              [
+                                                _c("v-spacer"),
+                                                _vm._v(" "),
+                                                _c(
+                                                  "v-btn",
+                                                  {
+                                                    attrs: {
+                                                      text: "",
+                                                      color: "primary"
+                                                    },
+                                                    on: {
+                                                      click: function($event) {
+                                                        _vm.dates[
+                                                          index
+                                                        ].end = false
+                                                      }
+                                                    }
+                                                  },
+                                                  [_vm._v("Cancel")]
+                                                ),
+                                                _vm._v(" "),
+                                                _c(
+                                                  "v-btn",
+                                                  {
+                                                    attrs: {
+                                                      text: "",
+                                                      color: "primary"
+                                                    },
+                                                    on: {
+                                                      click: function($event) {
+                                                        _vm.dates[
+                                                          index
+                                                        ].end = false
+                                                      }
+                                                    }
+                                                  },
+                                                  [_vm._v("OK")]
+                                                )
+                                              ],
+                                              1
+                                            )
+                                          ],
+                                          1
+                                        )
+                                      : column.type == "date" &&
+                                        [
+                                          "Igual a",
+                                          "Antes de",
+                                          "Depois de"
+                                        ].includes(column.criteria_selected)
+                                      ? _c(
+                                          "v-menu",
+                                          {
+                                            ref: "menu",
+                                            refInFor: true,
+                                            attrs: {
+                                              "close-on-content-click": false,
+                                              "return-value": _vm.date,
+                                              transition: "scale-transition",
+                                              "offset-y": "",
+                                              "min-width": "290px"
+                                            },
+                                            on: {
+                                              "update:returnValue": function(
+                                                $event
+                                              ) {
+                                                _vm.date = $event
+                                              },
+                                              "update:return-value": function(
+                                                $event
+                                              ) {
+                                                _vm.date = $event
+                                              }
+                                            },
+                                            scopedSlots: _vm._u([
+                                              {
+                                                key: "activator",
+                                                fn: function(ref) {
+                                                  var on = ref.on
+                                                  return [
+                                                    _c(
+                                                      "v-text-field",
+                                                      _vm._g(
+                                                        {
+                                                          attrs: {
+                                                            dense: "",
+                                                            label:
+                                                              "Picker in menu",
+                                                            readonly: ""
+                                                          },
+                                                          model: {
+                                                            value: column.value,
+                                                            callback: function(
+                                                              $$v
+                                                            ) {
+                                                              _vm.$set(
+                                                                column,
+                                                                "value",
+                                                                $$v
+                                                              )
+                                                            },
+                                                            expression:
+                                                              "column.value"
+                                                          }
+                                                        },
+                                                        on
+                                                      )
+                                                    )
+                                                  ]
+                                                }
+                                              }
+                                            ]),
+                                            model: {
+                                              value: _vm.dates[index].equals,
+                                              callback: function($$v) {
+                                                _vm.$set(
+                                                  _vm.dates[index],
+                                                  "equals",
+                                                  $$v
+                                                )
+                                              },
+                                              expression: "dates[index].equals"
+                                            }
+                                          },
+                                          [
+                                            _vm._v(" "),
+                                            _c(
+                                              "v-date-picker",
+                                              {
+                                                attrs: {
+                                                  "no-title": "",
+                                                  scrollable: ""
+                                                },
+                                                model: {
+                                                  value: column.value,
+                                                  callback: function($$v) {
+                                                    _vm.$set(
+                                                      column,
+                                                      "value",
+                                                      $$v
+                                                    )
+                                                  },
+                                                  expression: "column.value"
+                                                }
+                                              },
+                                              [
+                                                _c("v-spacer"),
+                                                _vm._v(" "),
+                                                _c(
+                                                  "v-btn",
+                                                  {
+                                                    attrs: {
+                                                      text: "",
+                                                      color: "primary"
+                                                    },
+                                                    on: {
+                                                      click: function($event) {
+                                                        _vm.dates[
+                                                          index
+                                                        ].equals = false
+                                                      }
+                                                    }
+                                                  },
+                                                  [_vm._v("Cancel")]
+                                                ),
+                                                _vm._v(" "),
+                                                _c(
+                                                  "v-btn",
+                                                  {
+                                                    attrs: {
+                                                      text: "",
+                                                      color: "primary"
+                                                    },
+                                                    on: {
+                                                      click: function($event) {
+                                                        _vm.dates[
+                                                          index
+                                                        ].equals = false
+                                                      }
+                                                    }
+                                                  },
+                                                  [_vm._v("OK")]
+                                                )
+                                              ],
+                                              1
+                                            )
+                                          ],
+                                          1
+                                        )
+                                      : _vm._e()
+                                  ],
+                                  1
+                                )
+                              ],
+                              1
+                            )
+                          })
+                        ],
+                        2
                       ),
                       _vm._v(" "),
                       _c(
@@ -4762,7 +5109,20 @@ var render = function() {
                           attrs: { color: "primary", text: "" },
                           on: {
                             click: function($event) {
-                              _vm.dialog = false
+                              return _vm.removeFilters()
+                            }
+                          }
+                        },
+                        [_vm._v("Remover Filtros")]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "v-btn",
+                        {
+                          attrs: { color: "primary", text: "" },
+                          on: {
+                            click: function($event) {
+                              return _vm.applyFilters()
                             }
                           }
                         },
@@ -4782,6 +5142,7 @@ var render = function() {
       ),
       _vm._v(" "),
       _c("v-data-table", {
+        ref: "data-table",
         staticClass: "v-data-table--float-head",
         attrs: {
           headers: _vm.headers,
@@ -4790,8 +5151,259 @@ var render = function() {
           "multi-srot": true,
           "item-key": "id",
           "items-per-page": 5
+        },
+        on: {
+          input: function($event) {
+            return _vm.toggleActionButton($event)
+          }
         }
-      })
+      }),
+      _vm._v(" "),
+      _c(
+        "v-dialog",
+        {
+          attrs: { width: "500" },
+          scopedSlots: _vm._u([
+            {
+              key: "activator",
+              fn: function(ref) {
+                var on = ref.on
+                return [
+                  _c(
+                    "v-btn",
+                    _vm._g(
+                      {
+                        directives: [
+                          {
+                            name: "show",
+                            rawName: "v-show",
+                            value: _vm.actionBtnVisible,
+                            expression: "actionBtnVisible"
+                          }
+                        ],
+                        staticClass: "mx-2 action",
+                        attrs: { fab: "", dark: "", large: "", color: "cyan" }
+                      },
+                      on
+                    ),
+                    [
+                      _c("v-icon", { attrs: { dark: "" } }, [
+                        _vm._v("mdi-pencil")
+                      ])
+                    ],
+                    1
+                  )
+                ]
+              }
+            }
+          ]),
+          model: {
+            value: _vm.actionModal,
+            callback: function($$v) {
+              _vm.actionModal = $$v
+            },
+            expression: "actionModal"
+          }
+        },
+        [
+          _vm._v(" "),
+          _c(
+            "v-card",
+            [
+              _c(
+                "v-card-title",
+                {
+                  staticClass: "headline grey lighten-2",
+                  attrs: { "primary-title": "" }
+                },
+                [_vm._v("\n\t\t\t\t\tAções\n\t\t\t\t")]
+              ),
+              _vm._v(" "),
+              _c(
+                "v-card-text",
+                [
+                  _c(
+                    "v-container",
+                    [
+                      _c(
+                        "v-row",
+                        [
+                          _c(
+                            "v-col",
+                            {
+                              staticClass: "d-flex",
+                              attrs: { cols: "12", sm: "12" }
+                            },
+                            [
+                              _c(
+                                "v-btn",
+                                {
+                                  attrs: { color: "primary", text: "" },
+                                  on: {
+                                    click: function($event) {
+                                      return _vm.dispatchAction("defer")
+                                    }
+                                  }
+                                },
+                                [_vm._v("Deferir")]
+                              )
+                            ],
+                            1
+                          )
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c("hr"),
+                      _vm._v(" "),
+                      _c(
+                        "v-row",
+                        [
+                          _c(
+                            "v-col",
+                            {
+                              staticClass: "d-flex",
+                              attrs: { cols: "12", sm: "3" }
+                            },
+                            [
+                              _c(
+                                "v-btn",
+                                {
+                                  attrs: { color: "error", text: "" },
+                                  on: {
+                                    click: function($event) {
+                                      return _vm.dispatchAction("deny")
+                                    }
+                                  }
+                                },
+                                [_vm._v(" Indeferir ")]
+                              )
+                            ],
+                            1
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "v-col",
+                            {
+                              staticClass: "d-flex",
+                              attrs: { cols: "12", sm: "9" }
+                            },
+                            [
+                              _c(
+                                "v-row",
+                                { attrs: { "no-gutters": "" } },
+                                [
+                                  _c(
+                                    "v-col",
+                                    { attrs: { cols: "12", sm: "12" } },
+                                    [_c("p", [_vm._v("Selecione o motivo:")])]
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "v-col",
+                                    { attrs: { cols: "12", sm: "12" } },
+                                    [
+                                      _c("v-select", {
+                                        attrs: {
+                                          items: _vm.reasonsToDeny,
+                                          label: "Solo field",
+                                          dense: "",
+                                          solo: ""
+                                        },
+                                        on: {
+                                          change: function($event) {
+                                            return _vm.reasonToDenySelected(
+                                              $event
+                                            )
+                                          }
+                                        },
+                                        model: {
+                                          value: _vm.reasonToDeny,
+                                          callback: function($$v) {
+                                            _vm.reasonToDeny = $$v
+                                          },
+                                          expression: "reasonToDeny"
+                                        }
+                                      })
+                                    ],
+                                    1
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "v-col",
+                                    { attrs: { cols: "12", sm: "12" } },
+                                    [
+                                      _c("v-textarea", {
+                                        directives: [
+                                          {
+                                            name: "show",
+                                            rawName: "v-show",
+                                            value: _vm.reasonToDenyTextVisible,
+                                            expression:
+                                              "reasonToDenyTextVisible"
+                                          }
+                                        ],
+                                        attrs: {
+                                          outlined: "",
+                                          name: "input-7-4",
+                                          label: "Indeferido porque",
+                                          value: ""
+                                        },
+                                        model: {
+                                          value: _vm.reasonToDenyText,
+                                          callback: function($$v) {
+                                            _vm.reasonToDenyText = $$v
+                                          },
+                                          expression: "reasonToDenyText"
+                                        }
+                                      })
+                                    ],
+                                    1
+                                  )
+                                ],
+                                1
+                              )
+                            ],
+                            1
+                          )
+                        ],
+                        1
+                      )
+                    ],
+                    1
+                  )
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c("v-divider"),
+              _vm._v(" "),
+              _c(
+                "v-card-actions",
+                [
+                  _c("v-spacer"),
+                  _vm._v(" "),
+                  _c(
+                    "v-btn",
+                    {
+                      attrs: { color: "primary", text: "" },
+                      on: {
+                        click: function($event) {
+                          _vm.actionModal = false
+                        }
+                      }
+                    },
+                    [_vm._v("\n\t\t\t\t\t  Cancelar\n\t\t\t\t  ")]
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          )
+        ],
+        1
+      )
     ],
     1
   )
