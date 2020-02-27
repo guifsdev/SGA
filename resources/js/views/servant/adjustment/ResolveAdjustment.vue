@@ -9,40 +9,124 @@
 				<v-card>
 					<v-card-title class="headline grey lighten-2" primary-title>Filtrar colunas</v-card-title>
 					<v-card-text>
-						<v-container fluid class="filters-container">
+						<v-container 
+							fluid class="filters-container">
 							<v-row 
 								v-for="(column, index) in filters.active"
 								:key="index"
 								align="center" 
-								no-gutters>	
-								<v-col no-gutters class="d-flex" cols="12" sm="4">
+								dense>
+								
+								<!-- Column selector -->
+								<v-col class="d-flex" cols="12" sm="4">
 									<v-select 
-										v-bind:value="column.name"
+										v-model="column.name"
 										:items="filters.names" 
-										@change="filterSelected($event, index)" dense solo></v-select>
-								</v-col>
-
-								<v-col 
-								no-gutters class="d-flex" cols="12" sm="3">
-									<v-select
-										v-bind:value="column.criteria[0]"
-										:key="filters.reload"
-										:items="column.criteria"
+										@change="filterChanged($event, index)" 
 										dense solo></v-select>
 								</v-col>
 
-								<v-col no-gutters class="d-flex no-gutters--inline" cols="12" sm="5" >
+								<!-- Column criteria -->
+								<v-col class="d-flex" cols="12" sm="2">
+									<v-select
+										v-model="column.criteria_selected"
+										:items="column.criteria"
+										@change="criterionChanged($event, index)"
+										dense solo></v-select>
+								</v-col>
+
+								<!-- Conditional inputs -->
+								<v-col class="d-flex" cols="12" sm="6" >
 									<v-text-field 
 										v-if="column.type == 'text'"
 										:label="column.name" dense></v-text-field>
 									<v-select 
-		  								v-if="column.type == 'select'"
-										class=""
+		  								v-else-if="column.type == 'select'"
+										v-model="column.values[0]"
 										:items="column.values" dense solo></v-select>
+
+									<!-- Date Picker for range-->
+									<v-menu
+										v-if="column.type == 'date' && column.criteria_selected == 'Entre'"
+										ref="menu"
+										v-model="menu"
+										:close-on-content-click="false"
+										:return-value.sync="date"
+										transition="scale-transition"
+										offset-y
+										min-width="290px">
+										<template v-slot:activator="{ on }">
+											<v-text-field
+												dense
+												v-model="date"
+												label="Picker in menu"
+												readonly
+												class="date-picker--dual"
+												v-on="on">
+											</v-text-field>
+										</template>
+										<v-date-picker v-model="date" no-title scrollable>
+											<v-spacer></v-spacer>
+											<v-btn text color="primary" @click="menu = false">Cancel</v-btn>
+											<v-btn text color="primary" @click="$refs.menu.save(date)">OK</v-btn>
+										</v-date-picker>
+									</v-menu>
+									<v-spacer></v-spacer>
+									<v-menu
+										v-if="column.type == 'date' && column.criteria_selected == 'Entre'"
+										ref="menu"
+										v-model="menu"
+										:close-on-content-click="false"
+										:return-value.sync="date"
+										transition="scale-transition"
+										offset-y
+										min-width="290px">
+										<template v-slot:activator="{ on }">
+											<v-text-field
+												dense
+												v-model="date"
+												label="Picker in menu"
+												readonly
+												v-on="on">
+											</v-text-field>
+										</template>
+										<v-date-picker v-model="date" no-title scrollable>
+											<v-spacer></v-spacer>
+											<v-btn text color="primary" @click="menu = false">Cancel</v-btn>
+											<v-btn text color="primary" @click="$refs.menu.save(date)">OK</v-btn>
+										</v-date-picker>
+									</v-menu>
+
+									<!-- Date Picker for single-->
+									<v-menu
+										v-else-if="column.type == 'date' && 
+											['Igual a', 'Antes de', 'Depois de'].includes(column.criteria_selected)"
+										ref="menu"
+										v-model="menu"
+										:close-on-content-click="false"
+										:return-value.sync="date"
+										transition="scale-transition"
+										offset-y
+										min-width="290px">
+										<template v-slot:activator="{ on }">
+											<v-text-field
+												dense
+												v-model="date"
+												label="Picker in menu"
+												readonly
+												v-on="on">
+											</v-text-field>
+										</template>
+										<v-date-picker v-model="date" no-title scrollable>
+											<v-spacer></v-spacer>
+											<v-btn text color="primary" @click="menu = false">Cancel</v-btn>
+											<v-btn text color="primary" @click="$refs.menu.save(date)">OK</v-btn>
+										</v-date-picker>
+									</v-menu>
 								</v-col>
 							</v-row>
 						</v-container>
-						<v-btn class="mx-2" fab dark color="primary" x-small @click="addFilter">
+						<v-btn class="mx-2" fab dark color="primary" x-small @click="addRow">
 							<v-icon dark>mdi-plus</v-icon>
 						</v-btn>
 					</v-card-text>
@@ -85,13 +169,18 @@
 		.v-icon:before {
 			font-size: 2rem !important;
 		}
-
-		.col-12:not(:last-child) {
+		.v-input {
+			width: 100%;
+		}
+		.date-picker--dual {
 			margin-right: 1rem;
 		}
-		.no-gutters--inline {
-			max-width: 37.5%;
-		}
+		// .col-12:not(:last-child) {
+		// 	margin-right: 1rem;
+		// }
+		// .no-gutters--inline {
+		// 	max-width: 45.5%;
+		// }
 		.v-list-item__title {
 			line-height: 1.5rem !important;
 		}
@@ -125,18 +214,23 @@
 export default {
 	data () {
 		return {
+			date: new Date().toISOString().substr(0, 10),
+			menu: false,
+			modal: false,
+			menu2: false,
+
 			showSelect: true,
-			dialog: false,
+			dialog: true,
 			filters: { 
 				available: [
-					{ name: 'Nome', criteria: ['Igual a', 'Contém'], type: 'text', },
-					{ name: 'CPF', criteria: ['Igual a', 'Contém'], type: 'text', },
-					{ name: 'Matrícula', criteria: ['Igual a', 'Contém'], type: 'text'},
-					{ name: 'Disciplina', criteria: ['Igual a'], type: 'select', values: []},
-					{ name: 'Req.', criteria: ['Igual a'], type: 'select', values: ['Incluir', 'Excluir']},
-					{ name: 'Motivo indef.', criteria: ['Igual a'], type: 'select',values: []},
-					{ name: 'Data req.', criteria: ['Igual a', 'Entre', 'Antes de', 'Depois de'], type: 'date'},
-					{ name: 'Resultado', criteria: ['Igual a'], type: 'select', values: ['Deferido', 'Indeferido']},
+					{ name: 'Nome', criteria: ['Igual a', 'Contém'], type: 'text', criteria_selected: ''},
+					{ name: 'CPF', criteria: ['Igual a', 'Contém'], type: 'text', criteria_selected: ''},
+					{ name: 'Matrícula', criteria: ['Igual a', 'Contém'], type: 'text', criteria_selected: ''},
+					{ name: 'Disciplina', criteria: ['Igual a'], type: 'select', values: [], criteria_selected: ''},
+					{ name: 'Req.', criteria: ['Igual a'], type: 'select', values: ['Incluir', 'Excluir'], criteria_selected: ''},
+					{ name: 'Motivo indef.', criteria: ['Igual a'], type: 'select',values: [], criteria_selected: ''},
+					{ name: 'Data req.', criteria: ['Igual a', 'Entre', 'Antes de', 'Depois de'], type: 'date', criteria_selected: ''},
+					{ name: 'Resultado', criteria: ['Igual a'], type: 'select', values: [], criteria_selected: ''},
 				],
 				names: [],
 				active: [],
@@ -157,41 +251,56 @@ export default {
 		}
 	},
 	mounted: function() {
-		
+
 		var $table = $('table');
 		$table.floatThead();
-	
-		this.addFilter();
 
-		this.filters.names = this.filters.available.map(column => {return column.name});
+		this.addRow();
+
+		this.filters.names = this.filters.available.map(column => {
+			return column.name});
 
 		axios.get('servidor/adjustment/index')
 			.then(response => {
-				this.adjustments = response.data;
+				this.adjustments = response.data.adjustments;
+				this.setFilterValues([
+					{name: 'Disciplina', values: response.data.subjects},
+					{name: 'Motivo indef.', values: response.data.reasons_denied},
+					{name: 'Resultado', values: response.data.results},
+				]);
 			});
 	},
 	methods: {
-		// getAvailableFilters: function() {
-		// 	return this.headers.filter(column => {
-		// 		return column.value != 'id';
-		// 	}).map(column => { 
-		// 		this.colNames.push(column.text);
-		// 		return {name: column.text, filter: column.filter} 
-		// 	});
-		// },
-		filterSelected: function(value, index) {
+		filterChanged: function(value, index) {
 			//Must alert to the row that a new column is selected and populate criteria
 			let result = this.filters.available.filter(e => {return e.name == value});
 
-			this.filters.active[index] = result[0];
-			
-			this.filters.reload = this.filters.reload ? false : true;
+			this.filters.active[index] = Object.assign(this.filters.active[index], result[0],
+				{
+					criteria_selected: 'Igual a',
+				}
+			);
+
+			this.$forceUpdate();
+		},
+		criterionChanged: function(value, index) {
+
+			let changed = this.filters.active[index];
+			changed.criteria_selected = value;
+			Vue.set(this.filters.active, index, changed);
+		},
+		addRow: function() {
+			this.filters.active.push({ name: 'Nome', criteria: ['Igual a', 'Contém'], type: 'text', criteria_selected: 'Igual a'});
 		},
 
-		addFilter: function() {
-			let filter = { name: 'Nome', criteria: ['Igual a', 'Contém'], type: 'text'}
-			this.filters.active.push(filter);
-		},
+
+		setFilterValues: function(data) {
+			data.forEach(element => {
+				let target = this.filters.available
+					.filter(f => {return f.name === element.name})[0]
+					.values = element.values;
+			});
+		}
 	},
 }
 </script>
