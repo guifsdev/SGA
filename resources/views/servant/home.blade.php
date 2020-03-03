@@ -27,10 +27,10 @@
 					Certificados
 				</a>
 			</router-link>
-			<router-link to="/eventos" tag="li">
+			<router-link to="/configs" tag="li">
 			  	<a>
-					<i class="fas fa-calendar-alt"></i>
-					Eventos
+					<i class="fas fa-cog"></i>
+					Configurações
 				</a>
 			</router-link>
 		  </ul>

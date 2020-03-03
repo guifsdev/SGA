@@ -32,6 +32,11 @@ let routes = [
 		path: '/resolver-ajustes',
 		component: require('./views/servant/adjustment/ResolveAdjustment.vue').default,
 	},
+	{
+		name: 'Configurações',
+		path: '/configs',
+		component: require('./views/servant/Configuration.vue').default,
+	},
 ];
 
 

@@ -19,6 +19,9 @@ Route::prefix('estudante')->group(function() {
 
 	Route::get('adjustment/index', 'StudentAdjustmentController@index');
 	Route::post('adjustment/store', 'StudentAdjustmentController@store');
+	
+	//Route::post('/estudante/certificados', 'StudentsController@certificates');
+	//Route::get('/estudante/certificado/{certificate}', 'CertificatesController@print');
 });
 
 Route::prefix('servidor')->group(function() {
@@ -26,6 +29,11 @@ Route::prefix('servidor')->group(function() {
 	Route::post('login', 'ServantsLoginController@login');
 	Route::get('logout', 'ServantsLoginController@logout');
 	Route::get('/', 'ServantHomeController@home');
+
+	Route::prefix('configs')->group(function() {
+		Route::get('index', 'ServantConfigsController@index');
+		Route::post('update', 'ServantConfigsController@update');
+	});
 
 	Route::prefix('adjustments')->group(function() {
 		Route::get('index', 'ServantAdjustmentController@index');
@@ -62,8 +70,6 @@ Route::prefix('servidor')->group(function() {
 //Route::patch('/estudante/update', 'StudentsController@update');
 
 
-//Route::post('/estudante/certificados', 'StudentsController@certificates');
-//Route::get('/estudante/certificado/{certificate}', 'CertificatesController@print');
 
 
 //Route::get('/estudante/', 'SpaController@index');
