@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Adjustment;
 use Illuminate\Http\Request;
+use App\Lib\Settings;
 
 class ServantAdjustmentController extends Controller
 {
@@ -13,10 +14,11 @@ class ServantAdjustmentController extends Controller
     	$this->middleware('auth:servant');
     }
 
-	public function index(Request $request) 
+	public function index(Request $request, Settings $settings) 
 	{
 		$filters = $request->filters;
-		return (new Adjustment())->index($filters);
+		return (new Adjustment())->index($filters, $settings);
+
 
     }
 	public function resolve(Request $request)

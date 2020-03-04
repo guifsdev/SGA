@@ -229,8 +229,6 @@
 				</v-card-text>
 
 				<v-divider></v-divider>
-
-
 				<v-card-actions>
 				  <v-spacer></v-spacer>
 				  <v-btn color="primary" text @click="actionModal = false" >
@@ -239,6 +237,15 @@
 				</v-card-actions>
 			  </v-card>
 			</v-dialog>
+			<!--Snackbar-->
+			<template>
+				<div class="text-center ma-2">
+					<v-snackbar v-model="snackbar.show" :color="snackbar.color" :timeout="2500">
+						{{snackbar.message}}
+						<v-btn dark text @click="snackbar.show = false"> Close </v-btn>
+					</v-snackbar>
+				</div>
+			</template>
 	</v-app>
 </template>
 
@@ -309,6 +316,11 @@
 export default {
 	data () {
 		return {
+			snackbar: {
+				show: false,
+				color: null,
+				message: '',
+			},
 			actionBtnVisible: false,
 			showSelect: true,
 			filtersModal: false,
@@ -392,7 +404,7 @@ export default {
 
 			axios.post('servidor/adjustments/resolve', {adjustments, decision, reason})
 				.then(response => {
-					if(response.data.updated) {
+					if(response.status == 200) {
 						let ids = response.data.id;
 						let result = response.data.result;
 						let reason = response.data.reason;
@@ -403,8 +415,32 @@ export default {
 							adjustment[0].result = result;
 							adjustment[0].reason_denied = reason;
 						});
+						//Toggle snackbar
+						let decision = decision == 'deny' ? "Deferido(s)" : "Indeferido(s)";
+						this.snackbar.show = true;
+						this.snackbar.color = 'success';
+
+						this.snackbar.message = `${ids.length} ajuste(s) ${decision} com sucesso.`;
+
+						//Update reasons denied filter
+						if(this.reasonToDeny == 'Outro') 
+							this.updateReasons(response.data.reasons_denied);
+					} else {
+						this.snackbar.color = 'error';
+						this.snackbar.message = 'Ops... Algo deu errado!';
 					}
 				});
+		},
+		updateReasons: function(reasons) {
+			['active', 'available'].forEach(state => {
+				this.filters[state].forEach(( f,index ) => { 
+					if(f.name === 'Motivo indef.') {
+						let filter = this.filters[state][index];
+						filter.values = reasons;
+						Vue.set(this.filters[state], index, filter);
+					}
+				});
+			})
 		},
 		reasonToDenySelected: function(value) {
 			this.reasonToDenyTextVisible = value === "Outro" ? true : false;
@@ -423,7 +459,6 @@ export default {
 			axios.get('servidor/adjustments/index', {params: {filters}})
 				.then(response => {
 					this.adjustments = response.data.adjustments;
-
 					this.setFilterValues([
 						{name: 'Disciplina', values: response.data.subjects},
 						{name: 'Motivo indef.', values: response.data.reasons_denied},
@@ -458,7 +493,6 @@ export default {
 			this.filtersModal = false;
 
 			let filters = this.getQuerySting(this.filters.active);
-			//console.log(filters);
 
 			this.fetchAdjustments(filters);
 		},

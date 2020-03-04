@@ -3,16 +3,15 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\File;
+use App\Lib\Settings;
 
 class ServantConfigsController extends Controller
 {
-    public function index()
+    public function index(Settings $settings)
 	{
-		$adjustmentConfigs = config('settings.adjustment');
-		return response(['adjustment' => $adjustmentConfigs], 200);
+		return response(['adjustment' => $settings->get('adjustment')], 200);
 	}
-	public function update(Request $request)
+	public function update(Request $request, Settings $settings)
 	{
 		$configs = collect($request->configs);
 
@@ -37,15 +36,8 @@ class ServantConfigsController extends Controller
 		$configs->put('date', $date)
 			->put('reasons_to_deny', $reasons);
 
-		//config(['settings.adjustment' => $configs]);
-		//Config::set('settings.adjustment', $configs->toArray());
-		//File::put(config_path() . '/settings.php', $configs->toArray());
-		$file = require config_path('settings.php');
-		$conf = new \Illuminate\Config\Repository($file);
+		$settings->put('adjustment', $configs);
 
-		$value = \Illuminate\Support\Arr::get($conf, 'adjustment');
-
-
-		return response(['adjustment' => config('settings.adjustment')], 200);
+		return response(['adjustment' => $settings->get('adjustment')], 200);
 	}
 }

@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Auth;
 use Faker\Factory as FakeFactory;
 use Illuminate\Support\Facades\Blade;
+use App\Lib\Settings;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -27,7 +28,10 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->singleton(FakerGenerator::class, function () {
-            return FakerFactory::create('pt_BR');
+            return FakeFactory::create('pt_BR');
         });
+		$this->app->singleton(Settings::class, function () {
+			return Settings::make(storage_path('app/settings.json'));
+		});
     }
 }

@@ -19,7 +19,7 @@
 							<!--Status-->
 							<v-row align="center">
 								<label for="" >Status: </label>
-								<span style="font-weight: bold">{{}}</span>
+								<span style="font-weight: bold">{{status}}</span>
 							</v-row>
 							<!--Opening date-->
 							<v-row align="center">
@@ -153,7 +153,7 @@
 							</v-row>
 							<v-row>
 								<div class="my-2">
-									<v-btn small color="primary" @click="setAdjustmentConfigs()">Salvar</v-btn>
+									<v-btn small color="primary" @click="updateAdjustmentConfigs()">Salvar</v-btn>
 								</div>
 							</v-row>
 						</v-container>
@@ -167,6 +167,15 @@
 				</v-card>
 			</v-tab-item>
 		</v-tabs>
+		<!--Snackbar-->
+		<template>
+			<div class="text-center ma-2">
+				<v-snackbar v-model="snackbar.show" :color="snackbar.color" :timeout="2500">
+					{{snackbar.message}}
+					<v-btn dark text @click="snackbar.show = false"> Close </v-btn>
+				</v-snackbar>
+			</div>
+		</template>
 	</v-app>
 </template>
 
@@ -196,6 +205,11 @@ label {
 export default {
 	data () {
 		return {
+			snackbar: {
+				show: false,
+				color: null,
+				message: '',
+			},
 			tabs: ['Ajuste', 'Certificados'],
 			menu: {
 				date: {
@@ -224,25 +238,46 @@ export default {
 		}
 	},
 	mounted: function() {
-		this.getConfigs();
+		this.fetchConfigs();
 	},
 	methods: {
-		setAdjustmentConfigs: function() {
+		updateAdjustmentConfigs: function() {
 			let configs = this.adjustment;
 			axios.post('servidor/configs/update', {configs})
 				.then(response => {
-					console.log(response.data);
+					if(response.status == 200) {
+						this.snackbar.show = true;
+						this.snackbar.color = 'success';
+						this.snackbar.message = 'Alterações salvas com sucesso.';
+						this.setAdjustmentStatus(response.data.adjustment);
+					} else {
+						this.snackbar.color = 'error';
+						this.snackbar.message = 'Ops... Algo deu errado!';
+					}
 				});
 		},
-		getConfigs: function() {
+		setAdjustmentStatus: function(configs) {
+			let today = new Date();
+
+			let close = new Date(configs.date.close);
+
+			if(configs.closed_temporarily) {
+				this.status = "Fechado temporariamente";
+				return;
+			}
+			
+			this.status = today <= close ? "Aberto" : "Fechado";
+
+		},
+		fetchConfigs: function() {
 			axios.get('servidor/configs/index')
 				.then(response => {
 					let data = response.data;
-					this.getAdjustmentConfigs(data.adjustment);
-					//this.setCertificatesConfigs(data.certificate);
+					this.setAdjustmentConfigs(data.adjustment);
+					this.setAdjustmentStatus(data.adjustment);
 				});
 		},
-		getAdjustmentConfigs: function(configs) {
+		setAdjustmentConfigs: function(configs) {
 			//Get times
 			let re = /\s(.+)$/;
 			let times = {open: null, close: null};
@@ -260,7 +295,6 @@ export default {
 			configs.reasons_to_deny = configs.reasons_to_deny.filter(config => {
 				return config != "Outro";
 			}).join('; ');
-
 			this.adjustment = Object.assign(this.adjustment, configs);
 		}
 	}

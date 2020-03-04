@@ -3,14 +3,9 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Http\Request;
-use App\ConfigAdjustment;
 use App\Mail\AdjustmentResolved;
 use Carbon\Carbon;
 use App\Setting;
-use App\Student;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Builder;
 
 class Adjustment extends Model
@@ -35,7 +30,7 @@ class Adjustment extends Model
 	public $filterColumn;
 
 
-	public function index($filters) 
+	public function index($filters, $settings) 
 	{
 		$query = Adjustment::query()->with(['student', 'subject']);
 
@@ -106,11 +101,8 @@ class Adjustment extends Model
 			})
 			->unique()->sort()->toArray();
 
-		
+		$reasonsDenied = $this->getReasonsDenied($adjustments);
 
-		$reasonsDenied = $adjustments->map(function($item) {
-			return $item['reason_denied'] ?: 'Vazio';
-		})->unique()->sort()->toArray();
 
 		$results = $adjustments->map(function($item) {
 			return $item['result'];
@@ -126,7 +118,8 @@ class Adjustment extends Model
 					->toArray();
 				return $adjustment;
 			});
-		$reasonsToDeny = config('settings.adjustment.reasons_to_deny');
+
+		$reasonsToDeny = $settings->get("adjustment")['reasons_to_deny'];
 
 		return response([
 			'adjustments' => $adjustments, 
@@ -182,14 +175,26 @@ class Adjustment extends Model
 				\Mail::to($email)->send(new AdjustmentResolved($student['first_name'], $adjustments, $result, $reason));
 			});
 		}
+
+		$reasonsDenied = $this->getReasonsDenied();
+
 		return response(
 			[
 				'updated' => $updated, 
 				'id' => $adjustmentIds, 
 				'result' => $result, 
+				'reasons_denied' => array_values($reasonsDenied),
 				'reason' => $reason], 200);
 	}
 
+	public function getReasonsDenied($adjustments = null)
+	{
+		if(!$adjustments) $adjustments = Adjustment::all();
+
+		return $adjustments->map(function($item) {
+			return $item['reason_denied'] ?: 'Vazio';
+		})->unique()->sort()->toArray();
+	}
 	//adjustment->subject->code
 	public function subject() {
 		return $this->belongsTo('App\Subject');

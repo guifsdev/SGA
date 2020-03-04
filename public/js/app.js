@@ -1970,9 +1970,23 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      snackbar: {
+        show: false,
+        color: null,
+        message: ''
+      },
       tabs: ['Ajuste', 'Certificados'],
       menu: {
         date: {
@@ -2001,28 +2015,51 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   mounted: function mounted() {
-    this.getConfigs();
+    this.fetchConfigs();
   },
   methods: {
-    setAdjustmentConfigs: function setAdjustmentConfigs() {
+    updateAdjustmentConfigs: function updateAdjustmentConfigs() {
+      var _this = this;
+
       var configs = this.adjustment;
       axios.post('servidor/configs/update', {
         configs: configs
       }).then(function (response) {
-        console.log(response.data);
+        if (response.status == 200) {
+          _this.snackbar.show = true;
+          _this.snackbar.color = 'success';
+          _this.snackbar.message = 'Alterações salvas com sucesso.';
+
+          _this.setAdjustmentStatus(response.data.adjustment);
+        } else {
+          _this.snackbar.color = 'error';
+          _this.snackbar.message = 'Ops... Algo deu errado!';
+        }
       });
     },
-    getConfigs: function getConfigs() {
-      var _this = this;
+    setAdjustmentStatus: function setAdjustmentStatus(configs) {
+      var today = new Date();
+      var close = new Date(configs.date.close);
+
+      if (configs.closed_temporarily) {
+        this.status = "Fechado temporariamente";
+        return;
+      }
+
+      this.status = today <= close ? "Aberto" : "Fechado";
+    },
+    fetchConfigs: function fetchConfigs() {
+      var _this2 = this;
 
       axios.get('servidor/configs/index').then(function (response) {
         var data = response.data;
 
-        _this.getAdjustmentConfigs(data.adjustment); //this.setCertificatesConfigs(data.certificate);
+        _this2.setAdjustmentConfigs(data.adjustment);
 
+        _this2.setAdjustmentStatus(data.adjustment);
       });
     },
-    getAdjustmentConfigs: function getAdjustmentConfigs(configs) {
+    setAdjustmentConfigs: function setAdjustmentConfigs(configs) {
       //Get times
       var re = /\s(.+)$/;
       var times = {
@@ -2364,9 +2401,21 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      snackbar: {
+        show: false,
+        color: null,
+        message: ''
+      },
       actionBtnVisible: false,
       showSelect: true,
       filtersModal: false,
@@ -2489,7 +2538,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
         decision: decision,
         reason: reason
       }).then(function (response) {
-        if (response.data.updated) {
+        if (response.status == 200) {
           var ids = response.data.id;
           var result = response.data.result;
           var _reason = response.data.reason;
@@ -2500,8 +2549,32 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
             adjustment[0].result = result;
             adjustment[0].reason_denied = _reason;
-          });
+          }); //Toggle snackbar
+
+          var _decision = _decision == 'deny' ? "Deferido(s)" : "Indeferido(s)";
+
+          _this.snackbar.show = true;
+          _this.snackbar.color = 'success';
+          _this.snackbar.message = "".concat(ids.length, " ajuste(s) ").concat(_decision, " com sucesso."); //Update reasons denied filter
+
+          if (_this.reasonToDeny == 'Outro') _this.updateReasons(response.data.reasons_denied);
+        } else {
+          _this.snackbar.color = 'error';
+          _this.snackbar.message = 'Ops... Algo deu errado!';
         }
+      });
+    },
+    updateReasons: function updateReasons(reasons) {
+      var _this2 = this;
+
+      ['active', 'available'].forEach(function (state) {
+        _this2.filters[state].forEach(function (f, index) {
+          if (f.name === 'Motivo indef.') {
+            var filter = _this2.filters[state][index];
+            filter.values = reasons;
+            Vue.set(_this2.filters[state], index, filter);
+          }
+        });
       });
     },
     reasonToDenySelected: function reasonToDenySelected(value) {
@@ -2516,7 +2589,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       this.actionBtnVisible = event.length ? true : false;
     },
     fetchAdjustments: function fetchAdjustments() {
-      var _this2 = this;
+      var _this3 = this;
 
       var filters = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
       axios.get('servidor/adjustments/index', {
@@ -2524,9 +2597,9 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
           filters: filters
         }
       }).then(function (response) {
-        _this2.adjustments = response.data.adjustments;
+        _this3.adjustments = response.data.adjustments;
 
-        _this2.setFilterValues([{
+        _this3.setFilterValues([{
           name: 'Disciplina',
           values: response.data.subjects
         }, {
@@ -2537,8 +2610,8 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
           values: response.data.results
         }]);
 
-        _this2.reasonsToDeny = response.data.reasons_to_deny;
-        _this2.reasonToDeny = _this2.reasonsToDeny[0];
+        _this3.reasonsToDeny = response.data.reasons_to_deny;
+        _this3.reasonToDeny = _this3.reasonsToDeny[0];
       });
     },
     getQuerySting: function getQuerySting(filtersActive) {
@@ -2575,8 +2648,7 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
     },
     applyFilters: function applyFilters() {
       this.filtersModal = false;
-      var filters = this.getQuerySting(this.filters.active); //console.log(filters);
-
+      var filters = this.getQuerySting(this.filters.active);
       this.fetchAdjustments(filters);
     },
     removeFilters: function removeFilters() {
@@ -2584,17 +2656,17 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       this.fetchAdjustments();
     },
     setColumnNames: function setColumnNames() {
-      var _this3 = this;
+      var _this4 = this;
 
       this.filters.available.map(function (filter, index) {
         var changed = filter;
 
-        var headerValue = _this3.headers.filter(function (header) {
+        var headerValue = _this4.headers.filter(function (header) {
           return header.text == filter.name;
         })[0].value;
 
         changed.column_name = headerValue;
-        Vue.set(_this3.filters.available, index, changed);
+        Vue.set(_this4.filters.available, index, changed);
       });
     },
     filterChanged: function filterChanged(value, index) {
@@ -2642,10 +2714,10 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
       this.criterionChanged('Igual a', index);
     },
     setFilterValues: function setFilterValues(data) {
-      var _this4 = this;
+      var _this5 = this;
 
       data.forEach(function (element) {
-        var target = _this4.filters.available.filter(function (f) {
+        var target = _this5.filters.available.filter(function (f) {
           return f.name === element.name;
         })[0].values = element.values;
       });
@@ -4771,7 +4843,7 @@ var render = function() {
                                   _c(
                                     "span",
                                     { staticStyle: { "font-weight": "bold" } },
-                                    [_vm._v("{{}}")]
+                                    [_vm._v(_vm._s(_vm.status))]
                                   )
                                 ]),
                                 _vm._v(" "),
@@ -5343,7 +5415,7 @@ var render = function() {
                                           },
                                           on: {
                                             click: function($event) {
-                                              return _vm.setAdjustmentConfigs()
+                                              return _vm.updateAdjustmentConfigs()
                                             }
                                           }
                                         },
@@ -5378,9 +5450,50 @@ var render = function() {
           })
         ],
         2
-      )
+      ),
+      _vm._v(" "),
+      [
+        _c(
+          "div",
+          { staticClass: "text-center ma-2" },
+          [
+            _c(
+              "v-snackbar",
+              {
+                attrs: { color: _vm.snackbar.color, timeout: 2500 },
+                model: {
+                  value: _vm.snackbar.show,
+                  callback: function($$v) {
+                    _vm.$set(_vm.snackbar, "show", $$v)
+                  },
+                  expression: "snackbar.show"
+                }
+              },
+              [
+                _vm._v(
+                  "\n\t\t\t\t" + _vm._s(_vm.snackbar.message) + "\n\t\t\t\t"
+                ),
+                _c(
+                  "v-btn",
+                  {
+                    attrs: { dark: "", text: "" },
+                    on: {
+                      click: function($event) {
+                        _vm.snackbar.show = false
+                      }
+                    }
+                  },
+                  [_vm._v(" Close ")]
+                )
+              ],
+              1
+            )
+          ],
+          1
+        )
+      ]
     ],
-    1
+    2
   )
 }
 var staticRenderFns = []
@@ -6403,9 +6516,52 @@ var render = function() {
           )
         ],
         1
-      )
+      ),
+      _vm._v(" "),
+      [
+        _c(
+          "div",
+          { staticClass: "text-center ma-2" },
+          [
+            _c(
+              "v-snackbar",
+              {
+                attrs: { color: _vm.snackbar.color, timeout: 2500 },
+                model: {
+                  value: _vm.snackbar.show,
+                  callback: function($$v) {
+                    _vm.$set(_vm.snackbar, "show", $$v)
+                  },
+                  expression: "snackbar.show"
+                }
+              },
+              [
+                _vm._v(
+                  "\n\t\t\t\t\t\t" +
+                    _vm._s(_vm.snackbar.message) +
+                    "\n\t\t\t\t\t\t"
+                ),
+                _c(
+                  "v-btn",
+                  {
+                    attrs: { dark: "", text: "" },
+                    on: {
+                      click: function($event) {
+                        _vm.snackbar.show = false
+                      }
+                    }
+                  },
+                  [_vm._v(" Close ")]
+                )
+              ],
+              1
+            )
+          ],
+          1
+        )
+      ]
     ],
-    1
+    2
   )
 }
 var staticRenderFns = []
