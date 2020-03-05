@@ -17,7 +17,7 @@
         "deepmerge": "^4.2.2",
         "fibers": "^4.0.2",
         "floatthead": "^2.1.4",
-        "jquery": "^3.2",
+        "jquery": "^3.4",
         "laravel-mix": "^4.0.7",
         "less": "^3.9.0",
         "less-loader": "^4.1.0",
