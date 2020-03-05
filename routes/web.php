@@ -19,9 +19,13 @@ Route::prefix('estudante')->group(function() {
 
 	Route::get('adjustment/index', 'StudentAdjustmentController@index');
 	Route::post('adjustment/store', 'StudentAdjustmentController@store');
+
+	Route::prefix('certificados')->group(function() {
+		Route::get('index', 'StudentCertifictesController@index');
+		Route::get('show/{certificate}', 'StudentCertifictesController@show');
+
+	});
 	
-	//Route::post('/estudante/certificados', 'StudentsController@certificates');
-	//Route::get('/estudante/certificado/{certificate}', 'CertificatesController@print');
 });
 
 Route::prefix('servidor')->group(function() {
@@ -33,6 +37,10 @@ Route::prefix('servidor')->group(function() {
 	Route::prefix('configs')->group(function() {
 		Route::get('index', 'ServantConfigsController@index');
 		Route::post('update', 'ServantConfigsController@update');
+	});
+	Route::prefix('calls')->group(function() {
+		Route::get('index', 'ServantCallsController@index');
+		//Route::get('index', 'ServantCallsController@');
 	});
 
 	Route::prefix('adjustments')->group(function() {

@@ -11,12 +11,14 @@ use Illuminate\Validation\ValidationException;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Support\Facades\Auth;
 use App\Lib\IdUFFCrawler;
+use App\Lib\Settings;
 use GuzzleHttp\Exception\ConnectException;
 
 class StudentLoginController extends Controller
 {
     use AuthenticatesUsers, RedirectsUsers, ThrottlesLogins;
 
+	public $settings;
 	/**
      * Where to redirect users after login.
      *
@@ -24,8 +26,9 @@ class StudentLoginController extends Controller
      */
 	protected $redirectTo = 'estudante/';
 
-	public function __construct()
+	public function __construct(Settings $settings)
 	{
+		$this->settings = $settings;
 		$this->middleware('guest:student')->except('logout');
 	}
 	public function showLoginForm()
@@ -69,20 +72,25 @@ class StudentLoginController extends Controller
 		if($student) {
 			$crawledAt = new Carbon($student->crawled_at);
 
-			$pref = config('settings.crawler.trigger');
+			//$pref = config('settings.crawler.trigger');
+			$config = $this->settings->get('crawler')['trigger'];
 
-			$limit = $pref['limit'];
-			$measure = $pref['measure'];
-
+			$limit = $config['limit'];
+			$measure = $config['measure'];
 
 			$uncrawledTime = $this->getUncrawledTime($crawledAt, $measure);
 
-
-			if($uncrawledTime <= $limit && $crawler->verifyCredentials($request)) {
-				//Inside time frame, but must verify password...
-				//Does not need to update
-				$this->guard()->login($student);
-				return true;
+			if($uncrawledTime <= $limit) {
+				try {
+					$credentials = $crawler->verifyCredentials($request);
+					if($credentials) {
+						$this->guard()->login($student);
+						return true;
+					}
+					return false;
+				} catch(ConnectException $connectError) {
+					return $this->sendFailedLoginResponse($request, $connectError);
+				}
 			}
 		}
 
@@ -114,6 +122,7 @@ class StudentLoginController extends Controller
 	public function getUncrawledTime($crawledAt, $measure)
 	{
 		$today = Carbon::now();
+		$uncrawledTime = null;
 		switch($measure) {
 			case 'months': 
 				$uncrawledTime = $crawledAt->diffInMonths($today);

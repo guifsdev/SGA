@@ -30,6 +30,7 @@ import AdjustmentConfirmForm from './AdjustmentConfirmForm.vue';
 				success: null,
 				pending_adjustments: [],
 				open: false,
+				closed_temporarily: false,
 			}
 		},
 		methods: {
@@ -55,9 +56,8 @@ import AdjustmentConfirmForm from './AdjustmentConfirmForm.vue';
 						this.periods = response.data.periods;
 						this.subjects = response.data.subjects;
 						this.pending_adjustments = response.data.pending_adjustments;
+						this.closed_temporarily = response.data.closed_temporarily;
 					}
-
-
 				});
 		}
 		

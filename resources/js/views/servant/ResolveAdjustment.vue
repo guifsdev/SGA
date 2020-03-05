@@ -1,7 +1,7 @@
 <template>
 	<v-app>
 		<!--Filters Modal-->
-		<div class="filters">
+		<div class="table-actions-bar">
 			<v-dialog 
 				v-model="filtersModal" 
 				width="600" >
@@ -9,7 +9,7 @@
 					<v-btn v-on="on" >Filtrar colunas</v-btn>
 				</template>
 
-				<v-card>
+				<v-card class="filters-modal">
 					<v-card-title class="headline grey lighten-2" primary-title>Filtrar colunas</v-card-title>
 					<v-card-text>
 						<v-container 
@@ -178,7 +178,7 @@
 			  <template v-slot:activator="{ on }">
 				  <v-btn 
 					  v-show="actionBtnVisible" 
-					  v-on="on" class="mx-2 action" fab dark large 
+					  v-on="on" class="mx-2 edit-adjustment" fab dark large 
 					  color="cyan"> <v-icon dark>mdi-pencil</v-icon>
 				  </v-btn>
 			  </template>
@@ -249,67 +249,36 @@
 	</v-app>
 </template>
 
-<style lang="scss">
-	.v-application {
-		background-color: transparent !important;
-		font-size: 1.3rem;
-		* {
-			font-size:  inherit !important;
-		}
-		.v-data-footer {
-			font-size:  1.1rem;
-			* {
-				font-size:  inherit !important;
-			}
-		}
-		.v-icon:before {
-			font-size: 2rem !important;
-		}
-		.v-input {
-			width: 100%;
-		}
-		.date-picker--dual {
-			margin-right: 1rem;
-		}
-		.v-list-item__title {
-			line-height: 1.5rem !important;
-		}
-		
-		.v-data-table {
-			&--float-head {
-				position: relative;
-				//top: 1.8rem;
-
-				.floatThead-container {
-					overflow: hidden;
-				}
-				& .v-data-table-header {
-					background-color:  #fff;
-				}
-			}
-		}
+<style lang="scss" scoped>
+.edit-adjustment {
+	$v-btn-action-size: 5.5rem;
+	margin-left: 0 !important;
+	width: $v-btn-action-size;
+	height: $v-btn-action-size;
+	position: fixed;
+	left: calc(-#{$v-btn-action-size}/2);
+	bottom: 2rem;
+	transform: translateX(50vw);
+	.v-icon:before {
+		font-size: 2rem !important;
 	}
+}
+.table-actions-bar {
+	margin-bottom: 1.5rem;
+	display: block;
+	height: 3.6rem;
 	.v-btn {
-		&.action {
-			$v-btn-action-size: 5.5rem;
-			margin-left: 0 !important;
-			width: $v-btn-action-size;
-			height: $v-btn-action-size;
-			position: fixed;
-			left: calc(-#{$v-btn-action-size}/2);
-			bottom: 2rem;
-			transform: translateX(50vw);
-		}
+		float: right;
 	}
-	.filters {
-		margin-bottom: 1.5rem;
-		display: block;
-		height: 3.6rem;
-
-		.v-btn {
-			float: right;
-		}
+}
+.filters-modal {
+	.v-input {
+		width: 100%;
 	}
+	.date-picker--dual {
+		margin-right: 1rem;
+	}
+}
 </style>
 
 <script>

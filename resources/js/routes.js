@@ -20,7 +20,7 @@ let routes = [
 	{
 		name: 'Certificados',
 		path: '/certificados',
-		component: require('./views/Certificados.vue').default,
+		component: require('./views/student/Certificates.vue').default,
 	},
 	{
 		name: 'Eventos',
@@ -30,12 +30,17 @@ let routes = [
 	{
 		name: 'Resoler ajustes',
 		path: '/resolver-ajustes',
-		component: require('./views/servant/adjustment/ResolveAdjustment.vue').default,
+		component: require('./views/servant/ResolveAdjustment.vue').default,
 	},
 	{
 		name: 'Configurações',
 		path: '/configs',
 		component: require('./views/servant/Configuration.vue').default,
+	},
+	{
+		name: 'Chamados',
+		path: '/chamados',
+		component: require('./views/servant/Calls.vue').default,
 	},
 ];
 

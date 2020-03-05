@@ -12,7 +12,7 @@
 						<th scope="col">Resultado</th>
 					</tr>
 				</thead>
-				<tr v-for="adjustment in $parent.pending_adjustments">
+				<tr v-for="( adjustment, index ) in $parent.pending_adjustments" :key="index">
 					<td>{{`${adjustment.subject.code} ${adjustment.subject.name} ${adjustment.subject.class_name}`}}</td>
 					<td>{{adjustment.action}}</td>
 					<td>{{adjustment.result}}</td>
@@ -21,10 +21,13 @@
 			</table>
 		</div>
 		
-		<div v-if="!$parent.open" class="alert alert-primary" role="alert">
+		<div v-if="!$parent.open"  class="alert alert-primary" role="alert">
 			Aguarde a data de abertura do ajuste.
 		</div>
 
+		<div v-if="$parent.closed_temporarily" class="alert alert-primary" role="alert">
+			Ajuste momentaneamente suspenso. Aguarde...
+		</div>
 		
 		<form v-else @submit.prevent="processAdjustments($event)">
 			<table class="table table-sm">

@@ -5,6 +5,42 @@ html {
   height: 100vh;
 }
 
+body {
+  font-size: 1.3rem !important;
+}
+
+body * {
+  font-size: inherit !important;
+}
+
+ul li {
+  list-style: none;
+}
+
+.v-application {
+  background-color: transparent !important;
+}
+
+.v-data-table .v-icon:before {
+  font-size: 2rem !important;
+}
+
+.v-data-table--float-head {
+  position: relative;
+}
+
+.v-data-table--float-head .floatThead-container {
+  overflow: hidden;
+}
+
+.v-data-table--float-head .v-data-table-header {
+  background-color: #fff;
+}
+
+.v-list-item__title {
+  line-height: 1.5rem !important;
+}
+
 /*!
  * Bootstrap v4.3.1 (https://getbootstrap.com/)
  * Copyright 2011-2019 The Bootstrap Authors
@@ -16483,7 +16519,6 @@ readers do not read off random characters that represent icons */
 
 .home {
   display: flex;
-  font-size: 1.5rem;
   margin: 0;
   padding: 0;
   background-color: #f0f0f0;
@@ -16526,6 +16561,7 @@ readers do not read off random characters that represent icons */
 }
 
 .home__navigation {
+  font-size: 1.7rem !important;
   width: 20rem;
   height: 100%;
   float: left;
@@ -16587,6 +16623,7 @@ readers do not read off random characters that represent icons */
 }
 
 .home__main .title-box {
+  font-size: 1.5rem !important;
   background-color: #fff;
   border-bottom: 1px solid #C0C1C0;
   height: 60px;
@@ -16646,5 +16683,16 @@ readers do not read off random characters that represent icons */
   margin: 1rem auto;
   padding: 0 1.5rem;
   font-size: 1.5rem;
+}
+
+.servant-login,
+.student-login {
+  font-size: 1.5rem !important;
+  min-width: 30rem;
+}
+
+.servant-login h1,
+.student-login h1 {
+  font-size: 2rem !important;
 }
 

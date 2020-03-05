@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Adjustment;
+use App\Lib\Settings;
 use App\Subject;
 use Carbon\Carbon;
 use Validator;
@@ -18,11 +19,14 @@ class StudentAdjustmentController extends Controller
         $this->middleware('auth:student');
     }
 
-	public function index(Request $request)
+	public function index(Request $request, Settings $settings)
 	{
-
+		$configs = collect($settings->get('adjustment'));
 		//dd($request);
-		$date = config('settings.adjustment.date');
+		//$date = config('settings.adjustment.date');
+		//$date = $settings->get('adjustment')['date'];
+		$date = $configs->get('date');
+
 		$now = Carbon::now();
 		$openState = (( $date['open'] <= $now ) && ( $date['close'] >= $now ) );
 		$data = [];
@@ -36,8 +40,9 @@ class StudentAdjustmentController extends Controller
 			$data = [
 				'open' => $openState,
 				'periods' => Subject::all()->max('period'),
-				'max_adjustments' => config('settings.adjustment.max_adjustments'),
+				'max_adjustments' => intval($configs->get('max_adjustments')),
 				'subjects' => Subject::all(),
+				'closed_temporarily' => $configs->get('closed_temporarily'),
 				'pending_adjustments' => $pendingAdjustments,
 			];
 			return response($data, 200);

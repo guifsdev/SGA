@@ -10,25 +10,31 @@
 		<nav>
 		  <ul>
 			<router-link to="/home" tag="li">
-			  	<a>
+				<a>
 					<i class="fas fa-home"></i>
 					Home
 				</a>
 			</router-link>
 			<router-link to="/resolver-ajustes" tag="li">
-			  	<a>
+				<a>
 					<i class="fas fa-edit"></i>
 					Ajuste
 				</a>
-			</router-link>		
+			</router-link>
+			<router-link to="chamados" tag="li">
+				<a>
+					<i class="fas fa-bullhorn"></i>
+					Chamados
+				</a>
+			</router-link>
 			<router-link to="/certificados" tag="li">
-			  	<a>
+				<a>
 					<i class="fas fa-certificate"></i>
 					Certificados
 				</a>
 			</router-link>
 			<router-link to="/configs" tag="li">
-			  	<a>
+				<a>
 					<i class="fas fa-cog"></i>
 					Configurações
 				</a>
