@@ -31,15 +31,12 @@ class StudentLoginController extends Controller
 		$this->settings = $settings;
 		$this->middleware('guest:student')->except('logout');
 	}
-	public function showLoginForm()
-	{
-		return view('student.auth.login');
-	}
-	
+
 	public function username()
 	{
 		return 'cpf';
 	}
+
 	public function guard()
 	{
 		return Auth::guard('student');
@@ -183,7 +180,7 @@ class StudentLoginController extends Controller
 
         $request->session()->invalidate();
 
-        return $this->loggedOut($request) ?: redirect('estudante/login');
+        return $this->loggedOut($request) ?: redirect('/login');
     }
 }
 

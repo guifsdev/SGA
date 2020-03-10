@@ -10,29 +10,31 @@
         "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
     },
     "devDependencies": {
-        "@fortawesome/fontawesome-free": "^5.10.1",
-        "axios": "^0.18",
-        "bootstrap": "^4.0.0",
-        "cross-env": "^5.1",
+        "bootstrap": "^4.4.1",
+        "cross-env": "^5.2.1",
         "deepmerge": "^4.2.2",
         "fibers": "^4.0.2",
-        "floatthead": "^2.1.4",
-        "jquery": "^3.2",
-        "laravel-mix": "^4.0.7",
-        "less": "^3.9.0",
+        "laravel-mix": "^4.1.4",
+        "less": "^3.11.1",
         "less-loader": "^4.1.0",
-        "lodash": "^4.17.5",
+        "lodash": "^4.17.15",
         "node-sass": "^4.13.1",
-        "popper.js": "^1.12",
-        "resolve-url-loader": "^2.3.1",
-        "sass": "^1.25.0",
+        "popper.js": "^1.16.1",
+        "resolve-url-loader": "^2.3.2",
+        "sass": "^1.26.2",
         "sass-loader": "^7.3.1",
-        "vue": "^2.5.17",
         "vue-jquery-mask": "^1.0.3",
-        "vue-router": "^3.0.6",
-        "vue-template-compiler": "^2.6.6"
+        "vue-template-compiler": "^2.6.11"
     },
     "dependencies": {
-        "vuetify": "^2.2.13"
+        "@fortawesome/fontawesome-free": "^5.12.1",
+        "axios": "^0.18.1",
+        "floatthead": "^2.1.4",
+        "jquery": "^3.4.1",
+        "material-design-icons-iconfont": "^5.0.1",
+        "vue": "^2.6.11",
+        "vue-router": "^3.1.6",
+        "vue-the-mask": "^0.11.1",
+        "vuetify": "^2.2.15"
     }
 }

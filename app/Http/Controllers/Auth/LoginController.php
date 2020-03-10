@@ -25,54 +25,18 @@ class LoginController extends Controller
     use AuthenticatesUsers;
 
     /**
-     * Where to redirect users after login.
-     *
-     * @var string
-     */
-    //protected $redirectTo = '/admin';
-
-    /**
      * Create a new controller instance.
      *
      * @return void
      */
     public function __construct()
     {
-        $this->middleware('guest')->except('logout');
-        //$this->middleware('guest:student')->except('logout');
+        $this->middleware([ 'guest:student', 'guest:servant' ]);
+		
     }
-
-    /*public function showtudentLogin()
-    {
-        //return "Student Login";
-        $cpf = request('cpf');
-        dd(Auth::guard('student')->attempt(['cpf' => $cpf]));
-    }*/
-
-
-
-    public function login() {
-        $credentials = request()->only('cpf', 'password');
-        //$credentials['password'] = bcrypt($credentials['password']);
-        //dd($credentials);
-        
-        if(Auth::attempt($credentials)) return redirect('/admin');
-        else return redirect()->route('login')->withErrors(['Nenhum usuário encontrado para os dados digitados.']);
-    }
-
-    public function logout()
-    {
-        if(Auth::check())
-        {
-            Auth::logout();
-        }
-        return redirect('/admin/login');
-    }
-
-
 
     public function showLoginForm()
     {
-        return view('auth.admin.login');
+        return view('auth.login');
     }
 }

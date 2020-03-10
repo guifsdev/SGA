@@ -73,7 +73,7 @@ class ServantsLoginController extends Controller
 
         $request->session()->invalidate();
 
-        return $this->loggedOut($request) ?: redirect('servidor/login');
+        return $this->loggedOut($request) ?: redirect('/login');
     }
     /**
      * Get the failed login response instance.

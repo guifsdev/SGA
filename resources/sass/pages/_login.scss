@@ -1,6 +1,16 @@
-.servant-login,
-.student-login {
+//.servant-login,
+//.student-login {
+	//font-size: 1.5rem !important;
+	//h1 { font-size: 2rem !important; }
+	//min-width: 30rem;
+//}
+
+.login {
 	font-size: 1.5rem !important;
-	h1 { font-size: 2rem !important; }
-	min-width: 30rem;
+	.v-icon {
+		font-size: 2rem !important;
+	}
+	&__title {
+		font-size: 2rem !important;
+	}
 }
