@@ -9,7 +9,7 @@ class ServantConfigsController extends Controller
 {
     public function index(Settings $settings)
 	{
-		return response(['adjustment' => $settings->get('adjustment')], 200);
+		return response($settings->all(), 200);
 	}
 	public function update(Request $request, Settings $settings)
 	{

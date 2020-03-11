@@ -14,7 +14,6 @@
 Route::get('/login', 'Auth\LoginController@showLoginForm');
 
 Route::prefix('estudante')->group(function() {
-	//Route::get('login', 'StudentLoginController@showLoginForm');
 	Route::post('login', 'StudentLoginController@login');
 	Route::get('logout', 'StudentLoginController@logout');
 	Route::get('/', 'StudentHomeController@home');
@@ -25,13 +24,10 @@ Route::prefix('estudante')->group(function() {
 	Route::prefix('certificados')->group(function() {
 		Route::get('index', 'StudentCertifictesController@index');
 		Route::get('show/{certificate}', 'StudentCertifictesController@show');
-
 	});
-	
 });
 
 Route::prefix('servidor')->group(function() {
-	//Route::get('login', 'ServantsLoginController@showLoginForm');
 	Route::post('login', 'ServantsLoginController@login');
 	Route::get('logout', 'ServantsLoginController@logout');
 	Route::get('/', 'ServantHomeController@home');

@@ -40,12 +40,17 @@ let routes = [
 	{
 		name: 'Configurações',
 		path: '/configs',
-		component: require('./views/servant/Configuration.vue').default,
+		component: require('./views/servant/configs/Configuration.vue').default,
+	},
+	{
+		name: 'Resolver chamados',
+		path: '/resolver-chamados',
+		component: require('./views/servant/Calls.vue').default,
 	},
 	{
 		name: 'Chamados',
 		path: '/chamados',
-		component: require('./views/servant/Calls.vue').default,
+		component: require('./views/student/Calls.vue').default,
 	},
 ];
 

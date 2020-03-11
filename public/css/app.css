@@ -16987,6 +16987,35 @@ readers do not read off random characters that represent icons */
   font-size: 1.5rem;
 }
 
+.v-tab:hover {
+  text-decoration: none;
+}
+
+.v-time-picker-title__time {
+  font-size: 4rem !important;
+}
+
+.v-time-picker-title__ampm {
+  font-size: 1.6rem;
+}
+
+.config__label {
+  display: block;
+  width: 15rem;
+}
+
+.config__row {
+  margin-bottom: 1.2rem;
+}
+
+.config__row:nth-child(7) label {
+  margin-top: 2rem;
+}
+
+.config__row--small {
+  max-width: 42rem;
+}
+
 .login {
   font-size: 1.5rem !important;
 }

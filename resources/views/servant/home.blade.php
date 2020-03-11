@@ -21,7 +21,7 @@
 					Ajuste
 				</a>
 			</router-link>
-			<router-link to="chamados" tag="li">
+			<router-link to="resolver-chamados" tag="li">
 				<a>
 					<i class="fas fa-bullhorn"></i>
 					Chamados

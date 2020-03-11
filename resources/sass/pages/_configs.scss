@@ -1,0 +1,24 @@
+.v-tab:hover {
+	text-decoration: none;
+}
+
+.v-time-picker-title {
+	&__time { font-size: 4rem !important; }
+	&__ampm { font-size: 1.6rem; }
+}
+.config {  
+	&__label {
+		display: block;
+		width: 15rem;
+	}
+
+	&__row {
+		margin-bottom: 1.2rem;
+		&:nth-child(7) label {
+			margin-top: 2rem;
+		}
+		&--small {
+			max-width: 42rem; 
+		}
+	}
+}

@@ -19,13 +19,19 @@
 					<i class="fas fa-info-circle"></i>
 					Meus Dados
 				</a>
-			</router-link>		
+			</router-link>
 			<router-link to="/ajuste" tag="li">
 			  	<a>
 					<i class="fas fa-edit"></i>
 					Ajuste
 				</a>
-			</router-link>		
+			</router-link>
+			<router-link to="/chamados" tag="li">
+			  	<a>
+					<i class="fas fa-bullhorn"></i>
+					Chamados
+				</a>
+			</router-link>
 			<router-link to="/certificados" tag="li">
 			  	<a>
 					<i class="fas fa-certificate"></i>

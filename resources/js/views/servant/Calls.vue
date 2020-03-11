@@ -6,6 +6,18 @@
 			:items="calls"
 			:items-per-page="5"
 			class="elevation-1">
+			<template v-slot:item.has_attachment="{item}">
+				<v-icon 
+					size="1.8rem !important"
+					v-if="item.has_attachment" class="attachment-icon">attachment</v-icon>
+			</template>
+			<template v-slot:item.title="{item}">
+				<span class="ellipsis borderless align-left">{{item.title}}
+				</span>
+			</template>
+			<template v-slot:item.enrolment_number="{item}">
+				<span class="borderless align-left">{{item.student.enrolment_number}}</span>
+			</template>
 		</v-data-table>
 		<template>
 			<div class="text-center">
@@ -20,12 +32,9 @@
 								<h1 class="call__title">{{selected.title}}</h1>
 								<p class="call__description">{{selected.description}}</p>
 								<hr>
-								
-								<label>Arquivos anexados 
-									<i @click="showAttachments()" 
-		    							:class="{'attachments-caret--open': viewAttachments}"
-										class="fas fa-caret-right attachments-caret"></i>
-								</label>
+								<i :class="{'attachments-caret--open': viewAttachments}"
+									class="fas fa-caret-right attachments-caret"></i>
+								<a @click="showAttachments()">Arquivos anexados </a>
 								<div class="call__attachments-box" :class="{'call__attachments-box--visible': viewAttachments}">
 									<ul>
 										<li><a href="#"><i class="fas fa-link"></i>Foo</a></li>
@@ -60,6 +69,7 @@
 </template>
 
 <script>
+
 export default {
 	data() {
 		return {
@@ -68,9 +78,9 @@ export default {
 				{text: '#', value: 'id'},
 				{text: 'Nome', value: 'student_name'},
 				{text: 'Matrícula', value: 'enrolment_number'},
-				{text: 'Assunto', value: 'issue'},
+				//{text: 'Assunto', value: 'issue'},
 				{text: 'Título', value: 'title'},
-				{text: 'Anexos', value: 'has_attachment'},
+				{text: '', value: 'has_attachment'},
 				{text: 'Criado em', value: 'created_at'},
 				{text: 'Status', value: 'status'},
 				{text: 'Resolvido em', value: 'resolved_at'},
@@ -97,7 +107,6 @@ export default {
 			this.dialog = true;
 		},
 		showAttachments: function() {
-			console.log('showAttachments');
 			this.viewAttachments = this.viewAttachments ? false : true;
 		}
 	}
@@ -105,6 +114,22 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+tr:hover {
+	cursor: pointer;
+}
+span {
+	display: block;
+	&.borderless {
+		border-bottom: none !important;
+	}
+	&.ellipsis {
+		white-space: pre;
+		max-width: 28rem;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		height: 1.6rem;
+	}
+}
 .call {
 	&__description {
 		margin-bottom: 2rem;
