@@ -2544,6 +2544,9 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+//
 //
 //
 //
@@ -2699,7 +2702,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      configs: {},
+      //configs: {},
       menu: {
         date: {
           open: false,
@@ -2724,26 +2727,27 @@ __webpack_require__.r(__webpack_exports__);
         reasons_to_deny: null
       },
       status: null,
-      name: 'Ajuste'
+      context: 'adjustment'
     };
   },
   created: function created() {
-    this.$emit('created', this.name);
-  },
-  mounted: function mounted() {
-    console.log('AdjustmentConfig mounted'); //console.log('Parent configs:', this)
+    this.$emit('created', this.context);
   },
   methods: {
     setConfigs: function setConfigs(configs) {
-      this.configs = configs;
-      this.setAdjustmentConfigs(this.configs);
-      this.setAdjustmentStatus(this.configs);
+      this.setAdjustmentConfigs(configs);
+      this.checkStatus(configs);
     },
     updateConfigs: function updateConfigs() {
       var configs = this.adjustment;
-      this.$emit('update', configs);
+      configs['context'] = this.context;
+      this.$emit('update', {
+        configs: configs
+      });
+      this.setAdjustmentConfigs(this.adjustment);
+      this.checkStatus(this.adjustment);
     },
-    setAdjustmentStatus: function setAdjustmentStatus(configs) {
+    checkStatus: function checkStatus(configs) {
       var today = new Date();
       var close = new Date(configs.date.close);
 
@@ -2755,22 +2759,32 @@ __webpack_require__.r(__webpack_exports__);
       this.status = today <= close ? "Aberto" : "Fechado";
     },
     setAdjustmentConfigs: function setAdjustmentConfigs(configs) {
-      //Get times
+      var reasons = configs.reasons_to_deny;
+
+      if (_typeof(reasons) === 'object') {
+        reasons = Object.keys(reasons).map(function (key) {
+          return reasons[key];
+        }).join('; ');
+      }
+
+      configs.reasons_to_deny = reasons; //Get times
+
       var re = /\s(.+)$/;
-      var times = {
-        open: null,
-        close: null
-      };
-      var dates = configs.date;
-      times.open = dates.open.match(re)[1];
-      times.close = dates.close.match(re)[1];
-      dates.open = dates.open.replace(re, '');
-      dates.close = dates.close.replace(re, '');
-      configs.time = times;
-      configs.date = dates;
-      configs.reasons_to_deny = configs.reasons_to_deny.filter(function (config) {
-        return config != "Outro";
-      }).join('; ');
+
+      if (configs.date.open.match(re)) {
+        var times = {
+          open: null,
+          close: null
+        };
+        var dates = configs.date;
+        times.open = dates.open.match(re)[1];
+        times.close = dates.close.match(re)[1];
+        dates.open = dates.open.replace(re, '');
+        dates.close = dates.close.replace(re, '');
+        configs.time = times;
+        configs.date = dates;
+      }
+
       this.adjustment = Object.assign(this.adjustment, configs);
     }
   }
@@ -2787,6 +2801,16 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -2825,18 +2849,47 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      issues: [],
-      name: 'Chamados'
+      issues: null,
+      status_list: null,
+      max_num_attachments: null,
+      context: 'calls'
     };
   },
-  mounted: function mounted() {},
   methods: {
     setConfigs: function setConfigs(configs) {
-      this.issues = configs.issues;
+      var _this = this;
+
+      Object.keys(configs).forEach(function (key) {
+        if (_typeof(configs[key]) === 'object') {
+          _this[key] = configs[key].join('; ');
+        } else _this[key] = configs[key];
+      });
+    },
+    updateConfigs: function updateConfigs() {
+      var _this2 = this;
+
+      var configs = this.$data;
+      ['issues', 'status_list'].forEach(function (data) {
+        configs[data] = _this2[data].split(';').map(function (issue) {
+          return issue.trim();
+        });
+
+        if (data == 'issues') {
+          var otter = _this2.issues.filter(function (el) {
+            return el.match(/^outro$/i);
+          })[0];
+
+          if (!otter) configs.issues.push('Outro');
+        }
+      });
+      this.$emit('update', {
+        configs: configs
+      });
+      this.setConfigs(configs);
     }
   },
   created: function created() {
-    this.$emit('created', this.name);
+    this.$emit('created', this.context);
   }
 });
 
@@ -2853,6 +2906,7 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _AdjustmentConfig__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AdjustmentConfig */ "./resources/js/views/servant/configs/AdjustmentConfig.vue");
 /* harmony import */ var _CallsConfig__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./CallsConfig */ "./resources/js/views/servant/configs/CallsConfig.vue");
+//
 //
 //
 //
@@ -2930,10 +2984,10 @@ __webpack_require__.r(__webpack_exports__);
       this.snackbar.color = 'error';
       this.snackbar.message = 'Ops... Algo deu errado!';
     },
-    onCreated: function onCreated(name) {
+    onCreated: function onCreated(context) {
       this.$nextTick(function () {
-        switch (name) {
-          case "Chamados":
+        switch (context) {
+          case "calls":
             this.$refs.callsConfigs.setConfigs(this.configs.calls);
             break;
         }
@@ -2951,16 +3005,10 @@ __webpack_require__.r(__webpack_exports__);
     onUpdate: function onUpdate(configs) {
       var _this2 = this;
 
-      axios.post('servidor/configs/update', {
-        configs: configs
-      }).then(function (response) {
+      axios.post('servidor/configs/update', configs).then(function (response) {
         if (response.status == 200) {
           _this2.onSuccess();
-
-          _this2.$refs.adjustmentConfigs.setAdjustmentStatus(response.data.adjustment);
-        } else {
-          _this2.onFailure();
-        }
+        } else _this2.onFailure();
       });
     }
   },
@@ -9995,6 +10043,7 @@ var render = function() {
                   ]),
                   _vm._v(" "),
                   _c("v-textarea", {
+                    ref: "reasons_to_deny",
                     attrs: {
                       outlined: "",
                       name: "input-7-4",
@@ -10022,11 +10071,7 @@ var render = function() {
                       "v-btn",
                       {
                         attrs: { small: "", color: "primary" },
-                        on: {
-                          click: function($event) {
-                            return _vm.updateConfigs()
-                          }
-                        }
+                        on: { click: _vm.updateConfigs }
                       },
                       [_vm._v("Salvar")]
                     )
@@ -10085,6 +10130,7 @@ var render = function() {
                   ]),
                   _vm._v(" "),
                   _c("v-textarea", {
+                    ref: "issues",
                     attrs: {
                       outlined: "",
                       name: "input-7-4",
@@ -10112,6 +10158,7 @@ var render = function() {
                   ]),
                   _vm._v(" "),
                   _c("v-textarea", {
+                    ref: "status_list",
                     attrs: {
                       outlined: "",
                       name: "input-7-4",
@@ -10119,11 +10166,11 @@ var render = function() {
                       hint: "Separe os item com um ';' (semi-colon)"
                     },
                     model: {
-                      value: _vm.issues,
+                      value: _vm.status_list,
                       callback: function($$v) {
-                        _vm.issues = $$v
+                        _vm.status_list = $$v
                       },
-                      expression: "issues"
+                      expression: "status_list"
                     }
                   })
                 ],
@@ -10147,11 +10194,40 @@ var render = function() {
                       "single-line": "",
                       type: "number",
                       min: "0"
+                    },
+                    model: {
+                      value: _vm.max_num_attachments,
+                      callback: function($$v) {
+                        _vm.max_num_attachments = $$v
+                      },
+                      expression: "max_num_attachments"
                     }
                   })
                 ],
                 1
-              )
+              ),
+              _vm._v(" "),
+              _c("v-row", { staticClass: "config__row" }, [
+                _c(
+                  "div",
+                  { staticClass: "my-2" },
+                  [
+                    _c(
+                      "v-btn",
+                      {
+                        attrs: { small: "", color: "primary" },
+                        on: {
+                          click: function($event) {
+                            return _vm.updateConfigs()
+                          }
+                        }
+                      },
+                      [_vm._v("Salvar")]
+                    )
+                  ],
+                  1
+                )
+              ])
             ],
             1
           )
@@ -10222,6 +10298,7 @@ var render = function() {
                 on: {
                   fail: _vm.onFailure,
                   created: _vm.onCreated,
+                  update: _vm.onUpdate,
                   success: _vm.onSuccess
                 }
               })

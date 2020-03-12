@@ -135,6 +135,7 @@
 					<label class="config__label">Razões para indeferimento:</label>
 					<v-textarea 
 						v-model="adjustment.reasons_to_deny"
+						ref="reasons_to_deny"
 						outlined name="input-7-4" 
 						label=""
 						hint="Separe os item com um ';' (semi-colon)">
@@ -142,7 +143,7 @@
 				</v-row>
 				<v-row class="config__row">
 					<div class="my-2">
-						<v-btn small color="primary" @click="updateConfigs()">Salvar</v-btn>
+						<v-btn small color="primary" @click="updateConfigs">Salvar</v-btn>
 					</div>
 				</v-row>
 			</v-container>
@@ -154,8 +155,7 @@
 export default {
 	data () {
 		return {
-
-			configs: {},
+			//configs: {},
 			menu: {
 				date: {
 					open: false,
@@ -180,28 +180,29 @@ export default {
 				reasons_to_deny: null,
 			},
 			status: null,
-			name: 'Ajuste'
+			context: 'adjustment',
 		}
 	},
 	created: function() {
-		this.$emit('created', this.name);
-	},
-	mounted: function() {
-		console.log('AdjustmentConfig mounted');
-		//console.log('Parent configs:', this)
+		this.$emit('created', this.context);
 	},
 	methods: {
 		setConfigs: function(configs) {
-			this.configs = configs;
-			this.setAdjustmentConfigs(this.configs);
-			this.setAdjustmentStatus(this.configs);
+			this.setAdjustmentConfigs(configs);
+			this.checkStatus(configs);
 		},
 		updateConfigs: function() {
 			let configs = this.adjustment;
-			this.$emit('update', configs);
+
+			configs['context'] = this.context;
+			this.$emit('update', {configs});
+
+			this.setAdjustmentConfigs(this.adjustment);
+			this.checkStatus(this.adjustment);
 
 		},
-		setAdjustmentStatus: function(configs) {
+		checkStatus: function(configs) {
+
 			let today = new Date();
 
 			let close = new Date(configs.date.close);
@@ -215,26 +216,31 @@ export default {
 
 		},
 		setAdjustmentConfigs: function(configs) {
+			let reasons = configs.reasons_to_deny;
+			if(typeof reasons === 'object') {
+				reasons = Object.keys(reasons)
+					.map(key => { return reasons[key] })
+					.join('; ');
+			}
+			configs.reasons_to_deny = reasons;
+
 			//Get times
 			let re = /\s(.+)$/;
-			let times = {open: null, close: null};
-			let dates = configs.date;
+			if(configs.date.open.match(re)) {
+				let times = {open: null, close: null};
+				let dates = configs.date;
+				times.open = dates.open.match(re)[1];
+				times.close = dates.close.match(re)[1];
 
-			times.open = dates.open.match(re)[1];
-			times.close = dates.close.match(re)[1];
+				dates.open = dates.open.replace(re, '');
+				dates.close = dates.close.replace(re, '');
 
-			dates.open = dates.open.replace(re, '');
-			dates.close = dates.close.replace(re, '');
-
-			configs.time = times;
-			configs.date = dates;
-
-			configs.reasons_to_deny = configs.reasons_to_deny.filter(config => {
-				return config != "Outro";
-			}).join('; ');
+				configs.time = times;
+				configs.date = dates;
+			}
 			this.adjustment = Object.assign(this.adjustment, configs);
 		}
-	}
+	},
 }
 </script>
 

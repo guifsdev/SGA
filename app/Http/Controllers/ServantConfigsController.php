@@ -11,9 +11,10 @@ class ServantConfigsController extends Controller
 	{
 		return response($settings->all(), 200);
 	}
-	public function update(Request $request, Settings $settings)
+
+	public function updateAdjustmentConfigs($configs, $settings)
 	{
-		$configs = collect($request->configs);
+		$configs = $configs->except('context');
 
 		$reasons = $configs['reasons_to_deny'];
 		if(strlen($reasons) && strrpos($reasons, ';')) {
@@ -38,6 +39,26 @@ class ServantConfigsController extends Controller
 
 		$settings->put('adjustment', $configs);
 
-		return response(['adjustment' => $settings->get('adjustment')], 200);
+		return $settings->get('adjustment');
+	}
+	public function updateCallsConfigs($configs, $settings)
+	{
+		$configs = $configs->except('context');
+		$settings->put('calls', $configs);
+
+		return $settings->get('calls');
+	}
+
+
+	public function update(Request $request, Settings $settings)
+	{
+		$configs = collect($request->configs);
+		$context = ucfirst($configs['context']);
+
+		$updateContext = "update${context}Configs";
+		$updated = $this->$updateContext($configs, $settings);
+
+
+		return response([strtolower($context) => $updated], 200);
 	}
 }

@@ -23,6 +23,7 @@
 					ref="callsConfigs"
 					v-on:fail="onFailure"
 					v-on:created="onCreated"
+					v-on:update="onUpdate"
 					v-on:success="onSuccess">
 				</calls-config>
 			</v-tab-item>
@@ -74,10 +75,10 @@ export default {
 			this.snackbar.color = 'error';
 			this.snackbar.message = 'Ops... Algo deu errado!';
 		},
-		onCreated: function(name) {
+		onCreated: function(context) {
 			this.$nextTick(function() {
-				switch(name) {
-					case "Chamados": this.$refs.callsConfigs.setConfigs(this.configs.calls); break;
+				switch(context) {
+					case "calls": this.$refs.callsConfigs.setConfigs(this.configs.calls); break;
 				}
 			})
 		},
@@ -89,12 +90,11 @@ export default {
 				});
 		},
 		onUpdate: function(configs) {
-			axios.post('servidor/configs/update', {configs})
+			axios.post('servidor/configs/update', configs)
 				.then(response => {
 					if(response.status == 200) {
 						this.onSuccess();
-						this.$refs.adjustmentConfigs.setAdjustmentStatus(response.data.adjustment)
-					} else { this.onFailure(); }
+					} else this.onFailure();
 				});
 		}
 	},
