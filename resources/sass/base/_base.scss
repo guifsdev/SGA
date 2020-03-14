@@ -9,13 +9,15 @@ body {
 ul li { list-style: none; }
 .v-application {
 	background-color: transparent !important;
-	//font-size: 1.3rem;
-	//* {
-		//font-size:  inherit !important;
-	//}
 }
 .v-data-table .v-icon:before {
 	font-size: 2rem !important;
+}
+.v-alert {
+	font-size: 1.4rem !important; 
+	.v-icon {
+		font-size: 1.8rem !important;
+	}
 }
 
 .v-data-table--float-head {

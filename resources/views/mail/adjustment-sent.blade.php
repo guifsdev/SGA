@@ -8,7 +8,7 @@ Abaixo, as disciplinas passíveis de alteração em seu plano de estudos conform
 |Periodo | Disciplina | Requerimento |
 |:-------|:-----------|:-------------|
 @foreach($adjustments as $adjustment)
-| {{$adjustment['period']}} | {{$adjustment['subject_name']}} | {{$adjustment['action'] == '1' ? 'Incluir' : 'Excluir'}} |
+| {{$adjustment['period']}} | {{$adjustment['subject']['name_class']}} | {{$adjustment['action']}} |
 @endforeach
 @endcomponent
 

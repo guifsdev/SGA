@@ -7,10 +7,15 @@ use Illuminate\Database\Eloquent\Model;
 class Subject extends Model
 {
     protected $fillable = ['name', 'period', 'code', 'offered'];
+	protected $appends = ['code_name', 'name_class'];
 
-	public function getFullNameAttribute()
+	public function getCodeNameAttribute()
 	{
 		return "{$this->code} {$this->name}";
+	}
+	public function getNameClassAttribute()
+	{
+		return "{$this->name} {$this->class_name}";
 	}
 
     public static function addNames($adjustments) {

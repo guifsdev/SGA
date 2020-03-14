@@ -1,182 +1,225 @@
 <template>
-	<div class="container" v-if="$parent.student">
-		<div class="container" style="margin-bottom: 2rem;"
-			v-if="$parent.pending_adjustments.length">
-			<h3><b>Requerimentos enviados</b></h3>
-			<table class="table table-sm">
-				<thead>
-					<tr>
-						<th scope="col">Disciplina</th>
-						<th scope="col">Ação</th>
-						<th scope="col">Status</th>
-						<th scope="col">Resultado</th>
-					</tr>
-				</thead>
-				<tr v-for="( adjustment, index ) in $parent.pending_adjustments" :key="index">
-					<td>{{`${adjustment.subject.code} ${adjustment.subject.name} ${adjustment.subject.class_name}`}}</td>
-					<td>{{adjustment.action}}</td>
-					<td>{{adjustment.result}}</td>
-					<td>{{adjustment.reason_denied}}</td>
-				</tr>
-			</table>
-		</div>
-		
-		<div v-if="!$parent.open"  class="alert alert-primary" role="alert">
-			Aguarde a data de abertura do ajuste.
-		</div>
-
-		<div v-if="$parent.closed_temporarily" class="alert alert-primary" role="alert">
-			Ajuste momentaneamente suspenso. Aguarde...
-		</div>
-		
-		<form v-else @submit.prevent="processAdjustments($event)">
-			<table class="table table-sm">
-				<thead>
-					<tr>
-						<th scope="col" style="text-align: center; width: 15%">Período</th>
-						<th scope="col" style="text-align: center">Disciplina</th>
-						<th scope="col" style="text-align: center; width: 15%">Ação</th>
-
-					</tr>
-				</thead>
-				<tbody>
-				  <tr v-for="(item, index) in $parent.max_adjustments">
-					  <td>
-						  <select name="period" class="custom-select custom-select-sm"
-		  					@change="fetchSubjects($event, index)">
-							  <option value="">Selecione</option>
-							  <option v-for="p in $parent.periods">{{p}}</option>
-						  </select>
-					  </td>
-
-					  <td>
-						  <select name="subject" class="custom-select custom-select-sm" ref="subjects">
-							  <option disabled value="0">Selecione</option>
-						  </select>
-					  </td>
-
-					  <td class="align-radio-center">
-						  <select name="action" class="custom-select custom-select-sm">
-							  <option value="">Selecione</option>
-							  <option value="1">Incluir</option>
-							  <option value="0">Excluir</option>
-						  </select>
-					  </td>
-				  </tr>
-			  </tbody>
-			</table>
-			<div class="form-group align-center">
-				<button class="btn btn-primary" id="confirm" aria-describedby="aviso">Ajustar plano de estudos</button>
+	<v-app>
+		<div v-if="root.loading" class="d-flex justify-content-center">
+			<div class="spinner-border" role="status">
+				<span class="sr-only">Loading...</span>
 			</div>
-		</form>
-		<div
-			v-if="errors.length"
-			class="alert alert-danger" role="alert">
-		  	<ul>
-		  		<li v-for="error in errors">{{error}}</li>
-		  	</ul>
 		</div>
-	</div>
+
+		<template v-else>
+			<pending-adjustments 
+				v-if="root.pending_adjustments.length"
+				:adjustments="root.pending_adjustments">
+			</pending-adjustments>
+
+			<v-alert 
+				v-if="!root.open || root.status != 'open'"
+				text prominent type="error" icon="mdi-cloud-alert">
+				{{message}}
+			</v-alert>
+
+			<v-container v-else class="adj">
+				<h1 class="table-title">Novo ajuste</h1>
+				<v-row class="adj__tbl-header" no-gutters>
+					<v-col class="col" cols="12" sm="2"><b>Período</b></v-col>
+					<v-col class="col" cols="12" sm="7"><b>Disciplina</b></v-col>
+					<v-col class="col" cols="12" sm="3"><b>Ação</b></v-col>
+				</v-row>
+				<v-row v-for="( row, index ) in maxRows" :key="index">
+					<v-col class="" cols="12" sm="2">
+						<v-select
+							@change="periodChanged($event, index)"
+							ref="period"
+							v-model="adjustments[index].period"
+							:items="periods"
+							label="Período"
+							dense solo>
+						</v-select>
+					</v-col>
+					<v-col cols="12" sm="7" class="col">
+						<v-select
+							v-bind:items="adjustments[index].allSubjects"
+							@change="subjectChanged($event, index)"
+							v-model="adjustments[index].allSubjects[0]"
+							ref="subject"
+							label="Disciplina"
+							dense solo>
+						</v-select>
+					</v-col>
+					<v-col cols="12" sm="3" class="col">
+						<v-select
+							ref="action"
+							v-model="adjustments[index].action"
+							:items="actions"
+							label="Ação"
+							dense solo>
+						</v-select>
+					</v-col>
+				</v-row>
+				<div class="btn-box">
+					<v-btn 
+						@click="validateAdjustments"
+						small color="primary">Salvar</v-btn>
+				</div>
+			</v-container>
+		</template>
+		<div v-if="errors.length"
+		   class="alert alert-danger" role="alert">
+			<ul>
+				<li v-for="error in errors">{{error}}</li>
+			</ul>
+		</div>
+	</v-app>
 </template>
 
-<style scoped>
-	select, button {
-		font-size: 1.4rem;
-	}
-</style>
-
 <script>
-	export default {
-		data: function() {
-			return {
-				adjustments: null,
-				errors: [],
-				subjects: [],
+import PendingAdjustments from './PendingAdjustments.vue';
+
+export default {
+	components: {
+		PendingAdjustments,
+	},
+	props: ['root'],
+	data: function() {
+		return {
+			adjustments: [],
+			errors: [],
+			subjects: [],
+			actions: ['Incluir', 'Excluir'],
+			saveBtnDisabled: true,
+		}
+	},
+	computed: {
+		periods: function() {
+			return [...Array(this.root.periods).keys()]
+				.filter(p => {return p > 0});
+		},
+		message: function() {
+			let message = '';
+			if(this.root.status == 'closed_temporarily') {
+				message = 'Ajuste momentaneamente suspenso. Aguarde...';
+				return message;
+			}
+			if(!this.root.open) message = 'Aguarde a data de abertura do ajuste.';
+			return message;
+		},
+		maxRows: function() {
+			return this.root.max_adjustments - 1;
+		}
+	},
+	created: function() {
+		if(this.$parent.recover) {
+			this.recover();
+		}
+	},
+	methods: {
+		recover: function() {
+			this.adjustments = this.$parent.$data.submited;
+		},
+		onReady: function() {
+			for(let i = 0; i < this.maxRows; ++i) {
+				let adjustment = { period: null, subject: null, action: null, ids: [], allSubjects: [] };
+				this.adjustments.push(adjustment);
 			}
 		},
-		methods: {
-			fetchSubjects: function(event, index) {
-				let select = this.$refs.subjects[index];
-				let def = select.firstChild;
-
-				while(select.firstChild) select.removeChild(select.firstChild);
-				select.appendChild(def);
-
-				if(!event.target.value) return;
-
-				let selectedPeriod = event.target.value;
-				let subjects = this.$parent.subjects.filter(subject => {
-					return subject.period == selectedPeriod;
-				});
-
-				subjects.forEach(subject => {
-					let option = document.createElement('option');
-					option.textContent = `${subject.name} ${subject.class_name}`;
-					option.value = [subject.id, subject.name + ' ' + subject.class_name];
-					select.appendChild(option);
-				});
-			},
-			processAdjustments: function(event) {
-				this.clearErrors();
-				let formData = Array.from(new FormData(event.target));
-				//remove empty values
-				this.validateForm(formData);
-			},
-			validateForm: function(formData) {
-				formData = formData.filter(entry => {return entry[1] != ''});
-
-				//count to check if periods, subjects and actions are same
-				let counts = {};
-				let adjustments = []; 
-				let adjustment = {};
-				formData.forEach(entry => {
-					if(['period', 'subject', 'action'].includes(entry[0])) {
-						if(entry[0] == 'subject') {
-							let subject = entry[1].split(',');
-							adjustment['subject_id'] = subject[0];
-							adjustment['subject_name'] = subject[1];
-						} else adjustment[entry[0]] = entry[1];
-						if(Object.keys(adjustment).length == 4) {
-							adjustments.push(adjustment);
-							adjustment = {};
-						}
-						if(counts.hasOwnProperty(entry[0])) counts[entry[0]]++;
-						else counts[entry[0]] = 1;
-					}
-				});
-
-				//check for already sent and pending adjustments
-				let pending = [];
-				adjustments.forEach(adjustment => {
-					let subject = this.$parent.pending_adjustments.filter((pendingAdjustment) => {
-						return pendingAdjustment.subject_id == adjustment.subject_id;
-					});
-					if(subject.length) pending.push(subject);
-				});
-				
-				if(pending.length) {
-					this.errors.push('Você já tem requerimento em pelo menos uma das disciplinas.');
-					return;
-				}
-
-				if(Object.keys(counts).length < 3 || 
-					(counts.subject != counts.period) || 
-					(counts.subject != counts.action)) {
-					this.errors.push('Erro no preenchimento do formulário.');
-					return;
-				}
-				//console.log(adjustments);
-				this.$emit('confirm', adjustments);
-			},
-			clearErrors: function() {
-				this.errors = [];
-			},
+		subjectChanged: function(subject, index) {
+			this.adjustments[index].subject = this.root.subjects
+				.filter(el => {
+					return subject == el.name_class;
+				})[0];
 		},
-		mounted: function() {
-		}
-	}
+		periodChanged: function(period, index) {
+			this.adjustments[index].period = period;
+			this.adjustments[index].ids = [];
+			this.adjustments[index].allSubjects = [];
+
+			let subjects = this.root.subjects
+				.filter(subject => { return subject.period == period })
+				.map(subject => { 
+					this.adjustments[index].allSubjects.push(subject.name_class);
+					this.adjustments[index].ids.push(subject.id);
+				});
+			let firstSubject = this.adjustments[index].allSubjects[0];
+			this.subjectChanged(firstSubject, index);
+		},
+		validateAdjustments: function() {
+			this.clearErrors();
+			//Eww!
+			let adjustments = JSON.parse(JSON.stringify(this.adjustments));
+			let submited = JSON.parse(JSON.stringify(this.adjustments));
+
+
+			adjustments = adjustments.filter(adjustment => {
+				return adjustment.period != null;
+			})
+			let invalid = adjustments.filter(adjustment => {
+				return adjustment.action == null;
+			})
+			if(invalid.length || !adjustments.length) {
+				this.errors.push('Erro no preenchimento do formulário.');
+				return;
+			}
+			adjustments.map(adjustment => {
+				delete adjustment['ids'];
+				delete adjustment['allSubjects'];
+			})
+			this.checkPendings(submited, adjustments);
+		},
+		checkPendings: function(submited, adjustments) {
+			//check for already sent and pending adjustments
+			let pending = [];
+			adjustments.forEach(adjustment => {
+				let subject = this.root.pending_adjustments
+					.filter((pendingAdjustment) => {
+					return pendingAdjustment.subject_id == adjustment.subject.id;
+				});
+				if(subject.length) pending.push(subject);
+			});
+			
+			if(pending.length) {
+				this.errors.push('Você já tem requerimento em pelo menos uma das disciplinas.');
+				return;
+			}
+			this.$emit('confirm', {submited, adjustments});
+		},
+		clearErrors: function() {
+			this.errors = [];
+		},
+	},
+}
 </script>
 
-<style>
-	
+<style lang="scss" scoped>
+.adj {
+	.mdi {
+		font-size: 1.6rem !important;
+	}
+	.table-title {
+		margin-bottom: 1.8rem; 
+	}
+	.btn-box {
+		margin-top: 2rem;
+	}
+	.v-input__control {
+		min-height: auto !important;
+	}
+	.row {
+		&:first-child {
+			border-bottom: 1px solid #dee2e6;
+			border-top: 1px solid #dee2e6;
+			padding: .3rem;
+			margin-bottom: -.5rem;
+		}
+		&:not(:first-child) {
+			margin-bottom: -4rem;
+		}
+
+	}
+	&__tbl-header {
+		.col {
+			text-align: center;
+			//&:first-child {padding-right: 2rem;}
+		}
+	}
+}
 </style>

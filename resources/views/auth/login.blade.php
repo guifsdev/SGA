@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('title', 'SGA - Login do estudante')
+@section('title', 'SGA - Login')
 
 @section('content')
 

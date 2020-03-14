@@ -23,6 +23,14 @@ ul li {
   font-size: 2rem !important;
 }
 
+.v-alert {
+  font-size: 1.4rem !important;
+}
+
+.v-alert .v-icon {
+  font-size: 1.8rem !important;
+}
+
 .v-data-table--float-head {
   position: relative;
 }
@@ -16818,6 +16826,11 @@ readers do not read off random characters that represent icons */
 .fas {
   font-family: 'Font Awesome 5 Free';
   font-weight: 900;
+}
+
+.student-adjustment .table-title {
+  font-size: 2rem !important;
+  margin-bottom: 1rem;
 }
 
 .home {

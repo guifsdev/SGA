@@ -188,32 +188,10 @@ export default {
 	},
 	methods: {
 		setConfigs: function(configs) {
+
 			this.setAdjustmentConfigs(configs);
+
 			this.checkStatus(configs);
-		},
-		updateConfigs: function() {
-			let configs = this.adjustment;
-
-			configs['context'] = this.context;
-			this.$emit('update', {configs});
-
-			this.setAdjustmentConfigs(this.adjustment);
-			this.checkStatus(this.adjustment);
-
-		},
-		checkStatus: function(configs) {
-
-			let today = new Date();
-
-			let close = new Date(configs.date.close);
-
-			if(configs.closed_temporarily) {
-				this.status = "Fechado temporariamente";
-				return;
-			}
-			
-			this.status = today <= close ? "Aberto" : "Fechado";
-
 		},
 		setAdjustmentConfigs: function(configs) {
 			let reasons = configs.reasons_to_deny;
@@ -239,7 +217,36 @@ export default {
 				configs.date = dates;
 			}
 			this.adjustment = Object.assign(this.adjustment, configs);
-		}
+		},
+		updateConfigs: function() {
+			let configs = this.adjustment;
+
+			configs['context'] = this.context;
+			this.$emit('update', {configs});
+
+			this.setAdjustmentConfigs(this.adjustment);
+			this.checkStatus(this.adjustment);
+
+		},
+		checkStatus: function(configs) {
+			let today = new Date();
+
+			if(configs.closed_temporarily) {
+				this.status = "Fechado temporariamente";
+				return;
+			}
+
+			let date = {
+				open: new Date(`${configs.date.open} ${configs.time.open}`),
+				close: new Date(`${configs.date.close} ${configs.time.close}`)
+			}
+
+			let statusOpen = ( today <= date.close && today >= date.open );
+
+			this.status = statusOpen ? "Aberto" : "Fechado";
+
+		},
+		
 	},
 }
 </script>

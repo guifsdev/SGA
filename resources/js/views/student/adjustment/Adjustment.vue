@@ -1,65 +1,78 @@
 <template>
 	<component 
-		v-bind:is="stage"
+		class="student-adjustment"
+		ref="context"
+		:root="$data"
+		v-bind:is="component"
+		v-on:save="onSave"
 		v-on:confirm="onConfirm"
 		v-on:home="onHome"
 		v-on:modify="onModify">
 	</component>
 </template>
 
-<style scoped>
-	>>> select, >>> button {
-		font-size: 1.4rem;
-	}
-</style>
 
 <script>
 import AdjustmentForm from './AdjustmentForm.vue';
 import AdjustmentConfirmForm from './AdjustmentConfirmForm.vue';
 
-	export default {
-		components: {AdjustmentForm, AdjustmentConfirmForm},
-		props: {student: {type: Object}},
-		data: function() {
-			return {
-				stage: 'adjustment-form',
-				max_adjustments: null,
-				periods: null,
-				subjects: null,
-				adjustments: null,
-				success: null,
-				pending_adjustments: [],
-				open: false,
-				closed_temporarily: false,
-			}
-		},
-		methods: {
-			onConfirm: function(data) {
-				this.adjustments = data;
-				this.stage = 'adjustment-confirm-form';
-			},
-			onModify: function() {
-				this.stage = 'adjustment-form';
-			},
-			onHome: function() {
-				this.$router.push({path: '/home'});
-			}
-		},
-		mounted: function() {
-			axios.get('estudante/adjustment/index', {
-				params: {'student_id': this.student.id}
-			})
-				.then(response => {
-					this.open = response.data.open;
-					if(this.open) {
-						this.max_adjustments = response.data.max_adjustments;
-						this.periods = response.data.periods;
-						this.subjects = response.data.subjects;
-						this.pending_adjustments = response.data.pending_adjustments;
-						this.closed_temporarily = response.data.closed_temporarily;
-					}
-				});
+export default {
+	components: {
+		AdjustmentForm, 
+		AdjustmentConfirmForm, 
+	},
+	props: {student: {type: Object}},
+	data: function() {
+		return {
+			component: 'adjustment-form',
+			open: null,
+			status: null,
+			max_adjustments: null,
+			periods: null,
+			subjects: null,
+			adjustments: null,
+			pending_adjustments: [],
+			submited: null,
+			recover: false,
+			loading: true,
+			success: null,
 		}
-		
+	},
+	methods: {
+		onSave: function() {
+			console.log(this.adjustments);
+		},
+		onConfirm: function(data) {
+			this.adjustments = data.adjustments;
+			this.submited = data.submited;
+			this.component = 'adjustment-confirm-form';
+		},
+		onModify: function() {
+			this.adjustments = this.submited;
+			this.recover = true;
+			this.component = 'adjustment-form';
+		},
+		onHome: function() {
+			this.$router.push({path: '/home'});
+		}
+	},
+	mounted: function() {
+		axios.get('estudante/adjustment/index', { params: {'student_id': this.student.id} })
+			.then(response => {
+				this.loading = false;
+				Object.keys(response.data).forEach(data => {
+					this[data] = response.data[data];
+
+				})
+				this.$refs.context.onReady();
+			});
 	}
+
+}
 </script>
+
+<style scoped>
+>>> select, >>> button {
+	font-size: 1.4rem;
+}
+</style>

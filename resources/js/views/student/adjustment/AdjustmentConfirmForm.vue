@@ -1,105 +1,123 @@
 <template>
-	<div class="container" 
-		v-if="$parent.student">
-		<div class="container" style="margin-bottom: 2rem;"
-			v-if="$parent.pending_adjustments.length">
-			<h3><b>Requerimentos enviados</b></h3>
-			<table class="table table-sm">
-				<thead>
-					<tr>
-						<th scope="col">Disciplina</th>
-						<th scope="col">Ação</th>
-						<th scope="col">Status</th>
-						<th scope="col">Resultado</th>
-					</tr>
-				</thead>
-				<tr v-for="adjustment in $parent.pending_adjustments">
-					<td>{{`${adjustment.subject.code} ${adjustment.subject.name} ${adjustment.subject.class_name}`}}</td>
-					<td>{{adjustment.action}}</td>
-					<td>{{adjustment.result}}</td>
-					<td>{{adjustment.reason_denied}}</td>
-				</tr>
-			</table>
-		</div>
+	<v-app>
+		<pending-adjustments 
+			v-if="root.pending_adjustments.length"
+			:adjustments="root.pending_adjustments">
+		</pending-adjustments>
+		
+		<v-container>
+			<h1 class="table-title">Novo ajuste</h1>
+			<v-data-table
+				:headers="headers"
+				hide-default-footer
+				dense
+				:items="root.adjustments"
+				class="elevation-1">
+			</v-data-table>
 
-		<form 
-			@submit.prevent="onSubmitAdjustments">
-			<table class="table table-sm">
-			  <thead>
-			    <tr>
-			      <th scope="col" style="text-align: center; width: 15%">Período</th>
-			      <th scope="col" style="text-align: center">Disciplina</th>
-			      <th scope="col" style="text-align: center; width: 15%">Ação</th>
 
-			    </tr>
-			  </thead>
-			  <tbody>
-				<tr v-for="adjustment in $parent.adjustments">
-					<td style="text-align: center;">{{adjustment.period}}</td>
-					<td>{{adjustment.subject_name}}</td>
-					<td style="text-align: center;">{{actionText(adjustment.action)}}</td>
-				</tr>
-			  </tbody>
-			</table>
-			<div class="form-group align-center">
-				<button
-					:disabled="loading || response.success"
-					class="btn btn-primary" 
-					aria-describedby="aviso">
-					<span v-if="loading" 
-						class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-  					{{loading ? 'Processando...' : 'Enviar'}}
-				</button>
-				<button
-					@click.prevent="$emit('modify')"
-					class="btn btn-primary"
-					:disabled="loading || response.success"
-					aria-describedby="aviso">Alterar</button>
+			<div class="btn-box">
+				<v-btn 
+					@click="save"
+					:disabled="btnDisabled"
+					:loading="loading"
+					small color="primary">Salvar
+				</v-btn>
+				<v-btn 
+					@click="$emit('modify')"
+					:disabled="btnDisabled"
+					small color="primary">Alterar
+				</v-btn>
 			</div>
-		</form>
-		<div v-if="response.success" class="alert alert-primary" role="alert">
-			<p>{{response.message}}</p>
-			<p>Assinatura: {{response.signature}}</p>
-			
-		</div>
-
-		<div class="alert alert-danger" role="alert"
-			v-if="errors.length">
-			<ul>
-				<li v-for="error in errors">{{error}}</li>
-			</ul>
-		</div>
-	</div>
+			<v-alert v-if="errors.length" type="error">
+				<ul>
+					<li v-for="( error, index) in errors" :key="index">{{error}}</li>
+				</ul>
+			</v-alert>
+			<v-alert v-if="success.status"
+				dense text type="success" >
+				<p>{{success.message}}</p>
+				<p><strong>Assinatura:</strong> {{success.signature}}</p>
+			</v-alert>
+			<template>
+				<div class="text-center ma-2">
+					<v-snackbar v-model="snackbar.show" :color="snackbar.color" :timeout="2500">
+						{{snackbar.message}}
+						<v-btn dark text @click="snackbar.show = false"> Close </v-btn>
+					</v-snackbar>
+				</div>
+			</template>
+		</v-container>
+	</v-app>
 </template>
 
+<style lang="scss" scoped>
+.btn-box {
+	margin: 1.8rem 0;
+
+}
+</style>
 
 <script>
-	export default {
-		data: function() {
-			return {
-				errors: [],
-				loading: false,
-				response: [],
-			}
-		},
-		methods: {
-			actionText: function(action) {
-				if(action == 0) return 'Excluir';
-				else if(action == 1) return 'Incluir';
-			},
-			onSubmitAdjustments: function() {
-				this.loading = true;
-				axios.post('/estudante/adjustment/store', {
-					student: this.$parent.student,
-					adjustments: this.$parent.adjustments,
+import PendingAdjustments from './PendingAdjustments.vue';
 
-				}).then(response => {
-					if(response.data.success) {
-						this.response = response.data;
+export default {
+	props: ['root'],
+	components: {
+		PendingAdjustments,
+	},
+	data: function() {
+		return {
+			btnDisabled: false,
+			snackbar: {
+				show: false,
+				color: null,
+				message: '',
+			},
+			errors: [],
+			loading: false,
+			success: { status: false, message: null, signature: null },
+			headers: [
+				{
+					text: 'Período',
+					align: 'start',
+					sortable: false,
+					value: 'period',
+				},
+				{ text: 'Disciplina', value: 'subject.name_class' },
+				{ text: 'Ação', value: 'action' },
+			],
+		}
+	},
+	methods: {
+		save: function() {
+			this.loading = true;
+			axios.post('/estudante/adjustment/store',
+				{ student: this.$parent.student,
+				  adjustments: this.root.adjustments })
+				.then(response => {
+					if(response.status == 200 && response.data.success) {
+						this.success.message = response.data.message;
+						this.success.signature = response.data.signature;
+						this.btnDisabled = true;
+						this.success.status = true;
 						this.loading = false;
 					}
+				})
+				.catch(err => {
+					let errors = [];
+						Object.keys(err).forEach(key => {
+							errors.push(err[key].data);
+					});
+					this.errors = errors[errors.length - 1];
+					this.loading = false;
+					this.snackbar.color = 'error';
+					this.snackbar.message = this.errors.message;
+					this.snackbar.show = true;
+					this.loading = false;
 				});
-			}
-		},
-	}
+
+		}
+	},
+}
 </script>
