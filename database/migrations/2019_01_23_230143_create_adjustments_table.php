@@ -16,7 +16,9 @@ class CreateAdjustmentsTable extends Migration
         Schema::create('adjustments', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('student_id');
-            $table->string('subject_id')->nullable();
+            //$table->string('subject_id')->nullable();
+			$table->string('subject_code');
+			$table->string('subject_class_name');
             $table->string('action');
             $table->string('signature');
             $table->string('reason_denied')->nullable();

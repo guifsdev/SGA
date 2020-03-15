@@ -8,7 +8,7 @@
 		<h1 class="home__logo-text home__logo-text--student">SGA</h1>
 		<nav>
 		  <ul>
-			<router-link to="/home" tag="li">
+			<router-link to="/" tag="li">
 			  	<a>
 					<i class="fas fa-home"></i>
 					Home
@@ -26,24 +26,26 @@
 					Ajuste
 				</a>
 			</router-link>
-			<router-link to="/chamados" tag="li">
-			  	<a>
-					<i class="fas fa-bullhorn"></i>
-					Chamados
-				</a>
-			</router-link>
-			<router-link to="/certificados" tag="li">
-			  	<a>
-					<i class="fas fa-certificate"></i>
-					Certificados
-				</a>
-			</router-link>
-			<router-link to="/eventos" tag="li">
-			  	<a>
-					<i class="fas fa-calendar-alt"></i>
-					Eventos
-				</a>
-			</router-link>
+			<!--
+				<router-link to="/chamados" tag="li">
+					  <a>
+						<i class="fas fa-bullhorn"></i>
+						Chamados
+					</a>
+				</router-link>
+				<router-link to="/certificados" tag="li">
+					  <a>
+						<i class="fas fa-certificate"></i>
+						Certificados
+					</a>
+				</router-link>
+				<router-link to="/eventos" tag="li">
+					  <a>
+						<i class="fas fa-calendar-alt"></i>
+						Eventos
+					</a>
+				</router-link>
+			-->
 		  </ul>
 		</nav>
 	</header>

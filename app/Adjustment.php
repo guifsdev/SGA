@@ -13,22 +13,15 @@ class Adjustment extends Model
 	protected $guarded = [];
 	public $timestamps = true;
 
-	//const filter_columns = ['adjustments.id', 
-							//'student_id', 
-							//'students.nome as student_name', 
-							//'cpf as student_cpf', 
-							//'matricula as student_matricula', 
-							//'subjects.code as subject_code', 
-							//'subjects.name as subject_name', 
-							//'subjects.class_name as subject_class_name',
-							//'subject_id', 
-							//'subjects.period as subject_period',
-							//'reason_denied', 
-							//'action', 
-							//'adjustments.created_at', 
-							//'result'];
-	public $filterColumn;
+	public function subject() 
+	{
+		return $this->hasOne('App\Subject', 'code', 'subject_code');
+	}
 
+	public function student() 
+	{
+		return $this->belongsTo('App\Student');
+	}
 
 	public function index($filters, $settings) 
 	{
@@ -96,10 +89,6 @@ class Adjustment extends Model
 		}
 
 		$adjustments = $query->get();
-		$subjects = $adjustments->map(function($item) {
-				return "{$item['subject']['code']} {$item['subject']['name']}";
-			})
-			->unique()->sort()->toArray();
 
 		$reasonsDenied = $this->getReasonsDenied($adjustments);
 
@@ -109,16 +98,28 @@ class Adjustment extends Model
 		})->unique()->sort()->toArray();
 
 		$adjustments->map(function($adjustment) {
-				$adjustment['student_name'] = $adjustment->student->full_name;
-				$adjustment['cpf'] = $adjustment->student->cpf;
-				$adjustment['enrolment_number'] = $adjustment->student->enrolment_number;
-				$adjustment['subject_name'] = $adjustment->subject->full_name;
-				$adjustment = collect($adjustment)
-					->forget(['student', 'subject'])
-					->toArray();
-				return $adjustment;
-			});
+			$student = $adjustment['student'];
+			$studentFullName = $student['first_name'].' '.$student['last_name'];
 
+			$subject = $adjustment['subject'];
+			$subjectFullName = "${subject['code']} ${subject['name']} ${subject['class_name']}";
+			//
+			$adjustment['student_name'] = $studentFullName;
+			$adjustment['cpf'] = $student['cpf'];
+			$adjustment['enrolment_number'] = $student['cpf'];
+			$adjustment['subject_name'] = $subjectFullName;
+			$adjustment = collect($adjustment)
+				->forget(['student', 'subject'])
+				->toArray();
+			
+			return $adjustment;
+		});
+
+		//dd($adjustments);
+		$subjects = $adjustments->map(function($adjustment) {
+				return $adjustment['subject_name'];
+			})
+			->unique()->sort()->toArray();
 		$reasonsToDeny = $settings->get("adjustment")['reasons_to_deny'];
 
 		return response([
@@ -173,6 +174,7 @@ class Adjustment extends Model
 				$email = $student['email_primary'] ? $student['email_primary'] : $student['email_secondary'];
 
 				\Mail::to($email)->send(new AdjustmentResolved($student['first_name'], $adjustments, $result, $reason));
+				sleep(2);
 			});
 		}
 
@@ -195,15 +197,6 @@ class Adjustment extends Model
 			return $item['reason_denied'] ?: 'Vazio';
 		})->unique()->sort()->toArray();
 	}
-	//adjustment->subject->code
-	public function subject() {
-		return $this->belongsTo('App\Subject');
-	}
-	//adjustment->student
-	public function student() {
-		return $this->belongsTo('App\Student');
-	}
-
 	public static function store($student, $adjustments) {
 		$signature = md5(uniqid(rand(), true));
         foreach($adjustments as $adjustment) {

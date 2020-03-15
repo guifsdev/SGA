@@ -1,0 +1,176 @@
+<template>
+<v-app>
+	<v-container class="subjects">
+		<v-container class="btn-box clearfix">
+			<v-btn 
+				@click="openFileInput"
+				width="10rem">Atualizar</v-btn>
+		</v-container>
+		<v-container ref="file-input-box" 
+			   v-bind:class="{'file-input-box--active': showFileInput}" 
+			class="file-input-box clearfix">
+			<v-row no-gutters="">
+				<v-col cols="12" sm="12">
+					<v-alert
+						border="top"
+						colored-border
+						type="info"
+						elevation="2">
+						Selecione um arquivo com extensão <code>.csv</code> e use os headers: <kbd>"code","name","period","class_name","offered"</kbd><br>
+						<strong>Importante:</strong> As disciplinas serão completamente <em>substituídas</em> pelo conteúdo do arquivo enviado!
+					</v-alert>
+				</v-col>
+			</v-row>
+			<v-row no-gutters>
+				<v-col cols="12" sm="6">
+					<v-file-input 
+						accept="text/csv"
+						@change="preProcess($event)"
+						label="File input" outlined dense></v-file-input>
+				</v-col>
+				<v-col cols="12" sm="3">
+					<v-btn 
+						class="btn-save"
+						:loading="loading"
+						color="primary"
+						@click="handleFile"
+						width="10rem">Enviar</v-btn>
+				</v-col>
+			</v-row>
+		</v-container>
+		<v-container>
+			<v-data-table
+		  :headers="headers"
+		  :items="subjects"
+		  :multi-srot="true"
+		  :items-per-page="5">
+			</v-data-table>
+		</v-container>
+	</v-container>
+	<template>
+		<div class="text-center ma-2">
+			<v-snackbar v-model="snackbar.show" :color="snackbar.color" :timeout="2500">
+				{{snackbar.message}}
+				<v-btn dark text @click="snackbar.show = false"> Close </v-btn>
+			</v-snackbar>
+		</div>
+	</template>
+</v-app>
+</template>
+
+<script>
+export default {
+	data: () => ({
+		subjects: [],
+		errors: [],
+		file: null,
+		loading: false,
+		showFileInput: false,
+		headers: [
+			{text: 'Código', value: 'code'},
+			{text: 'Nome', value: 'name'},
+			{text: 'Período', value: 'period'},
+			{text: 'Turma', value: 'class_name'},
+			{text: 'Oferecida', value: 'offered_text'},
+		],
+
+		snackbar: {
+			show: false,
+			color: null,
+			message: '',
+		},
+	}),
+
+	mounted: function() {
+		axios.get('servidor/subjects/index')
+			.then(response => {
+				this.subjects = response.data.subjects;
+			});
+	},
+	methods: {
+		openFileInput: function() {
+			this.showFileInput = this.showFileInput ? false : true;
+		},
+		preProcess: function(file) {
+			this.loading = true;
+			// Check for the various File API support.
+			if (window.FileReader) { // FileReader is supported.
+				this.file = file;
+				//handleFile(this.file);
+			} else {
+				alert('FileReader não é suportado nesse browser.');
+			}
+			this.loading = false;
+		},
+		handleFile: function() {
+			this.loading = true;
+			let reader = new FileReader();
+			// Read file into memory as UTF-8      
+			reader.readAsText(this.file);
+			// Handle errors load
+			reader.onload = loadHandler;
+			reader.onerror = errorHandler;
+			function loadHandler(event) {
+				let csv = event.target.result;
+				processData(csv);
+			}
+			let vm = this;
+			function processData(csv) {
+				axios.post('servidor/subjects', {csv})
+					.then((response) => {
+						vm.snackbar.color = 'success';
+						vm.snackbar.message = vm.errors.join('\n');
+					}).catch((err) => {
+						vm.loading = false;
+						vm.errors = [];
+						let errors = err.response.data;
+						vm.errors.push(errors);
+						vm.snackbar.color = 'error';
+						vm.snackbar.message = vm.errors.join('\n');
+
+					}).finally(() => {
+						vm.loading = false;
+						vm.snackbar.show = true;
+					});
+			}
+			function errorHandler(evt) {
+				if(evt.target.error.name == "NotReadableError") {
+					alert("Canno't read file!");
+				}
+			}
+		}
+	},
+}
+
+</script>
+
+<style lang="scss" scoped>
+.clearfix::after {
+
+	content: "";
+	clear: both;
+	display: table;
+}
+.file-input-box {
+	display:  none;
+	&--active {display: block;}
+	.btn-save {
+		margin-left: 1rem;
+		height: 4rem;
+	}
+}
+.btn-box {
+	padding-top: 0;
+	padding-bottom: 0;
+	.v-btn {
+		float: right;
+	}
+}
+.container {
+	padding-left: 0;
+	padding-right: 0;
+	&.subjects {
+		padding-top: 0;
+	}
+}
+</style>

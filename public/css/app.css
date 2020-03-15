@@ -16833,6 +16833,10 @@ readers do not read off random characters that represent icons */
   margin-bottom: 1rem;
 }
 
+.v-icon {
+  font-size: 2rem !important;
+}
+
 .home {
   display: flex;
   margin: 0;

@@ -62,7 +62,9 @@ class StudentAdjustmentController extends Controller
 			->map(function($adjustment) use ($student, $signature) {
 				$adjustment = collect($adjustment);
 				return collect([
-					"subject_id" => $adjustment['subject']['id'],
+					//"subject_id" => $adjustment['subject']['id'],
+					"subject_code" => $adjustment['subject']['code'],
+					"subject_class_name" => $adjustment['subject']['class_name'],
 					"action" => $adjustment['action'],
 					"student_id" => $student['id'],
 					"signature" => $signature,

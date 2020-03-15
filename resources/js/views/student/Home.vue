@@ -1,5 +1,5 @@
 <template>
-	<h1>Home em construção...</h1>
+	<h1>Bem vindo ao sistema acadêmico do Sga!</h1>
 </template>
 
 <script>

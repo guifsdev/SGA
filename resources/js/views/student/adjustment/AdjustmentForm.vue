@@ -171,7 +171,9 @@ export default {
 			adjustments.forEach(adjustment => {
 				let subject = this.root.pending_adjustments
 					.filter((pendingAdjustment) => {
-					return pendingAdjustment.subject_id == adjustment.subject.id;
+
+					return ((pendingAdjustment.subject.code === adjustment.subject.code ) &&
+							(pendingAdjustment.subject.class_name === adjustment.subject.class_name));
 				});
 				if(subject.length) pending.push(subject);
 			});

@@ -3,10 +3,9 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\Auth;
-use Faker\Factory as FakeFactory;
-use Illuminate\Support\Facades\Blade;
 use App\Lib\Settings;
+use Faker\Factory as FakeFactory;
+use Illuminate\Support\Facades\Mail;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -17,7 +16,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        
+		$throttleRate = config('mail.throttleToMessagesPerMin');
+		if ($throttleRate) {
+			$throttlerPlugin = new \Swift_Plugins_ThrottlerPlugin($throttleRate, \Swift_Plugins_ThrottlerPlugin::MESSAGES_PER_MINUTE);
+			Mail::getSwiftMailer()->registerPlugin($throttlerPlugin);
+		}
     }
 
     /**

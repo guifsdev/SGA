@@ -19,6 +19,7 @@ class Student extends Authenticatable
     protected $guard = 'student';
 
 	protected $hidden = ['remember_token', 'created_at', 'crawled_at'];
+	//protected $appends = ['full_name'];
     protected $guarded = [];
 
 	public function getNameAttribute()

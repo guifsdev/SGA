@@ -33,6 +33,12 @@
 					Certificados
 				</a>
 			</router-link>
+			<router-link to="/disciplinas" tag="li">
+				<a>
+					<i class="fas fa-chalkboard-teacher"></i>
+					Disciplinas
+				</a>
+			</router-link>
 			<router-link to="/configs" tag="li">
 				<a>
 					<i class="fas fa-cog"></i>
