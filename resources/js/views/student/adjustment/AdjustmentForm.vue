@@ -104,7 +104,7 @@ export default {
 			return message;
 		},
 		maxRows: function() {
-			return this.root.max_adjustments - 1;
+			return this.root.max_adjustments;
 		}
 	},
 	created: function() {
