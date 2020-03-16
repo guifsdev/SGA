@@ -3,8 +3,10 @@
 	<v-container class="subjects">
 		<v-container class="btn-box clearfix">
 			<v-btn 
-				@click="openFileInput"
-				width="10rem">Atualizar</v-btn>
+				@click="openFileInput">Atualizar</v-btn>
+
+			<v-btn 
+				@click="exportCsv">Exportar CSV</v-btn>
 		</v-container>
 		<v-container ref="file-input-box" 
 			   v-bind:class="{'file-input-box--active': showFileInput}" 
@@ -84,6 +86,25 @@ export default {
 		this.fetchSubjects();
 	},
 	methods: {
+		exportCsv: function() {
+			axios({
+				url: 'servidor/subjects/index?csv=true',
+				method: 'GET',
+				responseType: 'blob', // important
+			})
+			.then((response) => {
+				const url = window.URL.createObjectURL(new Blob([response.data]));
+				const link = document.createElement('a');
+				link.href = url;
+				link.setAttribute('download', 'subjects.csv'); //or any other extension
+				document.body.appendChild(link);
+				link.click();
+			});
+			//axios.get('servidor/subjects/index', {params: {csv: true}})
+				//.then(response => {
+
+				//})
+		},
 		fetchSubjects: function() {
 			axios.get('servidor/subjects/index')
 				.then(response => {
@@ -151,6 +172,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.row:last-child {
+	max-height: 3rem;
+}
 .clearfix::after {
 
 	content: "";
@@ -170,6 +194,9 @@ export default {
 	padding-bottom: 0;
 	.v-btn {
 		float: right;
+		&:first-child {
+			margin-left: 1rem;
+		}
 	}
 }
 .container {

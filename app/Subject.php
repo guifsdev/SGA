@@ -2,15 +2,19 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 use League\Csv\Reader;
+use League\Csv\Writer;
+use League\Csv\CannotInsertRecord;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class Subject extends Model
 {
-    protected $fillable = ['name', 'period', 'code', 'offered'];
+    protected $fillable = ['name', 'period', 'code', 'offered', 'created_at', 'updated_at'];
 	protected $appends = ['code_name', 'name_class', 'offered_text'];
 	public $timestamps = true;
 
@@ -56,7 +60,16 @@ class Subject extends Model
 		try {
 			DB::transaction(function() use ($subjects, &$result) {
 				Subject::query()->delete();
+				$now = Carbon::now()->toDateTimeString();
+				//dd($subjects);
+				$subjects = collect($subjects)->map(function($item) use ($now){
+					$subject = $item;
+					$subject['created_at'] = $now;
+					$subject['updated_at'] = $now;
+					return $subject;
+				})->toArray();
 				$insert = Subject::insert($subjects);
+
 				if($insert) {
 					$result['message'] = __('subjects.update.success');
 					$result['status'] = 200;
@@ -74,5 +87,24 @@ class Subject extends Model
 		} finally {
 			return $result;
 		}
+	}
+	public function allAsCsv()
+	{
+		$subjects = Subject::all();
+		$csv = Writer::createFromFileObject(new \SplTempFileObject());
+		$names = ["code","name","period","class_name","offered"];
+		$csv->insertOne($names);
+
+		foreach ($subjects as $subject) {
+			$subject = collect($subject)
+				->only($names)
+				->toArray();
+			$csv->insertOne($subject);
+		}
+		return response((string) $csv, 200, [
+			'Content-Type' => 'text/csv',
+			'Content-Transfer-Encoding' => 'binary',
+			'Content-Disposition' => 'attachment; filename="subjects.csv"',
+		]);
 	}
 }

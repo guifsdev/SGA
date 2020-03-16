@@ -2295,14 +2295,14 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
         text: 'Req.',
         value: 'action'
       }, {
-        text: 'Motivo indef.',
-        value: 'reason_denied'
-      }, {
         text: 'Data req.',
         value: 'created_at'
       }, {
         text: 'Resultado',
         value: 'result'
+      }, {
+        text: 'Motivo indef.',
+        value: 'reason_denied'
       }],
       adjustments: [],
       dates: [],
@@ -2604,6 +2604,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2639,6 +2641,24 @@ __webpack_require__.r(__webpack_exports__);
     this.fetchSubjects();
   },
   methods: {
+    exportCsv: function exportCsv() {
+      axios({
+        url: 'servidor/subjects/index?csv=true',
+        method: 'GET',
+        responseType: 'blob' // important
+
+      }).then(function (response) {
+        var url = window.URL.createObjectURL(new Blob([response.data]));
+        var link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'subjects.csv'); //or any other extension
+
+        document.body.appendChild(link);
+        link.click();
+      }); //axios.get('servidor/subjects/index', {params: {csv: true}})
+      //.then(response => {
+      //})
+    },
     fetchSubjects: function fetchSubjects() {
       var _this = this;
 
@@ -2875,6 +2895,14 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2900,7 +2928,8 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
         },
         closed_temporarily: false,
         max_adjustments: null,
-        reasons_to_deny: null
+        reasons_to_deny: null,
+        notify_result: null
       },
       status: null,
       context: 'adjustment'
@@ -4112,7 +4141,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, ".clearfix[data-v-a29d24b8]::after {\n  content: \"\";\n  clear: both;\n  display: table;\n}\n.file-input-box[data-v-a29d24b8] {\n  display: none;\n}\n.file-input-box--active[data-v-a29d24b8] {\n  display: block;\n}\n.file-input-box .btn-save[data-v-a29d24b8] {\n  margin-left: 1rem;\n  height: 4rem;\n}\n.btn-box[data-v-a29d24b8] {\n  padding-top: 0;\n  padding-bottom: 0;\n}\n.btn-box .v-btn[data-v-a29d24b8] {\n  float: right;\n}\n.container[data-v-a29d24b8] {\n  padding-left: 0;\n  padding-right: 0;\n}\n.container.subjects[data-v-a29d24b8] {\n  padding-top: 0;\n}", ""]);
+exports.push([module.i, ".row[data-v-a29d24b8]:last-child {\n  max-height: 3rem;\n}\n.clearfix[data-v-a29d24b8]::after {\n  content: \"\";\n  clear: both;\n  display: table;\n}\n.file-input-box[data-v-a29d24b8] {\n  display: none;\n}\n.file-input-box--active[data-v-a29d24b8] {\n  display: block;\n}\n.file-input-box .btn-save[data-v-a29d24b8] {\n  margin-left: 1rem;\n  height: 4rem;\n}\n.btn-box[data-v-a29d24b8] {\n  padding-top: 0;\n  padding-bottom: 0;\n}\n.btn-box .v-btn[data-v-a29d24b8] {\n  float: right;\n}\n.btn-box .v-btn[data-v-a29d24b8]:first-child {\n  margin-left: 1rem;\n}\n.container[data-v-a29d24b8] {\n  padding-left: 0;\n  padding-right: 0;\n}\n.container.subjects[data-v-a29d24b8] {\n  padding-top: 0;\n}", ""]);
 
 // exports
 
@@ -10048,11 +10077,13 @@ var render = function() {
             "v-container",
             { staticClass: "btn-box clearfix" },
             [
-              _c(
-                "v-btn",
-                { attrs: { width: "10rem" }, on: { click: _vm.openFileInput } },
-                [_vm._v("Atualizar")]
-              )
+              _c("v-btn", { on: { click: _vm.openFileInput } }, [
+                _vm._v("Atualizar")
+              ]),
+              _vm._v(" "),
+              _c("v-btn", { on: { click: _vm.exportCsv } }, [
+                _vm._v("Exportar CSV")
+              ])
             ],
             1
           ),
@@ -10729,6 +10760,31 @@ var render = function() {
                         _vm.$set(_vm.adjustment, "max_adjustments", $$v)
                       },
                       expression: "adjustment.max_adjustments"
+                    }
+                  })
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "v-row",
+                {
+                  staticClass: "config__row config__row--small",
+                  attrs: { align: "center" }
+                },
+                [
+                  _c("label", { staticClass: "config__label" }, [
+                    _vm._v("Notificar deferimento/indeferimento: ")
+                  ]),
+                  _vm._v(" "),
+                  _c("v-switch", {
+                    staticClass: "mx-2 ",
+                    model: {
+                      value: _vm.adjustment.notify_result,
+                      callback: function($$v) {
+                        _vm.$set(_vm.adjustment, "notify_result", $$v)
+                      },
+                      expression: "adjustment.notify_result"
                     }
                   })
                 ],

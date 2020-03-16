@@ -175,8 +175,6 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\TelescopeServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-        App\Providers\StudentAttributesServiceProvider::class,
-        App\Providers\AdjustmentConfigServiceProvider::class,
 		App\Providers\IdUFFServiceProvider::class,
 
 

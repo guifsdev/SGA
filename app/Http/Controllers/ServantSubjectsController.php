@@ -11,8 +11,12 @@ class ServantSubjectsController extends Controller
     {
 		$this->middleware('auth:servant');
     }
-	public function index()
+	public function index(Request $request)
 	{
+		
+		if($request->has('csv')) {
+			return (new Subject())->allAsCsv();
+		}
 		$subjects = Subject::all();
 		return response(['subjects' =>  $subjects ], 200);
 	}

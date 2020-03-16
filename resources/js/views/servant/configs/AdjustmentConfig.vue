@@ -130,6 +130,14 @@
 						type="number" 
 						min="1"/>
 				</v-row>
+				<!--Should notify result-->
+				<v-row class="config__row config__row--small" align="center">
+					<label class="config__label">Notificar deferimento/indeferimento: </label>
+					<v-switch 
+						v-model="adjustment.notify_result"
+						class="mx-2 ">
+					</v-switch>
+				</v-row>
 				<!--Reasons to deny-->
 				<v-row class="config__row">
 					<label class="config__label">Razões para indeferimento:</label>
@@ -178,6 +186,7 @@ export default {
 				closed_temporarily: false,
 				max_adjustments: null,
 				reasons_to_deny: null,
+				notify_result: null,
 			},
 			status: null,
 			context: 'adjustment',

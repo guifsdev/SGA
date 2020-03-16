@@ -9,7 +9,7 @@
 		<span class="user-cue">(Servidor)</span>
 		<nav>
 		  <ul>
-			<router-link to="/home" tag="li">
+			<router-link to="/" tag="li">
 				<a>
 					<i class="fas fa-home"></i>
 					Home

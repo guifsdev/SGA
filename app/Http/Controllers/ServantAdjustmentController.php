@@ -21,11 +21,12 @@ class ServantAdjustmentController extends Controller
 
 
     }
-	public function resolve(Request $request)
+	public function resolve(Request $request, Settings $settings)
 	{
+		$configs = $settings->get('adjustment');
 		$adjustments = $request->adjustments;
 		$decision = $request->decision;
 		$reason = $request->reason;
-		return (new Adjustment())->resolve($adjustments, $decision, $reason);
+		return (new Adjustment())->resolve($adjustments, $decision, $reason, $configs);
 	}
 }

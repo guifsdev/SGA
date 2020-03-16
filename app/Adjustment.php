@@ -131,7 +131,7 @@ class Adjustment extends Model
 		], 200);
 	}
 
-	public function resolve($adjustments, $decision, $reason)
+	public function resolve($adjustments, $decision, $reason, $configs)
 	{
 		$result = $decision == 'deny' ? 'Indeferido' : 'Deferido';
 		$studentAdjustments = collect([]);
@@ -165,10 +165,11 @@ class Adjustment extends Model
 		$updated = Adjustment::whereIn('id', $adjustmentIds)
 			->update(['result' => $result, 'reason_denied' => $reason]);
 
+		$notify = $configs['notify_result'];
+
 		//Send out emails
-		//dd($studentAdjustments);
-		if($updated) {
-			$studentAdjustments->each(function($studentAdjustment) use ($reason, $result){
+		if($updated && $notify) {
+			$studentAdjustments->each(function($studentAdjustment) use ($reason, $result) {
 				$student = $studentAdjustment['student'];
 				$adjustments = $studentAdjustment['adjustments'];
 				$email = $student['email_primary'] ? $student['email_primary'] : $student['email_secondary'];
