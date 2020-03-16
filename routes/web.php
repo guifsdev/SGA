@@ -11,6 +11,20 @@
 |
 */
 
+Route::get('/up/{password}', function($password) {
+	if($password = 'd30m05') {
+		$exitCode = Illuminate\Support\Facades\Artisan::call('up');
+		echo "Aplication running...";
+	}
+});
+
+Route::get('/down/{password}', function($password) {
+	if($password = 'd30m05') {
+		$exitCode = Illuminate\Support\Facades\Artisan::call('down');
+		echo "Aplication in maintenance mode...";
+	}
+});
+
 Route::get('/login', 'Auth\LoginController@showLoginForm');
 
 Route::prefix('estudante')->group(function() {

@@ -18,6 +18,22 @@ class StudentLoginController extends Controller
 {
     use AuthenticatesUsers, RedirectsUsers, ThrottlesLogins;
 
+	use RedirectsUsers, AuthenticatesUsers {
+		RedirectsUsers::redirectPath insteadof AuthenticatesUsers;
+	}
+
+	use ThrottlesLogins, AuthenticatesUsers {
+		ThrottlesLogins::hasTooManyLoginAttempts insteadof AuthenticatesUsers;
+		ThrottlesLogins::incrementLoginAttempts insteadof AuthenticatesUsers;
+		ThrottlesLogins::sendLockoutResponse insteadof AuthenticatesUsers;
+		ThrottlesLogins::clearLoginAttempts insteadof AuthenticatesUsers;
+		ThrottlesLogins::fireLockoutEvent insteadof AuthenticatesUsers;
+		ThrottlesLogins::throttleKey insteadof AuthenticatesUsers;
+		ThrottlesLogins::limiter insteadof AuthenticatesUsers;
+		ThrottlesLogins::maxAttempts insteadof AuthenticatesUsers;
+		ThrottlesLogins::decayMinutes insteadof AuthenticatesUsers;
+	}
+
 	public $settings;
 	/**
      * Where to redirect users after login.
@@ -64,7 +80,8 @@ class StudentLoginController extends Controller
 		//Try to find the user in database
 		$student = Student::where('cpf', $request->cpf)->first();
 		$crawler = app(IdUFFCrawler::class);
-		
+		//
+		//dd($crawler);
 		//If the student is found, check the state of his crawled data
 		if($student) {
 			$crawledAt = new Carbon($student->crawled_at);
@@ -102,10 +119,9 @@ class StudentLoginController extends Controller
 		} catch (ConnectException $connectError) {
 			return $this->sendFailedLoginResponse($request, $connectError);
 		}
-		
-		//Create a student from crawler scrapped content
+
 		$attributes = $crawler->bag
-			->except(['degree', 'degree_type', 'emphasis'])
+			->except(['degree', 'degree_type', 'emphasis', 'phone_number'])
 			->put('crawled_at', Carbon::now())
 			->toArray();
 
@@ -183,12 +199,3 @@ class StudentLoginController extends Controller
         return $this->loggedOut($request) ?: redirect('/login');
     }
 }
-
-
-
-
-
-
-
-
-

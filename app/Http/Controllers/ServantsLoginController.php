@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Servant;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\RedirectsUsers;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
@@ -13,7 +12,22 @@ use Illuminate\Validation\ValidationException;
 class ServantsLoginController extends Controller
 {
     use AuthenticatesUsers, RedirectsUsers, ThrottlesLogins;
+	
+	use RedirectsUsers, AuthenticatesUsers {
+		RedirectsUsers::redirectPath insteadof AuthenticatesUsers;
+	}
 
+	use ThrottlesLogins, AuthenticatesUsers {
+		ThrottlesLogins::hasTooManyLoginAttempts insteadof AuthenticatesUsers;
+		ThrottlesLogins::incrementLoginAttempts insteadof AuthenticatesUsers;
+		ThrottlesLogins::sendLockoutResponse insteadof AuthenticatesUsers;
+		ThrottlesLogins::clearLoginAttempts insteadof AuthenticatesUsers;
+		ThrottlesLogins::fireLockoutEvent insteadof AuthenticatesUsers;
+		ThrottlesLogins::throttleKey insteadof AuthenticatesUsers;
+		ThrottlesLogins::limiter insteadof AuthenticatesUsers;
+		ThrottlesLogins::maxAttempts insteadof AuthenticatesUsers;
+		ThrottlesLogins::decayMinutes insteadof AuthenticatesUsers;
+	}
 	/**
      * Where to redirect users after login.
      *
