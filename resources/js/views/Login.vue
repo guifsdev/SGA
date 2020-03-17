@@ -86,6 +86,7 @@ export default {
 			let cpf = this.cpf.replace(/[.-]/g, '');
 			let password = this.password;
 
+			let vm = this;
 			axios.post(this.url, {cpf, password})
 				.then(response => {
 					if(response.status == 200) {
@@ -94,10 +95,10 @@ export default {
 						window.location.href = route;
 					}
 				})
-				.catch(er => {
+				.catch(error => {
 					this.loading = false;
 					this.errors = [];
-					let errors = er.response.data.errors;
+					let errors = error.response.data.errors;
 					Object.keys(errors).forEach(key => {
 						this.errors.push(errors[key][0]);
 					});

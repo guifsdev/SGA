@@ -161,10 +161,13 @@ class Adjustment extends Model
 			}
 			array_push($adjustmentIds, $adjustmentId);
 		}
-		//dd($decision, $reason);
+		//Update records.
 		$updated = Adjustment::whereIn('id', $adjustmentIds)
 			->update(['result' => $result, 'reason_denied' => $reason]);
 
+		if(!$updated) {
+			return response(['error' => 'Falha na atualização dos registros. (500)'], 500);
+		}
 		$notify = $configs['notify_result'];
 
 		//Send out emails
@@ -178,7 +181,6 @@ class Adjustment extends Model
 				sleep(2);
 			});
 		}
-
 		$reasonsDenied = $this->getReasonsDenied();
 
 		return response(

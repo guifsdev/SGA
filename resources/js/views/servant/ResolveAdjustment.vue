@@ -386,7 +386,6 @@ export default {
 						});
 						//Toggle snackbar
 						let decision = decision == 'deny' ? "Deferido(s)" : "Indeferido(s)";
-						this.snackbar.show = true;
 						this.snackbar.color = 'success';
 
 						this.snackbar.message = `${ids.length} ajuste(s) ${decision} com sucesso.`;
@@ -398,7 +397,15 @@ export default {
 						this.snackbar.color = 'error';
 						this.snackbar.message = 'Ops... Algo deu errado!';
 					}
-				});
+				})
+				.catch(error => {
+					this.snackbar.color = 'error';
+					this.snackbar.message = error.response.data.error;
+				})
+				.finally(response => {
+					this.snackbar.show = true;
+					this.$refs['data-table'].$data.selection = {};
+				})
 		},
 		updateReasons: function(reasons) {
 			['active', 'available'].forEach(state => {

@@ -21,6 +21,7 @@ export default {
 				{ text: 'Disciplina', value: 'subject.name_class' },
 				{ text: 'Ação', value: 'action' },
 				{ text: 'Status', value: 'result' },
+				{ text: 'Data req.', value: 'created_at' },
 				{ text: 'Resultado', value: 'reason_denied' },
 			],
 		}
