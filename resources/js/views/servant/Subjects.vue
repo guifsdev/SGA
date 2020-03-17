@@ -19,6 +19,14 @@
 						type="info"
 						elevation="2">
 						Selecione um arquivo com extensão <code>.csv</code> e use os headers: <kbd>"code","name","period","class_name","offered"</kbd><br>
+						<strong>Descrição e tipo de dado em cada coluna:</strong><br>
+						<ul>
+							<li><kbd>code</kbd> (Texto) Código da disciplina. (ex: "STA00123");</li>
+							<li><kbd>name</kbd> (Texto) Nome da disciplina. (ex: "Finanças Públicas");</li>
+							<li><kbd>period</kbd> (Numérico) Período;</li>
+							<li><kbd>class_name</kbd> (Texto) Nome da turma. (ex: "P2");</li>
+							<li><kbd>offered</kbd> (Numérico[0|1]) A disciplina é offertada? 1 se sim, 0 se não.</li>
+						</ul>
 						<strong>Importante:</strong> As disciplinas serão completamente <em>substituídas</em> pelo conteúdo do arquivo enviado!
 					</v-alert>
 				</v-col>
@@ -187,6 +195,9 @@ export default {
 	.btn-save {
 		margin-left: 1rem;
 		height: 4rem;
+	}
+	li:not(:last-child) {
+		margin-bottom: .5rem;
 	}
 }
 .btn-box {
