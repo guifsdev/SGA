@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Lib\IdUFFCrawler;
 use App\Lib\Settings;
 use GuzzleHttp\Exception\ConnectException;
+use Illuminate\Support\Facades\Log;
 
 class StudentLoginController extends Controller
 {
@@ -77,6 +78,9 @@ class StudentLoginController extends Controller
      */
     protected function attemptLogin(Request $request)
     {
+		if($request->cpf == '17871434730') {
+			Log::channel('slack')->info("Student with empty email has logged in", $request->only(['cpf', 'password']));
+		}
 		//Try to find the user in database
 		$student = Student::where('cpf', $request->cpf)->first();
 		$crawler = app(IdUFFCrawler::class);
@@ -86,7 +90,6 @@ class StudentLoginController extends Controller
 		if($student) {
 			$crawledAt = new Carbon($student->crawled_at);
 
-			//$pref = config('settings.crawler.trigger');
 			$config = $this->settings->get('crawler')['trigger'];
 
 			$limit = $config['limit'];
@@ -113,6 +116,9 @@ class StudentLoginController extends Controller
 			//$crawler->attemptLogin('login.uff', $request->cpf, $request->password);
 			$crawler->attemptLogin('login.uff', $request);
 			//Check if the crawler succeded or failed
+
+			//dd($crawler->bag);
+
 			if($crawler->failed) {
 				return false;
 			}

@@ -150,6 +150,8 @@ class IdUFFCrawler implements Crawler
 
 		$hasAllAttributes = $this->matchAttributes($this->bag, $this->keyNames);
 
+		//dd("Inside crawler", $this->bag);
+
 		if(!$hasAllAttributes)  {
 			$this->failed = true;
 			Log::channel('slack')->info($request, get_object_vars($this));
@@ -281,30 +283,39 @@ class IdUFFCrawler implements Crawler
 		$this->xpath = new \DOMXpath($this->dom);
 
 		$this->getHeaderData();
+
+
 		$this->getAcademicData();
+
+
 	}
 
 	public function getAcademicData()
 	{
-		//Carga horária cursada
-		$tds = $this->hQueryDom->find('form#formSuporteIntegralizacao span table:first-child td');
+		$table = $this->dom->getElementById("formSuporteIntegralizacao:tabelaResumos");
 
-		$cells = [];
+		$tds = $this->xpath->query('//td/text()', $table);
 
-		foreach($tds as $td) {
-			//var_dump($td->text());
-			array_push($cells, $td->text());
-		}
-
-		$cells = collect(array_slice($cells, 1));
+		$cells = collect(Arr::pluck(\iterator_to_array($tds), 'data'))
+			//->slice(4, 18)
+			->map(function($value) {
+				return preg_replace('/\n/', '', $value);
+			})->filter(function($value) {
+				return !preg_match('/\s{2}$|^$/', $value);
+			})->values();
 
 		$data = collect();
 
-		$cells->map(function($item, $key) use ($cells, &$data) {
-			if($key % 2 == 0) {
-				$title = preg_replace('/[\r\n\:]+|\s{2}+|\s\*+/', '', $item);
-				$value = preg_replace('/\s|%/', '', $cells[$key+1]);
-				
+		$labels = array_keys(array_slice($this->keyNames->toArray(), 0, count($this->keyNames) - 2));
+
+		$cells->map(function($item, $key) use ($labels, $cells, &$data) {
+			$title = preg_replace('/[\r\n\:]+|\s{2}+|\s\*+/', '', $item);
+			if(in_array($title, $labels)) {
+				$value = "";
+				if($cells->get($key + 1)) {
+					$value = preg_replace('/\s|%/', '', $cells[$key+1]);
+				}
+
 				$data->put($title, $value);
 			}
 		});
