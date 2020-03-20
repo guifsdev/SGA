@@ -15,8 +15,8 @@
 				<span class="ellipsis borderless align-left">{{item.title}}
 				</span>
 			</template>
-			<template v-slot:item.enrolment_number="{item}">
-				<span class="borderless align-left">{{item.student.enrolment_number}}</span>
+			<template v-slot:item.student="{item}">
+				<span class="borderless align-left">{{item.student.full_name}}</span>
 			</template>
 		</v-data-table>
 		<template>
@@ -76,8 +76,8 @@ export default {
 			dialog: false,
 			headers: [
 				{text: '#', value: 'id'},
-				{text: 'Nome', value: 'student_name'},
-				{text: 'Matrícula', value: 'enrolment_number'},
+				{text: 'Nome', value: 'student.full_name'},
+				{text: 'Matrícula', value: 'student.enrolment_number'},
 				//{text: 'Assunto', value: 'issue'},
 				{text: 'Título', value: 'title'},
 				{text: '', value: 'has_attachment'},

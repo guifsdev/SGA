@@ -12,7 +12,9 @@ class ServantCallsController extends Controller
 	{
 		$calls = Call::with(['attachment', 'student'])->get();
 		$statusList = $settings->get('calls')['status_list'];
-		return response(['calls' => $calls, 
+
+		return response([
+			'calls' => $calls, 
 			'status_list' => $statusList], 200);
 	}
 }

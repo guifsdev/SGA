@@ -19,12 +19,12 @@ class Student extends Authenticatable
     protected $guard = 'student';
 
 	protected $hidden = ['remember_token', 'created_at', 'crawled_at'];
-	//protected $appends = ['full_name'];
+	protected $appends = ['full_name'];
     protected $guarded = [];
 
 	public function getNameAttribute()
 	{
-		return ucfirst(strtolower($this->first_name));
+		return ucfirst(mb_strtolower($this->first_name));
 	}
 	public function getCompletedPercentageAttribute()
 	{

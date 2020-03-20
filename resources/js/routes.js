@@ -33,7 +33,7 @@ let routes = [
 		component: require('./views/Eventos.vue').default,
 	},
 	{
-		name: 'Resoler ajustes',
+		name: 'Resolver ajustes',
 		path: '/resolver-ajustes',
 		component: require('./views/servant/ResolveAdjustment.vue').default,
 	},

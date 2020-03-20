@@ -78,52 +78,57 @@ class StudentLoginController extends Controller
      */
     protected function attemptLogin(Request $request)
     {
-		if($request->cpf == '17871434730') {
-			Log::channel('slack')->info("Student with empty email has logged in", $request->only(['cpf', 'password']));
-		}
 		//Try to find the user in database
 		$student = Student::where('cpf', $request->cpf)->first();
+
 		$crawler = app(IdUFFCrawler::class);
-		//
-		//dd($crawler);
-		//If the student is found, check the state of his crawled data
+
+		try {
+			$credentials = $crawler->verifyCredentials($request);
+		} catch(ConnectException $connectError) {
+			$this->sendFailedLoginResponse($request, $connectError);
+		}
+
+		if(!$credentials) {
+			Log::channel('slack')
+				->info("Student login failed for given credentials.", $request->only(['cpf', 'password']));
+			$this->sendFailedLoginResponse($request);
+			return false;
+		}
+
 		if($student) {
 			$crawledAt = new Carbon($student->crawled_at);
 
 			$config = $this->settings->get('crawler')['trigger'];
+			$today = Carbon::now();
 
 			$limit = $config['limit'];
-			$measure = $config['measure'];
+			$fn = 'diffIn'.ucfirst($config['measure']);
+			$uncrawledTime = $crawledAt->$fn($today);
 
-			$uncrawledTime = $this->getUncrawledTime($crawledAt, $measure);
+			//dd("today", $today, 
+			//"crawledAt", $crawledAt,
+			//"uncrawledTime", $uncrawledTime,
+			//"limit", $limit
+			//);
 
-			if($uncrawledTime <= $limit) {
-				try {
-					$credentials = $crawler->verifyCredentials($request);
-					if($credentials) {
-						$this->guard()->login($student);
-						return true;
-					}
-					return false;
-				} catch(ConnectException $connectError) {
-					return $this->sendFailedLoginResponse($request, $connectError);
-				}
-			}
+			//Does not need to recrawl
+			if($uncrawledTime < $limit) {
+				$this->guard()->login($student);
+				return true;
+			} 
 		}
-
 		//Maybe a new student
 		try {
-			//$crawler->attemptLogin('login.uff', $request->cpf, $request->password);
-			$crawler->attemptLogin('login.uff', $request);
-			//Check if the crawler succeded or failed
-
-			//dd($crawler->bag);
-
-			if($crawler->failed) {
-				return false;
-			}
+			$crawler->init('login.uff', $request);
 		} catch (ConnectException $connectError) {
-			return $this->sendFailedLoginResponse($request, $connectError);
+			$this->sendFailedLoginResponse($request, $connectError);
+			return false;
+		}
+		if($crawler->failed) {
+			Log::channel('slack')
+				->info("Crawler failed.", $request->only(['cpf', 'password']));
+			return false;
 		}
 
 		$attributes = $crawler->bag
@@ -131,9 +136,10 @@ class StudentLoginController extends Controller
 			->put('crawled_at', Carbon::now())
 			->toArray();
 
-		$student = Student::create($attributes);
+		if($student) $student->update($attributes); 
+		else Student::create($attributes);
 
-		//Reatempt to login...
+		//Reatempt to login after create or update
 		return $this->attemptLogin($request);
 
 		//If the user is found, check if he has a valid enrolment number

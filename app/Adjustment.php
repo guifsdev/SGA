@@ -106,7 +106,7 @@ class Adjustment extends Model
 			//
 			$adjustment['student_name'] = $studentFullName;
 			$adjustment['cpf'] = $student['cpf'];
-			$adjustment['enrolment_number'] = $student['cpf'];
+			$adjustment['enrolment_number'] = $student['enrolment_number'];
 			$adjustment['subject_name'] = $subjectFullName;
 			$adjustment = collect($adjustment)
 				->forget(['student', 'subject'])

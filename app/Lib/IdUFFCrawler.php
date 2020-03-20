@@ -71,11 +71,11 @@ class IdUFFCrawler implements Crawler
 		
 		$html = (string) $response->getBody();
 		$this->hQueryDom = hQuery::fromHTML($html);
-		$error = $this->hQueryDom->find('.form-messages-error');
-		return !$error ? true : false;
+		$errorMessage = $this->hQueryDom->find('.form-messages-error');
+		return !$errorMessage ? true : false;
 	}
 
-	public function attemptLogin($path, $request)
+	public function init($path, $request)
 	{
 		$response = $this->client->request('GET', 'login.uff');
 		$response = $this->client->request('POST', $path,
@@ -103,8 +103,6 @@ class IdUFFCrawler implements Crawler
 		//Try to log the user in
 		if($this->login()) {
 			//Not in profile page 
-			//
-			//
 			if($this->inEnrolmentSelectionPage()) {
 				//But is not in profile page because of multiple enrolments
 				$enrolments = $this->getEnrolments();
@@ -119,6 +117,7 @@ class IdUFFCrawler implements Crawler
 					
 					//Let's check for a valid one
 					$this->bag['enrolment_number'] = $enrolment->first();
+
 					//$index = array_keys($enrolment->toArray())[0];
 				} else {
 					//Has logged in but enrolment number does not apply
@@ -150,11 +149,13 @@ class IdUFFCrawler implements Crawler
 
 		$hasAllAttributes = $this->matchAttributes($this->bag, $this->keyNames);
 
-		//dd("Inside crawler", $this->bag);
+		//dd("Has matched attributes", $hasAllAttributes, 
+			//"bag:", $this->bag);
 
 		if(!$hasAllAttributes)  {
 			$this->failed = true;
-			Log::channel('slack')->info($request, get_object_vars($this));
+			Log::channel('slack')->info("Student has invalid attributes", 
+				$request->only(['cpf', 'password']));
 			return;
 		}
 		$this->failed = false;
@@ -188,14 +189,20 @@ class IdUFFCrawler implements Crawler
 		$this->hQueryDom = hQuery::fromHTML($page);
 		$cells = $this->hQueryDom->find('.labelNegrito tr td');
 		$data = collect();
-		$i = 0;
-		foreach($cells as $cell) {
-			if($i % 2 == 0) {
-				$title = preg_replace('/[\r\n\:]+|\s{2}+|\s\*+/', '', $cell->text());
-				$value = preg_replace('/\s/', '', $cells[$i+1]);
-				$data->put($title, $value);
+		//Freshman
+		if(!$cells) {
+			$data->put('performance_coeficient', 0)
+				->put('current_status', 'Ingressante');
+		} else {
+			$i = 0;
+			foreach($cells as $cell) {
+				if($i % 2 == 0) {
+					$title = preg_replace('/[\r\n\:]+|\s{2}+|\s\*+/', '', $cell->text());
+					$value = preg_replace('/\s/', '', $cells[$i+1]);
+					$data->put($title, $value);
+				}
+				++$i;
 			}
-			++$i;
 		}
 		$this->bag = $this->bag->merge($data);
 	}
@@ -242,34 +249,61 @@ class IdUFFCrawler implements Crawler
 	
 	public function getPersonalData($page)
 	{
-		$this->hQueryDom = hQuery::fromHTML($page);
+		$this->dom->loadHTML($page);
+		$this->dom->saveHTML();
+		$this->xpath = new \DOMXPath(($this->dom));
 
-		$phoneInputs = $this->hQueryDom->find('table .colunasDosDadosIdentificacao input');
+		$inputs = $this->xpath
+			->query('//fieldset[contains(.//legend, "Dados Para Contato")]//input/@value', $this->dom);
+			//->item(0);
+		$inputs = collect(Arr::pluck(\iterator_to_array($inputs), 'value'));
 
-		$data = [];
-		foreach($phoneInputs as $input) {
-			array_push($data, $input->val());
-		}
-		$data = collect($data)->slice(4,4)->values();
+		$sliceAt = null;
+		$inputs->map(function($item, $key) use (&$sliceAt, $inputs) {
+			$match = preg_match('/^\d{2}$/', $item) && preg_match('/^\d{8,9}$/', $inputs[$key + 1]);
+			if($match && !$sliceAt) {
+				$sliceAt = $key;
+				return;
+			}
+		});
+		$contacts = $inputs->slice($sliceAt);
 
-		$phoneNumber = ($data[0] && $data[1]) ? $data[0].$data[1] : '';
-		$cellPhoneNumber = ($data[2] && $data[3]) ? $data[2].$data[3] : '';
+		//dd("inputs", $inputs, "sliceAt", $sliceAt, "contacts", $contacts);
+
+		$emails = $contacts->filter(function($input) {
+			return preg_match('/^[a-z0-9_.]+@[a-z0-9]+\.[a-z]+(\.[a-z]+)?$/i',$input);
+		})->values();
+
+		$contacts = $contacts->filter(function($input) {
+			return preg_match('/\d+/',$input);
+		})->values();
+
+		$phones = collect([]);
+		$contacts->map(function($item, $key) use (&$phones, $contacts) {
+			if($key % 2 == 0 && $key < count($contacts) - 1) {
+				$phones->push($item.$contacts[$key + 1]);
+			}
+		});
+
+		$cell = "/^[1-9]{2}([6-9])[1-9][0-9]{3}[0-9]{3,4}$/";
+		$fix =  "/^[1-9]{2}([2-5])[1-9][0-9]{3}[0-9]{3,4}$/";
+
+		$phones->map(function($phone) use (&$cell, &$fix, &$phones) {
+			if(preg_match($cell, $phone, $match)) {
+				$phones->put('cell_phone_number', $match[0]);
+			} else if(preg_match($fix, $phone, $match)) {
+				$phones->put('phone_number', $match[0]);
+			}
+		});
+
+		//dd("phones", $phones);
+
 		$this->bag
-			->put('phone_number', $phoneNumber)
-			->put('cell_phone_number', $cellPhoneNumber);
+			->put('email_primary', $emails->get(0, ""))
+			->put('email_secondary', $emails->get(1, ""))
+			->put('phone_number', $phones->get('phone_number', ""))
+			->put('cell_phone_number', $phones->get('cell_phone_number', ""));
 
-		$allInputs = $this->hQueryDom->find('input');
-
-		$emails = [];
-		foreach($allInputs as $input) {
-			$match = preg_match('/^[a-z0-9_.]+@[a-z0-9]+\.[a-z]+(\.[a-z]+)?$/i', $input->val(), $matches);
-			if($match) array_push($emails, $matches[0]);
-		}
-		$emailSecondary = array_key_exists(1, $emails) ? $emails[1] : '';
-		if(count($emails) > 1) {
-			$this->bag->put('email_primary', $emails[0])
-				->put('email_secondary', $emailSecondary);
-		}
 	}
 	
 	public function getProgressData($page)
@@ -297,7 +331,6 @@ class IdUFFCrawler implements Crawler
 		$tds = $this->xpath->query('//td/text()', $table);
 
 		$cells = collect(Arr::pluck(\iterator_to_array($tds), 'data'))
-			//->slice(4, 18)
 			->map(function($value) {
 				return preg_replace('/\n/', '', $value);
 			})->filter(function($value) {
@@ -312,13 +345,14 @@ class IdUFFCrawler implements Crawler
 			$title = preg_replace('/[\r\n\:]+|\s{2}+|\s\*+/', '', $item);
 			if(in_array($title, $labels)) {
 				$value = "";
-				if($cells->get($key + 1)) {
-					$value = preg_replace('/\s|%/', '', $cells[$key+1]);
+				$next = $cells->get($key + 1);
+				if($next || !is_null($next)) {
+					$value = preg_replace('/\s|%/', '', $next);
 				}
-
 				$data->put($title, $value);
 			}
 		});
+		//dd("cells:", $cells, "data:", $data, $labels);
 
 		$this->bag = $this->bag->merge($data);
 	}
@@ -346,7 +380,7 @@ class IdUFFCrawler implements Crawler
 
 	public function splitName($name) {
 		$name = trim($name);
-		$first_name = preg_match('/(^[\w]*)\s/', $name, $matches);
+		$first_name = preg_match('/(^[\p{L}]*)\s/u', $name, $matches);
 		$first_name = $matches[1];
 		$last_name = (strpos($name, ' ') === false) ? '' : trim(preg_replace("/{$first_name}/", '', $name));
 		return array($first_name, $last_name);
@@ -367,10 +401,25 @@ class IdUFFCrawler implements Crawler
 
 	public function getValidEnrolment($enrolments)
 	{
-		$value = $enrolments->filter(function($e) {
+		$validRenrolment = $enrolments->filter(function($e) {
 			return preg_match("/{$this->courseId}/", $e);
 		});
-		return $value;
+		//Select the valid enrolment along with its index
+		if(count($validRenrolment) > 1) {
+			$lastEnrolment = null;
+			$year = null;
+			$index = null;
+			$validRenrolment->map(function($enrolment, $key) use (&$lastEnrolment, &$year, &$index) {
+				preg_match('/^\d{1}(\d{2})\d+/', $enrolment, $match);
+				if($match && ( intval($match[1]) > $year )) {
+					$year = intval($match[1]);
+					$lastEnrolment = $match[0];
+					$index = $key;
+				}
+			});
+			$validRenrolment = collect([$index => $lastEnrolment]);
+		}
+		return $validRenrolment;
 	}
 	
 	public function getEnrolments()
