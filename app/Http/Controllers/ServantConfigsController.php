@@ -49,6 +49,13 @@ class ServantConfigsController extends Controller
 		return $settings->get('calls');
 	}
 
+	public function updateCrawlerConfigs($configs, $settings) {
+		$configs = $configs->except('context');
+		$settings->put('crawler', $configs);
+
+		return $settings->get('crawler');
+	}
+
 
 	public function update(Request $request, Settings $settings)
 	{

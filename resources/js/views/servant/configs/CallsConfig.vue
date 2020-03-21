@@ -5,7 +5,7 @@
 				<v-row class="config__row" align="center">
 					<label class="config__label">Assuntos possíveis:</label>
 					<v-textarea 
-						v-bind:value="getList('issues')"
+						v-model="issues"
 						ref="issues"
 						outlined name="input-7-4" 
 						label=""
@@ -15,7 +15,7 @@
 				<v-row class="config__row" align="center">
 					<label class="config__label">Status possíveis:</label>
 					<v-textarea 
-						v-bind:value="getList('statuses')"
+						v-model="statuses"
 						ref="statuses"
 						outlined name="input-7-4" 
 						label=""
@@ -43,50 +43,56 @@
 
 <script>
 export default {
+	props: ['configs'],
 	data () {
 		return {
-			issues: [],
-			statuses: [],
+			issues: "",
+			statuses: "",
 			max_num_attachments: null,
 			context: 'calls',
 		}
 	},
+	mounted: function() {
+		this.setConfigs(this.configs);
+	},
+	watch: {
+		configs: function() {
+			this.setConfigs(this.configs);
+		}
+	},
 	computed: {
-		getList: function(data) {
-			return this[data].join('; ');
+		issuesList: {
+			get: function() {
+				let issues = this.issues.split(';').map(item => item.trim());
+				let otter = issues.filter((item) => { return item.match(/^outro$/i) })[0];
+				if(!otter) issues.push('Outro');
+				return issues;
+			}
+		},
+		statusesList: {
+			get: function() {
+				return this.statuses.split(';').map(item => item.trim());
+			}
 		}
 	},
 	methods: {
 		setConfigs: function(configs) {
-			//console.log(configs.issues);
-			this.issues = configs.issues;
-			this.statuses = configs.statuses;
+			let vm = this;
+			Object.keys(configs).map(function(key) {
+				if(typeof configs[key] === "object") {
+					vm[key] = configs[key].join('; ');
+				} else vm[key] = configs[key];
+
+			});
 		},
 		updateConfigs: function() {
-			let configs = this.$data;
-			['issues', 'statuses'].forEach(data => {
-				configs[data] = this.$refs[data].split(';')
-					.map(data => issue.trim())
-			});
-
-			if(data == 'issues') {
-				let otter = this.issues.filter((el) => {
-					return el.match(/^outro$/i)
-				})[0];
-				if(!otter) configs.issues.push('Outro');
-			}
-
+			let configs = {};
+			configs.max_num_attachments = this.max_num_attachments;
+			configs.issues = this.issuesList;
+			configs.statuses = this.statusesList;
+			configs['context'] = this.context;
 			this.$emit('update', {configs});
-			this.setConfigs(configs);
 		},
-	},
-
-	created: function() {
-		this.$emit('created', this.context);
 	},
 }
 </script>
-
-<style>
-
-</style>

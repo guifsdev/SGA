@@ -10,9 +10,9 @@
 			
 			<v-tab-item value="Ajuste"> 
 				<adjustment-config 
-					ref="adjustmentConfigs"
+					ref="adjustment"
+					:configs="configs.adjustment"
 					v-on:update="onUpdate"
-					v-on:created="onCreated"
 					v-on:fail="onFailure"
 					v-on:success="onSuccess">
 				</adjustment-config>
@@ -20,12 +20,22 @@
 
 			<v-tab-item value="Chamados">
 				<calls-config 
-					ref="callsConfigs"
+					ref="calls"
+					:configs="configs.calls"
 					v-on:fail="onFailure"
-					v-on:created="onCreated"
 					v-on:update="onUpdate"
 					v-on:success="onSuccess">
 				</calls-config>
+			</v-tab-item>
+
+			<v-tab-item value="IdUFF Crawler">
+				<crawler-config 
+					ref="crawler"
+					:configs="configs.crawler"
+					v-on:fail="onFailure"
+					v-on:update="onUpdate"
+					v-on:success="onSuccess">
+				</crawler-config>
 			</v-tab-item>
 
 			<v-tab-item value="Certificados">
@@ -51,9 +61,10 @@
 <script>
 import AdjustmentConfig from './AdjustmentConfig';
 import CallsConfig from './CallsConfig';
+import CrawlerConfig from './CrawlerConfig';
 
 export default {
-	components: {AdjustmentConfig, CallsConfig},
+	components: {AdjustmentConfig, CallsConfig, CrawlerConfig},
 	data () {
 		return {
 			snackbar: {
@@ -61,7 +72,7 @@ export default {
 				color: null,
 				message: '',
 			},
-			tabs: ['Ajuste', 'Certificados', 'Chamados'],
+			tabs: ['Ajuste', 'Certificados', 'Chamados', 'IdUFF Crawler'],
 			configs: {},
 		}
 	},
@@ -70,37 +81,39 @@ export default {
 			this.snackbar.show = true;
 			this.snackbar.color = 'success';
 			this.snackbar.message = 'Alterações salvas com sucesso.';
+
 		},
 		onFailure: function() {
 			this.snackbar.color = 'error';
 			this.snackbar.message = 'Ops... Algo deu errado!';
 		},
-		onCreated: function(context) {
-			this.$nextTick(function() {
-				switch(context) {
-					case "calls": this.$refs.callsConfigs.setConfigs(this.configs.calls); break;
-				}
-			})
-		},
-		fetchConfigs: function() {
-			axios.get('servidor/configs/index')
-				.then(response => {
-					this.configs = response.data;
-					this.$refs.adjustmentConfigs.setConfigs(this.configs.adjustment);
-				});
-		},
-		onUpdate: function(configs) {
-			axios.post('servidor/configs/update', configs)
+		onUpdate: function({configs}) {
+			let context = configs.context;
+			//console.log(configs); return;
+			axios.post('servidor/configs/update', { configs })
 				.then(response => {
 					if(response.status == 200) {
+						this.configs[context] = response.data[context];
 						this.onSuccess();
 					} else this.onFailure();
 				});
 		}
 	},
 	mounted: function() {
-		this.fetchConfigs();
+		axios.get('servidor/configs/index')
+			.then(response => {
+				this.configs = response.data;
+			});
+	},
+	computed: {
+		getTabsNames: function() {
+			return [...this.tabs.map(tab => {return tab.name})];
+		},
+		getTabsContexts: function() {
+			return [...this.tabs.map(tab => {return tab.context})];
+		}
 	}
+
 }
 </script>
 

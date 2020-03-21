@@ -161,6 +161,7 @@
 
 <script>
 export default {
+	props: ['configs'],
 	data () {
 		return {
 			//configs: {},
@@ -192,8 +193,10 @@ export default {
 			context: 'adjustment',
 		}
 	},
-	created: function() {
-		this.$emit('created', this.context);
+	watch: {
+		configs: function() {
+			this.setConfigs(this.configs);
+		}
 	},
 	methods: {
 		setConfigs: function(configs) {

@@ -44,7 +44,7 @@ class StudentAdjustmentController extends Controller
 				'open' => $open,
 				'periods' => Subject::all()->max('period'),
 				'max_adjustments' => intval($configs->get('max_adjustments')),
-				'subjects' => Subject::all(),
+				'subjects' => Subject::where('offered', 1)->get(),
 				'pending_adjustments' => $pendingAdjustments,
 			];
 			return response($data, 200);

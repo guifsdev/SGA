@@ -29,7 +29,7 @@ class IdUFFCrawler implements Crawler
 		$this->timeout = 20;
 		$this->dom = $domDocument;
 		$this->jar = new CookieJar();
-		$this->courseId = '^\d{3}023';
+		$this->courseId = '^\d{3}0?23';
 		$this->failed = true;
 		$this->enrolment = collect();
 		$this->bag = collect();
@@ -148,11 +148,12 @@ class IdUFFCrawler implements Crawler
 		});
 
 		$hasAllAttributes = $this->matchAttributes($this->bag, $this->keyNames);
+		$hasValidEnrolment = $this->validateEnrolmentNumber($this->bag['enrolment_number']);
 
 		//dd("Has matched attributes", $hasAllAttributes, 
 			//"bag:", $this->bag);
 
-		if(!$hasAllAttributes)  {
+		if(!$hasAllAttributes || !$hasValidEnrolment)  {
 			$this->failed = true;
 			Log::channel('slack')->info("Student has invalid attributes", 
 				$request->only(['cpf', 'password']));
@@ -374,8 +375,12 @@ class IdUFFCrawler implements Crawler
 		$cpf = preg_match('/\d+/', $headerData[1], $matches);
 		$this->bag->put('cpf', $matches[0]);
 
-		$enrolment_number = preg_match('/\d+/', $headerData[2], $matches);
+		$enrolmentNumber = preg_match('/\d+/', $headerData[2], $matches);
+
 		$this->bag->put('enrolment_number', $matches[0]);
+	}
+	public function validateEnrolmentNumber($number) {
+		return preg_match('/'.$this->courseId.'/', $number, $match);
 	}
 
 	public function splitName($name) {
