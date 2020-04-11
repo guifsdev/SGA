@@ -1,6 +1,6 @@
 <template>
 	<v-container>
-		<h1 class="table-title">Requerimentos enviados</h1>
+		<h1 class="title">Requerimentos enviados</h1>
 		<v-data-table
 			:headers="headers"
 			:items="adjustments"

@@ -1,0 +1,43 @@
+{
+  "crawler": {
+    "trigger": {
+      "limit": "3",
+      "measure": "months"
+    }
+  },
+  "adjustment": {
+    "date": {
+      "open": "2020-03-14 02:51",
+      "close": "2020-03-31 12:00"
+    },
+    "closed_temporarily": false,
+    "max_adjustments": "5",
+    "reasons_to_deny": [
+      "Não há vagas",
+      "Não possui pré-requisito",
+      "Horário em conflito",
+      "Outro"
+    ],
+    "notify_result": false
+  },
+  "calls": {
+    "issues": [
+      "Colação de grau",
+      "Atividades complementares",
+      "Ajuste de disciplinas",
+      "Pré-requisito",
+      "etc",
+      "Outro"
+    ],
+    "statuses": [
+      "Pendente",
+      "Resolvido",
+      "Aguardando documentos",
+      "etc"
+    ],
+	"attachments": {
+		"max_num": 1,
+		"max_size": 7000
+	}
+  }
+}

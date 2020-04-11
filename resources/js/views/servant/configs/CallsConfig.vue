@@ -25,11 +25,20 @@
 				<v-row class="config__row config__row--small" align="center">
 					<label class="config__label">Número máximo de anexos:</label>
 					<v-text-field 
-						v-model="max_num_attachments"
+						v-model="attachments.max_num"
 						hide-details
 						single-line
 						type="number" 
 						min="0"/>
+				</v-row>
+				<v-row class="config__row config__row--small" align="center">
+					<label class="config__label">Tamanho máximo do anexo em (kb):</label>
+					<v-text-field 
+						v-model="attachments.max_size"
+						hide-details
+						single-line
+						type="number" 
+						min="100"/>
 				</v-row>
 				<v-row class="config__row">
 					<div class="my-2">
@@ -48,7 +57,7 @@ export default {
 		return {
 			issues: "",
 			statuses: "",
-			max_num_attachments: null,
+			attachments: {},
 			context: 'calls',
 		}
 	},
@@ -79,7 +88,7 @@ export default {
 		setConfigs: function(configs) {
 			let vm = this;
 			Object.keys(configs).map(function(key) {
-				if(typeof configs[key] === "object") {
+				if(key === 'issues' || key === 'statuses') {
 					vm[key] = configs[key].join('; ');
 				} else vm[key] = configs[key];
 
@@ -87,7 +96,7 @@ export default {
 		},
 		updateConfigs: function() {
 			let configs = {};
-			configs.max_num_attachments = this.max_num_attachments;
+			configs.attachments = this.attachments;
 			configs.issues = this.issuesList;
 			configs.statuses = this.statusesList;
 			configs['context'] = this.context;

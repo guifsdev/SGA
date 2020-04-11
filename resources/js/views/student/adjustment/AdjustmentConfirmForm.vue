@@ -92,9 +92,6 @@ export default {
 	methods: {
 		save: function() {
 			this.loading = true;
-			
-			//console.log(this.root.adjustments); return;
-
 			axios.post('/estudante/adjustment/store',
 				{ student: this.$parent.student,
 				  adjustments: this.root.adjustments })

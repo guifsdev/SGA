@@ -11,12 +11,17 @@
 |
 */
 
-Route::get('/down/{password}', function($password) {
-	if($password = 'd30m05') {
-		$exitCode = Illuminate\Support\Facades\Artisan::call('down');
-		echo "Aplication in maintenance mode...";
+
+Route::get('down', function() {
+	$password = request('password');
+	$hash = '$2y$10$yY/Fbe0ZalyepNL8iNxGy.snGDRB/gxvHvtmTtp8UVHIEEVqjJy.S';
+	$check = Illuminate\Support\Facades\Hash::check($password, $hash);
+
+	if($check) {
+		Illuminate\Support\Facades\Artisan::call('down');
 	}
-});
+	else return response(['error' => 'Senha incorreta.'], 500);
+})->middleware('auth:servant');
 
 Route::get('/login', 'Auth\LoginController@showLoginForm');
 
@@ -30,7 +35,10 @@ Route::prefix('estudante')->group(function() {
 
 	Route::prefix('calls')->group(function() {
 		Route::get('create', 'StudentCallsController@create');
+		Route::post('/', 'StudentCallsController@store');
 	});
+
+
 	Route::prefix('certificados')->group(function() {
 		Route::get('index', 'StudentCertifictesController@index');
 		Route::get('show/{certificate}', 'StudentCertifictesController@show');
@@ -48,8 +56,10 @@ Route::prefix('servidor')->group(function() {
 	});
 	Route::prefix('calls')->group(function() {
 		Route::get('index', 'ServantCallsController@index');
-		//Route::get('index', 'ServantCallsController@');
+		Route::get('{call}/edit', 'ServantCallsController@edit');
 	});
+
+	Route::get('call/{call}/attachment/{attachment}', 'ServantAttachmentsController@show');
 
 	Route::prefix('subjects')->group(function() {
 		Route::get('index', 'ServantSubjectsController@index');

@@ -26,13 +26,13 @@
 					Ajuste
 				</a>
 			</router-link>
+			<router-link to="/chamados" tag="li">
+				  <a>
+					<i class="fas fa-bullhorn"></i>
+					Chamados
+				</a>
+			</router-link>
 			<!--
-				<router-link to="/chamados" tag="li">
-					  <a>
-						<i class="fas fa-bullhorn"></i>
-						Chamados
-					</a>
-				</router-link>
 				<router-link to="/certificados" tag="li">
 					  <a>
 						<i class="fas fa-certificate"></i>

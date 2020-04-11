@@ -50,7 +50,7 @@ let routes = [
 	{
 		name: 'Chamados',
 		path: '/chamados',
-		component: require('./views/student/Calls.vue').default,
+		component: require('./views/student/calls/Calls.vue').default,
 	},
 	{
 		name: 'Disciplinas',

@@ -45,6 +45,12 @@
 					</v-card-text>
 				</v-card>
 			</v-tab-item>
+
+			<v-tab-item value="Configurações Gerais">
+				<general-config></general-config>
+			</v-tab-item>
+
+
 		</v-tabs>
 		<!--Snackbar-->
 		<template>
@@ -62,9 +68,10 @@
 import AdjustmentConfig from './AdjustmentConfig';
 import CallsConfig from './CallsConfig';
 import CrawlerConfig from './CrawlerConfig';
+import GeneralConfig from './GeneralConfig';
 
 export default {
-	components: {AdjustmentConfig, CallsConfig, CrawlerConfig},
+	components: {AdjustmentConfig, CallsConfig, CrawlerConfig, GeneralConfig},
 	data () {
 		return {
 			snackbar: {
@@ -72,7 +79,7 @@ export default {
 				color: null,
 				message: '',
 			},
-			tabs: ['Ajuste', 'Certificados', 'Chamados', 'IdUFF Crawler'],
+			tabs: ['Ajuste', 'Certificados', 'Chamados', 'IdUFF Crawler', 'Configurações Gerais'],
 			configs: {},
 		}
 	},

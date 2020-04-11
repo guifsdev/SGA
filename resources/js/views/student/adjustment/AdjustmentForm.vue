@@ -133,7 +133,7 @@ export default {
 		},
 		onReady: function() {
 			for(let i = 0; i < this.maxRows; ++i) {
-				let adjustment = { period: null, subject: null, action: null, ids: [], allSubjects: [] };
+				let adjustment = { period: null, subject: null, action: null, allSubjects: [] };
 				this.adjustments.push(adjustment);
 			}
 		},
@@ -145,14 +145,14 @@ export default {
 		},
 		periodChanged: function(period, index) {
 			this.adjustments[index].period = period;
-			this.adjustments[index].ids = [];
+			//this.adjustments[index].ids = [];
 			this.adjustments[index].allSubjects = [];
 
 			let subjects = this.root.subjects
 				.filter(subject => { return subject.period == period })
 				.map(subject => { 
 					this.adjustments[index].allSubjects.push(subject.name_class);
-					this.adjustments[index].ids.push(subject.id);
+					//this.adjustments[index].ids.push(subject.id);
 				});
 			let firstSubject = this.adjustments[index].allSubjects[0];
 			this.subjectChanged(firstSubject, index);

@@ -18,9 +18,11 @@ class CreateCallsTable extends Migration
 			$table->integer('student_id');
 			$table->string('issue');
 			$table->string('title');
-			$table->string('description');
+			$table->text('description')->nullable();
 			$table->string('status');
-			$table->dateTime('resolved_at');
+            $table->text('result')->nullable();
+			$table->dateTime('resolved_at')->nullable();
+			$table->string('signature');
             $table->timestamps();
         });
     }

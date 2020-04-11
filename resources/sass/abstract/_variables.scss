@@ -1,15 +1,43 @@
 //Font awesome font path
-$fa-font-path: "fonts/vendor/@fortawesome/fontawesome-free/";
+//$fa-font-path: "fonts/vendor/@fortawesome/fontawesome-free";
 
 // Body
 $body-bg: #f8fafc;
 
 // Typography
-$font-family-sans-serif: "Nunito", sans-serif;
+//$font-family-sans-serif: "Nunito", sans-serif;
 //$font-size-base: 0.9rem;
-$line-height-base: 1.6;
+//$line-height-base: 1.6;
 
-// Colors
+//SGA color pallete
+$color-primary: #0f62ac;
+$color-primary-dark: #0a2463;
+$color-primary-light: #a8e0ff;
+
+$color-secondary: #f2a232;
+$color-secondary-dark: #c4914a;
+$color-secondary-light: #f9d39f;
+ 
+$color-white: #fffff2;
+$color-black: #1a181b;
+
+$color-grey-light-1: #cccccc;
+$color-grey-light-2: #d7d6d6;
+$color-grey-light-3: #e2e2e2;
+
+$color-grey-dark-1: #333333;
+$color-grey-dark-2: #777777;
+$color-grey-dark-3: #999999;
+
+//SGA fonts
+$font-primary: 'Roboto', sans-serif;
+$font-display: 'Nunito', sans-serif;
+
+
+
+
+
+// Laravel default pallete
 $blue: #3490dc;
 $indigo: #6574cd;
 $purple: #9561e2;

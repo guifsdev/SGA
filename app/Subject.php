@@ -7,13 +7,13 @@ use Exception;
 use Illuminate\Database\Eloquent\Model;
 use League\Csv\Reader;
 use League\Csv\Writer;
-use League\Csv\CannotInsertRecord;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 
 class Subject extends Model
 {
+    use \Awobaz\Compoships\Compoships;
+
     protected $fillable = ['name', 'period', 'code', 'offered', 'created_at', 'updated_at'];
 	protected $appends = ['code_name', 'name_class', 'offered_text'];
 	public $timestamps = true;

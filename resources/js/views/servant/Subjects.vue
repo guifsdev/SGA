@@ -108,10 +108,6 @@ export default {
 				document.body.appendChild(link);
 				link.click();
 			});
-			//axios.get('servidor/subjects/index', {params: {csv: true}})
-				//.then(response => {
-
-				//})
 		},
 		fetchSubjects: function() {
 			axios.get('servidor/subjects/index')

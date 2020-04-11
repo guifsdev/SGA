@@ -4,7 +4,6 @@
 		ref="context"
 		:root="$data"
 		v-bind:is="component"
-		v-on:save="onSave"
 		v-on:confirm="onConfirm"
 		v-on:home="onHome"
 		v-on:modify="onModify">
@@ -39,9 +38,6 @@ export default {
 		}
 	},
 	methods: {
-		onSave: function() {
-			console.log(this.adjustments);
-		},
 		onConfirm: function(data) {
 			this.adjustments = data.adjustments;
 			this.submited = data.submited;

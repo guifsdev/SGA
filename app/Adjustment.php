@@ -7,15 +7,18 @@ use App\Mail\AdjustmentResolved;
 use Carbon\Carbon;
 use App\Setting;
 use Illuminate\Database\Eloquent\Builder;
+use App\Subject;
 
 class Adjustment extends Model
 {
+    use \Awobaz\Compoships\Compoships;
+
 	protected $guarded = [];
 	public $timestamps = true;
 
 	public function subject() 
 	{
-		return $this->hasOne('App\Subject', 'code', 'subject_code');
+		return $this->hasOne('App\Subject', ['code', 'class_name'], ['subject_code', 'subject_class_name']);
 	}
 
 	public function student() 

@@ -1,9 +1,23 @@
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: inherit;
+}
+
 html {
+	box-sizing: border-box;
 	font-size:  62.5% !important;
-	height: 100vh;
+	//height: 100vh;
 }
 body {
-	font-size: 1.3rem !important;
+    font-family: $font-primary;
+    color: $color-grey-dark-2;
+    font-weight: 300;
+    line-height: 1.6;
+
+	//font-size: 1.3rem !important;
 	* { font-size:  inherit !important; }
 }
 ul li { list-style: none; }

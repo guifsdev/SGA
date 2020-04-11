@@ -109,7 +109,8 @@ class StudentLoginController extends Controller
 			//dd("today", $today, 
 			//"crawledAt", $crawledAt,
 			//"uncrawledTime", $uncrawledTime,
-			//"limit", $limit
+			//"limit", $limit,
+			//"measure", $config['measure']
 			//);
 
 			//Does not need to recrawl

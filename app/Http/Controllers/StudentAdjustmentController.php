@@ -35,10 +35,11 @@ class StudentAdjustmentController extends Controller
 		if($open) {
 			$data = [];
 			//Check if student already has adjustments
-			$pendingAdjustments = Adjustment::where('student_id', $request->student_id)
+			$pendingAdjustments = Adjustment::with('subject')
+				->where('student_id', $request->student_id)
 				->where('created_at', '>=', $date['open'])
-				->with('subject')
 				->get();
+
 			$data = [
 				'status' => $status,
 				'open' => $open,
