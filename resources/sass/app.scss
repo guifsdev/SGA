@@ -1,8 +1,12 @@
 @import 'abstract/variables';
 
-@import 'base/base';
 @import 'vendor/vendor';
+
+@import 'base/base';
 @import 'base/typography';
+
 @import 'pages/dashboard';
 @import 'pages/configs';
 @import 'pages/login';
+
+@import 'components/button';

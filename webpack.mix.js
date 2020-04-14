@@ -13,13 +13,52 @@ let mix = require('laravel-mix');
 
 //mix.js('src/app.js', 'dist/').sass('src/app.scss', 'dist/');
 
+mix.disableNotifications();
+
 mix.sass('resources/sass/app.scss', 'public/css/')
    .js('resources/js/app.js', 'public/js')
-   .extract(['jquery'])
-   .version();
+   .extract(['jquery']);
+	//Optionally version if in production
+	if (mix.inProduction()) {
+		mix.version();
+	}
 
+mix.webpackConfig({
+	//Alias to load global assets
+	resolve: {
+		alias: {
+			'global': path.resolve(__dirname, './resources/sass/abstract/')
+		}
+	},
+	//Pair mix HMR port with artisan serve port
+	devServer: {
+		proxy: {
+			'*': 'http://localhost:8000'
+		}
+	},
 
-mix.disableNotifications();
+});
+
+module.exports = {
+	rules: [
+		{
+			test: /\.scss$/,
+			use: [
+				'vue-style-loader',
+				'css-loader',
+				{
+					loader: 'sass-loader',
+					// Requires sass-loader@^7.0.0
+					options: {
+						// This is the path to your variables
+						prependData: "@import '/resources/sass/abstract/_variables.scss'",
+					},
+				},
+			],
+		},
+	]
+}
+
 
 // Full API
 // mix.js(src, output);

@@ -1692,19 +1692,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   //props: [ 'csrf' ],
@@ -1726,6 +1713,9 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
+    getErrors: function getErrors() {
+      return this.errors.join("\n");
+    },
     onSubmit: function onSubmit(event) {
       var _this = this;
 
@@ -4650,7 +4640,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, ".login .container.fill-height > .row[data-v-12f5395a] {\n  max-width: none;\n}", ""]);
+exports.push([module.i, ".login[data-v-12f5395a] {\n  position: relative;\n  display: flex;\n  width: 100%;\n  height: 100vh;\n}\n@media screen and (max-width: 64em) {\n.login[data-v-12f5395a] {\n    flex-direction: column;\n    background-color: #fffff2;\n}\n}\n.login[data-v-12f5395a]::after {\n  content: \"\";\n  display: block;\n  width: 100%;\n  height: 100%;\n  background-image: linear-gradient(to right, rgba(242, 162, 50, 0.16), rgba(242, 162, 50, 0.16)), url(\"/img/uff.jpg\");\n  background-size: cover;\n  opacity: 0.8;\n}\n@media screen and (max-width: 64em) {\n.login[data-v-12f5395a]::after {\n    order: -1;\n    -webkit-clip-path: polygon(0 0, 100% 0, 100% 80%, 0 55%);\n            clip-path: polygon(0 0, 100% 0, 100% 80%, 0 55%);\n    margin-bottom: -30rem;\n}\n}\n@media screen and (max-width: 38.5em) {\n.login[data-v-12f5395a]::after {\n    background-image: none;\n    -webkit-clip-path: none;\n            clip-path: none;\n    background: url(\"/img/shapes.svg\");\n    position: absolute;\n    top: 0;\n    left: 0;\n    width: 100%;\n    height: 33%;\n    background-size: cover;\n    transform: rotate(180deg);\n}\n}\n.login__form[data-v-12f5395a] {\n  display: flex;\n  flex-direction: column;\n  flex: 0 0 45rem;\n  z-index: 20;\n  padding: 3rem;\n}\n.login__form > *[data-v-12f5395a] {\n  flex-grow: 0;\n}\n@media screen and (max-width: 64em) {\n.login__form[data-v-12f5395a] {\n    position: absolute;\n    top: 50%;\n    left: 50%;\n    min-width: 45rem;\n    background-color: #fff;\n    border-radius: 0.5rem;\n    box-shadow: 0 2rem 5rem rgba(51, 51, 51, 0.2);\n    transform: translate(-50%, -50%);\n}\n}\n@media screen and (max-width: 38.5em) {\n.login__form[data-v-12f5395a] {\n    min-width: 90%;\n    padding: 1.5rem;\n}\n}\n.login__logo[data-v-12f5395a] {\n  align-self: flex-start;\n  width: 8rem;\n  margin-bottom: 2rem;\n}\n@media screen and (max-width: 64em) {\n.login__logo[data-v-12f5395a] {\n    align-self: center;\n    width: 10rem;\n}\n}\n.login__heading .bold[data-v-12f5395a] {\n  color: #0f62ac;\n  font-weight: 800;\n}\n.login__text[data-v-12f5395a] {\n  font-size: 1.4rem;\n  color: #999999;\n}\n.login__btn[data-v-12f5395a] {\n  align-self: flex-start;\n  width: 50%;\n}\n@media screen and (max-width: 64em) {\n.login__btn[data-v-12f5395a] {\n    width: 100%;\n}\n}\n.login__shapes[data-v-12f5395a] {\n  position: absolute;\n  width: 100%;\n  z-index: 10;\n  bottom: 0;\n  right: 0;\n}", ""]);
 
 // exports
 
@@ -10039,194 +10029,134 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "v-app",
-    { staticClass: "login", attrs: { id: "inspire" } },
-    [
-      _c(
-        "v-content",
-        [
-          _c(
-            "v-container",
-            { staticClass: "fill-height", attrs: { fluid: "" } },
-            [
-              _c(
-                "v-row",
-                { attrs: { align: "center", justify: "center" } },
-                [
-                  _c(
-                    "v-col",
-                    { attrs: { cols: "12", sm: "8", md: "4" } },
-                    [
-                      _c(
-                        "v-card",
-                        { staticClass: "elevation-12" },
-                        [
-                          _c(
-                            "v-toolbar",
-                            { attrs: { color: "primary", dark: "", flat: "" } },
-                            [
-                              _c(
-                                "v-toolbar-title",
-                                { staticClass: "login__title" },
-                                [_vm._v("Login em Aplicações SGA")]
-                              )
-                            ],
-                            1
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "v-card-text",
-                            [
-                              _c(
-                                "v-form",
-                                {
-                                  ref: "form",
-                                  attrs: { action: _vm.url, method: "post" },
-                                  on: {
-                                    submit: function($event) {
-                                      $event.preventDefault()
-                                      return _vm.onSubmit($event)
-                                    }
-                                  }
-                                },
-                                [
-                                  _c("v-select", {
-                                    attrs: {
-                                      items: _vm.loginTypes,
-                                      label: "Fazer login como"
-                                    },
-                                    on: {
-                                      change: function($event) {
-                                        return _vm.loginTypeChanged($event)
-                                      }
-                                    },
-                                    model: {
-                                      value: _vm.loginAs,
-                                      callback: function($$v) {
-                                        _vm.loginAs = $$v
-                                      },
-                                      expression: "loginAs"
-                                    }
-                                  }),
-                                  _vm._v(" "),
-                                  _c("v-text-field", {
-                                    directives: [
-                                      {
-                                        name: "mask",
-                                        rawName: "v-mask",
-                                        value: _vm.cpfMask,
-                                        expression: "cpfMask"
-                                      }
-                                    ],
-                                    attrs: {
-                                      label: "Seu CPF",
-                                      "return-unmasked-value": "",
-                                      name: "cpf",
-                                      "prepend-icon": "person",
-                                      type: "text"
-                                    },
-                                    model: {
-                                      value: _vm.cpf,
-                                      callback: function($$v) {
-                                        _vm.cpf = $$v
-                                      },
-                                      expression: "cpf"
-                                    }
-                                  }),
-                                  _vm._v(" "),
-                                  _c("v-text-field", {
-                                    attrs: {
-                                      id: "password",
-                                      name: "password",
-                                      label: _vm.passwordLabel,
-                                      "prepend-icon": "lock",
-                                      type: "password"
-                                    },
-                                    model: {
-                                      value: _vm.password,
-                                      callback: function($$v) {
-                                        _vm.password = $$v
-                                      },
-                                      expression: "password"
-                                    }
-                                  }),
-                                  _vm._v(" "),
-                                  _c(
-                                    "v-card-actions",
-                                    [
-                                      _c("v-spacer"),
-                                      _vm._v(" "),
-                                      _c(
-                                        "v-btn",
-                                        {
-                                          attrs: {
-                                            disabled: _vm.loading,
-                                            loading: _vm.loading,
-                                            "min-width": "12rem",
-                                            color: "primary",
-                                            type: "submit"
-                                          }
-                                        },
-                                        [_vm._v("Login")]
-                                      )
-                                    ],
-                                    1
-                                  )
-                                ],
-                                1
-                              )
-                            ],
-                            1
-                          )
-                        ],
-                        1
-                      )
-                    ],
-                    1
-                  ),
-                  _vm._v(" "),
-                  _vm.errors.length
-                    ? [
-                        _c(
-                          "v-col",
-                          { attrs: { cols: "12", sm: "8", md: "4" } },
-                          [
-                            _c(
-                              "v-alert",
-                              {
-                                attrs: {
-                                  text: "",
-                                  prominent: "",
-                                  type: "error",
-                                  icon: "mdi-cloud-alert"
-                                }
-                              },
-                              [
-                                _vm._v(
-                                  "\n\t\t\t\t\t\t\t" +
-                                    _vm._s(_vm.errors.join("\n")) +
-                                    "\n\t\t\t\t\t\t"
-                                )
-                              ]
-                            )
-                          ],
-                          1
-                        )
-                      ]
-                    : _vm._e()
-                ],
-                2
+  return _c("v-app", [
+    _c(
+      "div",
+      { staticClass: "login" },
+      [
+        _c(
+          "v-form",
+          {
+            ref: "form",
+            staticClass: "login__form",
+            attrs: { action: _vm.url, method: "post" },
+            on: {
+              submit: function($event) {
+                $event.preventDefault()
+                return _vm.onSubmit($event)
+              }
+            }
+          },
+          [
+            _c("img", {
+              staticClass: "login__logo",
+              attrs: { src: "/img/logo.svg", alt: "Logo do SGA" }
+            }),
+            _vm._v(" "),
+            _c("h1", { staticClass: "heading-1 login__heading" }, [
+              _vm._v("Bem vindo ao sistema acadêmico do "),
+              _c("span", { staticClass: "bold" }, [_vm._v("SGA")]),
+              _vm._v("!")
+            ]),
+            _vm._v(" "),
+            _c("p", { staticClass: "login__text mb-md" }, [
+              _vm._v(
+                "Aqui você tem acesso ao ambiente digital da coordenação do seu curso  de Administração (UFF - Niterói) e pode resolver tudo sem preocupações com papelada e burocracia."
               )
-            ],
-            1
-          )
-        ],
-        1
-      )
-    ],
-    1
-  )
+            ]),
+            _vm._v(" "),
+            _c("v-select", {
+              attrs: { items: _vm.loginTypes, label: "Fazer login como" },
+              on: {
+                change: function($event) {
+                  return _vm.loginTypeChanged($event)
+                }
+              },
+              model: {
+                value: _vm.loginAs,
+                callback: function($$v) {
+                  _vm.loginAs = $$v
+                },
+                expression: "loginAs"
+              }
+            }),
+            _vm._v(" "),
+            _c("v-text-field", {
+              directives: [
+                {
+                  name: "mask",
+                  rawName: "v-mask",
+                  value: _vm.cpfMask,
+                  expression: "cpfMask"
+                }
+              ],
+              attrs: {
+                label: "Seu CPF",
+                "return-unmasked-value": "",
+                name: "cpf",
+                "prepend-icon": "person",
+                type: "text"
+              },
+              model: {
+                value: _vm.cpf,
+                callback: function($$v) {
+                  _vm.cpf = $$v
+                },
+                expression: "cpf"
+              }
+            }),
+            _vm._v(" "),
+            _c("v-text-field", {
+              staticClass: "mb-sm",
+              attrs: {
+                id: "password",
+                name: "password",
+                label: _vm.passwordLabel,
+                "prepend-icon": "lock",
+                type: "password"
+              },
+              model: {
+                value: _vm.password,
+                callback: function($$v) {
+                  _vm.password = $$v
+                },
+                expression: "password"
+              }
+            }),
+            _vm._v(" "),
+            _c(
+              "v-btn",
+              {
+                staticClass: "login__btn btn btn-primary mb-sm",
+                attrs: {
+                  type: "submit",
+                  disabled: _vm.loading,
+                  loading: _vm.loading,
+                  color: "$color-primary"
+                }
+              },
+              [_vm._v("Login")]
+            ),
+            _vm._v(" "),
+            _vm.errors.length
+              ? _c(
+                  "v-alert",
+                  { attrs: { dense: "", outlined: "", type: "error" } },
+                  [_vm._v("\n\t\t\t\t" + _vm._s(_vm.getErrors()) + "\n\t\t\t")]
+                )
+              : _vm._e()
+          ],
+          1
+        ),
+        _vm._v(" "),
+        _c("img", {
+          staticClass: "login__shapes",
+          attrs: { src: "/img/shapes.svg", alt: "" }
+        })
+      ],
+      1
+    )
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true

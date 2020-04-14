@@ -9,7 +9,6 @@
 html {
 	box-sizing: border-box;
 	font-size:  62.5% !important;
-	//height: 100vh;
 }
 body {
     font-family: $font-primary;
@@ -18,7 +17,7 @@ body {
     line-height: 1.6;
 
 	//font-size: 1.3rem !important;
-	* { font-size:  inherit !important; }
+	//* { font-size:  inherit !important; }
 }
 ul li { list-style: none; }
 .v-application {
@@ -45,8 +44,10 @@ ul li { list-style: none; }
 	}
 }
 
-.v-list-item__title {
-	line-height: 1.5rem !important;
+.v-list,
+.v-btn {
+	font-size: 1.4rem !important;
+	* {font-size: inherit !important;}
 }
 
 

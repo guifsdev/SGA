@@ -1,0 +1,13 @@
+.btn {
+	color: $color-white !important;
+	font-size: 1.5rem !important;
+	border: none !important;
+	text-transform: uppercase !important;
+	padding: 1.3rem 8rem !important;
+
+	&-primary {
+		background-color: $color-primary !important;
+
+	}
+}
+
