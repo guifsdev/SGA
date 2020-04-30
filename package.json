@@ -30,7 +30,7 @@
         "@fortawesome/fontawesome-free": "^5.12.1",
         "axios": "^0.18.1",
         "floatthead": "^2.1.4",
-        "jquery": "^3.4.1",
+        "jquery": "^3.5.0",
         "material-design-icons-iconfont": "^5.0.1",
         "vee-validate": "^3.2.5",
         "vue": "^2.6.11",
