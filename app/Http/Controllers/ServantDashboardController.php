@@ -4,16 +4,17 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
 
-class ServantHomeController extends Controller
+class ServantDashboardController extends Controller
 {
     //
 	public function __construct()
 	{
 		$this->middleware('auth:servant');
 	}
-	public function home()
+	public function index()
 	{
 		$servant = Auth::guard('servant')->user();
-    	return view('servant.home', ['servant' => $servant]);
+        //return view('servant.home', ['servant' => $servant]);
+		return view('servant.dashboard', ['servant' => $servant]);
 	}
 }

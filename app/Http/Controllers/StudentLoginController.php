@@ -78,72 +78,72 @@ class StudentLoginController extends Controller
      */
     protected function attemptLogin(Request $request)
     {
-		//Try to find the user in database
-		$student = Student::where('cpf', $request->cpf)->first();
+      //Try to find the user in database
+      $student = Student::where('cpf', $request->cpf)->first();
 
-		$crawler = app(IdUFFCrawler::class);
+      $crawler = app(IdUFFCrawler::class);
 
-		try {
-			$credentials = $crawler->verifyCredentials($request);
-		} catch(ConnectException $connectError) {
-			$this->sendFailedLoginResponse($request, $connectError);
-		}
+      try {
+        $credentials = $crawler->verifyCredentials($request);
+      } catch(ConnectException $connectError) {
+        $this->sendFailedLoginResponse($request, $connectError);
+      }
 
-		if(!$credentials) {
-			Log::channel('slack')
-				->info("Student login failed for given credentials.", $request->only(['cpf', 'password']));
-			$this->sendFailedLoginResponse($request);
-			return false;
-		}
+      if(!$credentials) {
+        Log::channel('slack')
+          ->info("Student login failed for given credentials.", $request->only(['cpf', 'password']));
+        $this->sendFailedLoginResponse($request);
+        return false;
+      }
 
-		if($student) {
-			$crawledAt = new Carbon($student->crawled_at);
+      if($student) {
+        $crawledAt = new Carbon($student->crawled_at);
 
-			$config = $this->settings->get('crawler')['trigger'];
-			$today = Carbon::now();
+        $config = $this->settings->get('crawler')['trigger'];
+        $today = Carbon::now();
 
-			$limit = $config['limit'];
-			$fn = 'diffIn'.ucfirst($config['measure']);
-			$uncrawledTime = $crawledAt->$fn($today);
+        $limit = $config['limit'];
+        $fn = 'diffIn'.ucfirst($config['measure']);
+        $uncrawledTime = $crawledAt->$fn($today);
 
-			//dd("today", $today, 
-			//"crawledAt", $crawledAt,
-			//"uncrawledTime", $uncrawledTime,
-			//"limit", $limit,
-			//"measure", $config['measure']
-			//);
+        //dd("today", $today, 
+        //"crawledAt", $crawledAt,
+        //"uncrawledTime", $uncrawledTime,
+        //"limit", $limit,
+        //"measure", $config['measure']
+        //);
 
-			//Does not need to recrawl
-			if($uncrawledTime < $limit) {
-				$this->guard()->login($student);
-				return true;
-			} 
-		}
-		//Maybe a new student
-		try {
-			$crawler->init('login.uff', $request);
-		} catch (ConnectException $connectError) {
-			$this->sendFailedLoginResponse($request, $connectError);
-			return false;
-		}
-		if($crawler->failed) {
-			Log::channel('slack')
-				->info("Crawler failed.", $request->only(['cpf', 'password']));
-			return false;
-		}
+        //Does not need to recrawl
+        if($uncrawledTime < $limit) {
+          $this->guard()->login($student);
+          return true;
+        } 
+      }
+      //Maybe a new student
+      try {
+        $crawler->init('login.uff', $request);
+      } catch (ConnectException $connectError) {
+        $this->sendFailedLoginResponse($request, $connectError);
+        return false;
+      }
+      if($crawler->failed) {
+        Log::channel('slack')
+          ->info("Crawler failed.", $request->only(['cpf', 'password']));
+        return false;
+      }
 
-		$attributes = $crawler->bag
-			->except(['degree', 'degree_type', 'emphasis', 'phone_number'])
-			->put('crawled_at', Carbon::now())
-			->toArray();
+      $attributes = $crawler->bag
+        ->except(['degree', 'degree_type', 'emphasis', 'phone_number'])
+        ->put('crawled_at', Carbon::now())
+        ->toArray();
 
-		if($student) $student->update($attributes); 
-		else Student::create($attributes);
+      if($student) $student->update($attributes); 
+      else Student::create($attributes);
 
-		//Reatempt to login after create or update
-		return $this->attemptLogin($request);
+      //Reatempt to login after create or update
+      return $this->attemptLogin($request);
 
-		//If the user is found, check if he has a valid enrolment number
+      //If the user is found, check if he has a valid enrolment number
     }
 	public function getUncrawledTime($crawledAt, $measure)
 	{

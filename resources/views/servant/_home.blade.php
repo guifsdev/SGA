@@ -2,6 +2,7 @@
 
 @section('content')
 
+<!--servant dashboard-->
 <div class="home">
 	<span class="background"></span>
 	<header class="home__navigation">

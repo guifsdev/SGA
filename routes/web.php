@@ -25,10 +25,14 @@ Route::get('down', function() {
 
 Route::get('/login', 'Auth\LoginController@showLoginForm');
 
+
 Route::prefix('estudante')->group(function() {
 	Route::post('login', 'StudentLoginController@login');
 	Route::get('logout', 'StudentLoginController@logout');
-	Route::get('/', 'StudentHomeController@home');
+
+	//Route::get('/', 'StudentHomeController@home');
+  Route::get('/', 'HomeController@index');
+
 
 	Route::get('adjustment/index', 'StudentAdjustmentController@index');
 	Route::post('adjustment/store', 'StudentAdjustmentController@store');
@@ -48,7 +52,9 @@ Route::prefix('estudante')->group(function() {
 Route::prefix('servidor')->group(function() {
 	Route::post('login', 'ServantsLoginController@login');
 	Route::get('logout', 'ServantsLoginController@logout');
-	Route::get('/', 'ServantHomeController@home');
+
+	//Route::get('/', 'ServantDashboardController@index');
+  Route::get('/', 'HomeController@index');
 
 	Route::prefix('configs')->group(function() {
 		Route::get('index', 'ServantConfigsController@index');
@@ -72,6 +78,8 @@ Route::prefix('servidor')->group(function() {
 		Route::post('resolve', 'ServantAdjustmentController@resolve');
 	});
 });
+
+
 
 //Route::prefix('adjustment')->group(function() {
 	//Route::get('index', 'AdjustmentsController@index');
